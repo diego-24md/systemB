@@ -16,7 +16,9 @@ $routes->get('/', 'Home::dashboard');
 //$routes->verbo('/ruta/', 'Controlador::MetodoAccion');
 //Nota: Es posible crear más de una ruta para una vista
 
-$routes->get('/libros', 'Recurso::index');
+$routes->get('libros', 'Libros::index');
+$routes->get('libros/registrar', 'Libros::registrar');
+$routes->post('libros/guardar', 'Libros::guardar');
 
 //Rutas para el CRUD de personas(alumnos)
 $routes->get('/alumnos', 'Persona::index');

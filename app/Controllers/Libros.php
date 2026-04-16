@@ -16,11 +16,14 @@ class Libros extends BaseController
         $this->categoriasModel = new CategoriasModel();
     }
 
-    // Vista principal
     public function index()
     {
-        $data['categorias'] = $this->categoriasModel->findAll();
-        return view('libros/buscador', $data);
+        $data['libros'] = $this->librosModel->findAll();
+
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
+
+        return view('libros/index', $data);
     }
 
     // AJAX: buscar libros
@@ -33,8 +36,8 @@ class Libros extends BaseController
         $resultados = $this->librosModel->buscar($q, $categoria, $disponible);
 
         return $this->response
-                    ->setContentType('application/json')
-                    ->setJSON($resultados);
+            ->setContentType('application/json')
+            ->setJSON($resultados);
     }
 
     // Detalle de un libro
@@ -57,7 +60,7 @@ class Libros extends BaseController
                 ) AS disponibles
             ')
             ->join('autores a',        'a.idrecurso = r.idrecurso',          'left')
-            ->join('sucbategorias sc', 'sc.idsubcategoria = r.idsubcategoria','left')
+            ->join('sucbategorias sc', 'sc.idsubcategoria = r.idsubcategoria', 'left')
             ->join('categorias c',     'c.idcategoria = sc.idcategoria',     'left')
             ->join('tiporecurso tr',   'tr.idtiporecurso = r.idtiporecurso', 'left')
             ->join('activos act',      'act.idrecurso = r.idrecurso',        'left')
@@ -76,32 +79,32 @@ class Libros extends BaseController
 
         if (!$idactivo) {
             return $this->response
-                        ->setJSON(['error' => 'ID de activo inválido'])
-                        ->setStatusCode(400);
+                ->setJSON(['error' => 'ID de activo inválido'])
+                ->setStatusCode(400);
         }
 
         $db = \Config\Database::connect();
 
         // Verificar que el activo existe y no tiene préstamo activo
         $activo = $db->table('activos')
-                     ->where('idactivo', $idactivo)
-                     ->get()->getRowObject();
+            ->where('idactivo', $idactivo)
+            ->get()->getRowObject();
 
         if (!$activo) {
             return $this->response
-                        ->setJSON(['error' => 'El activo no existe'])
-                        ->setStatusCode(404);
+                ->setJSON(['error' => 'El activo no existe'])
+                ->setStatusCode(404);
         }
 
         $prestamoActivo = $db->table('prestamos')
-                             ->where('idactivo', $idactivo)
-                             ->where('devolucion IS NULL')
-                             ->get()->getRowObject();
+            ->where('idactivo', $idactivo)
+            ->where('devolucion IS NULL')
+            ->get()->getRowObject();
 
         if ($prestamoActivo) {
             return $this->response
-                        ->setJSON(['error' => 'Este ejemplar ya está prestado'])
-                        ->setStatusCode(409);
+                ->setJSON(['error' => 'Este ejemplar ya está prestado'])
+                ->setStatusCode(409);
         }
 
         // Registrar préstamo
@@ -117,5 +120,38 @@ class Libros extends BaseController
         ]);
 
         return $this->response->setJSON(['success' => true]);
+    }
+
+    // Para registrar un nuevo libro (vista)
+    public function registrar()
+    {
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
+
+        return view('libros/registrar', $data);
+    }
+
+    // Para guardar un nuevo libro
+    public function guardar()
+    {
+        $file = $this->request->getFile('portada');
+        $nombreImagen = null;
+
+        // Subir imagen
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $nombreImagen = $file->getRandomName();
+            $file->move('uploads/portadas/', $nombreImagen);
+        }
+
+        // Guardar en BD
+        $this->librosModel->save([
+            'titulo' => $this->request->getPost('titulo'),
+            'isbn' => $this->request->getPost('isbn'),
+            'anio' => $this->request->getPost('anio'),
+            'numpaginas' => $this->request->getPost('numpaginas'),
+            'portada' => $nombreImagen
+        ]);
+
+        return redirect()->to('/libros')->with('success', 'Libro registrado');
     }
 }
