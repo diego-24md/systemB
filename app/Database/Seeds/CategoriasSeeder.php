@@ -11,7 +11,20 @@ class CategoriasSeeder extends Seeder
         $data = [
             ['categoria' => 'Matemática'],
             ['categoria' => 'Comunicación'],
-            ['categoria' => 'Ciencia'],
+            ['categoria' => 'Ciencias Sociales'],
+            ['categoria' => 'Ciencia y Tecnología'],
+            ['categoria' => 'Física'],
+            ['categoria' => 'Química'],
+            ['categoria' => 'Biología'],
+            ['categoria' => 'Historia'],
+            ['categoria' => 'Geografía'],
+            ['categoria' => 'Educación Cívica'],
+            ['categoria' => 'Inglés'],
+            ['categoria' => 'Arte y Cultura'],
+            ['categoria' => 'Educación Física'],
+            ['categoria' => 'Computación / Informática'],
+            ['categoria' => 'Educación Religiosa'],
+            ['categoria' => 'Tutoría y Orientación'],
         ];
 
         $this->db->table('categorias')->insertBatch($data);

@@ -3,19 +3,23 @@
 namespace App\Controllers;
 
 use App\Models\LibrosModel;
+use App\Models\TipoRecursoModel;
 use App\Models\CategoriasModel;
 
 class Libros extends BaseController
 {
     protected $librosModel;
+    protected $tipoRecursoModel;
     protected $categoriasModel;
 
     public function __construct()
     {
-        $this->librosModel     = new LibrosModel();
-        $this->categoriasModel = new CategoriasModel();
+        $this->librosModel      = new LibrosModel();
+        $this->tipoRecursoModel = new TipoRecursoModel();
+        $this->categoriasModel  = new CategoriasModel();
     }
 
+    // ====================== LISTAR LIBROS ======================
     public function index()
     {
         $data['libros'] = $this->librosModel->findAll();
@@ -26,11 +30,74 @@ class Libros extends BaseController
         return view('libros/index', $data);
     }
 
-    // AJAX: buscar libros
+    // ====================== FORMULARIO REGISTRAR ======================
+    public function registrar()
+    {
+        $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
+        $data['categorias']    = $this->categoriasModel->findAll();
+
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
+
+        return view('libros/registrar', $data);
+    }
+
+    // ====================== GUARDAR LIBRO ======================
+    public function guardar()
+    {
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'titulo'          => 'required|min_length[3]',
+            'autor'           => 'required|min_length[3]',
+            'isbn'            => 'required|min_length[10]',
+            'id_tipo_recurso' => 'required|integer',
+            'categoria_id'    => 'required|integer',
+            'anio'            => 'required|integer|greater_than[1900]',
+            'numpaginas'      => 'required|integer|greater_than[1]',
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // Subir imagen de portada
+        $file = $this->request->getFile('portada');
+        $nombreImagen = null;
+
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $nombreImagen = $file->getRandomName();
+            $file->move('uploads/portadas/', $nombreImagen);
+        }
+
+        // Datos a guardar
+        $data = [
+            'titulo'        => $this->request->getPost('titulo'),
+            'autor'         => $this->request->getPost('autor'),
+            'isbn'          => $this->request->getPost('isbn'),
+            'idtiporecurso' => $this->request->getPost('id_tipo_recurso'),
+            'categoria_id'  => $this->request->getPost('categoria_id'),
+            'descripcion'   => $this->request->getPost('descripcion'),
+            'anio'          => $this->request->getPost('anio'),
+            'numpaginas'    => $this->request->getPost('numpaginas'),
+            'portada'       => $nombreImagen,
+        ];
+
+        if ($this->librosModel->save($data)) {
+            return redirect()->to('/libros')
+                             ->with('success', 'Libro registrado correctamente ✅');
+        } else {
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', 'Error al guardar el libro');
+        }
+    }
+
+    // ====================== BUSCAR (AJAX) ======================
     public function buscar()
     {
-        $q          = $this->request->getGet('q')          ?? '';
-        $categoria  = $this->request->getGet('categoria')  ?? '';
+        $q          = $this->request->getGet('q') ?? '';
+        $categoria  = $this->request->getGet('categoria') ?? '';
         $disponible = $this->request->getGet('disponible') ?? '';
 
         $resultados = $this->librosModel->buscar($q, $categoria, $disponible);
@@ -40,16 +107,15 @@ class Libros extends BaseController
             ->setJSON($resultados);
     }
 
-    // Detalle de un libro
+    // ====================== DETALLE DE LIBRO ======================
     public function detalle($id)
     {
-        $db   = \Config\Database::connect();
+        $db = \Config\Database::connect();
 
         $libro = $db->table('recursos r')
             ->select('
                 r.*,
                 GROUP_CONCAT(DISTINCT a.datoautor SEPARATOR ", ") AS autores,
-                sc.subcategoria,
                 c.categoria,
                 tr.tipo,
                 COUNT(act.idactivo) AS total_ejemplares,
@@ -59,20 +125,20 @@ class Libros extends BaseController
                     ) THEN 1 ELSE 0 END
                 ) AS disponibles
             ')
-            ->join('autores a',        'a.idrecurso = r.idrecurso',          'left')
-            ->join('sucbategorias sc', 'sc.idsubcategoria = r.idsubcategoria', 'left')
-            ->join('categorias c',     'c.idcategoria = sc.idcategoria',     'left')
-            ->join('tiporecurso tr',   'tr.idtiporecurso = r.idtiporecurso', 'left')
-            ->join('activos act',      'act.idrecurso = r.idrecurso',        'left')
+            ->join('autores a',      'a.idrecurso = r.idrecurso',        'left')
+            ->join('categorias c',   'c.idcategoria = r.categoria_id',   'left')
+            ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso','left')
+            ->join('activos act',    'act.idrecurso = r.idrecurso',      'left')
             ->where('r.idrecurso', $id)
             ->groupBy('r.idrecurso')
-            ->get()->getRowObject();
+            ->get()
+            ->getRowObject();
 
         $data['libro'] = $libro;
         return view('libros/detalle', $data);
     }
 
-    // Reservar / Préstamo
+    // ====================== RESERVAR ======================
     public function reservar()
     {
         $idactivo = $this->request->getPost('idactivo');
@@ -85,7 +151,6 @@ class Libros extends BaseController
 
         $db = \Config\Database::connect();
 
-        // Verificar que el activo existe y no tiene préstamo activo
         $activo = $db->table('activos')
             ->where('idactivo', $idactivo)
             ->get()->getRowObject();
@@ -107,51 +172,16 @@ class Libros extends BaseController
                 ->setStatusCode(409);
         }
 
-        // Registrar préstamo
-        // idusuario: aquí deberías tomar el usuario de sesión
         $idusuario = session()->get('idusuario') ?? 1;
 
         $db->table('prestamos')->insert([
-            'idactivo'          => $idactivo,
-            'entrega'           => date('Y-m-d'),
-            'devolucion'        => null,
-            'idusuario'         => $idusuario,
-            'condicionentrega'  => $activo->condicion,
+            'idactivo'         => $idactivo,
+            'entrega'          => date('Y-m-d'),
+            'devolucion'       => null,
+            'idusuario'        => $idusuario,
+            'condicionentrega' => $activo->condicion ?? 'Buena',
         ]);
 
         return $this->response->setJSON(['success' => true]);
-    }
-
-    // Para registrar un nuevo libro (vista)
-    public function registrar()
-    {
-        $data['header'] = view('partials/header');
-        $data['footer'] = view('partials/footer');
-
-        return view('libros/registrar', $data);
-    }
-
-    // Para guardar un nuevo libro
-    public function guardar()
-    {
-        $file = $this->request->getFile('portada');
-        $nombreImagen = null;
-
-        // Subir imagen
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $nombreImagen = $file->getRandomName();
-            $file->move('uploads/portadas/', $nombreImagen);
-        }
-
-        // Guardar en BD
-        $this->librosModel->save([
-            'titulo' => $this->request->getPost('titulo'),
-            'isbn' => $this->request->getPost('isbn'),
-            'anio' => $this->request->getPost('anio'),
-            'numpaginas' => $this->request->getPost('numpaginas'),
-            'portada' => $nombreImagen
-        ]);
-
-        return redirect()->to('/libros')->with('success', 'Libro registrado');
     }
 }
