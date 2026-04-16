@@ -1,0 +1,122 @@
+:root {
+    --rojo: #c62828;
+    --azul: #0d47a1;
+    --amarillo: #f9a825;
+    --blanco: #ffffff;
+    --gris: #f8f9fc;
+}
+
+/* BASE */
+body {
+    background: var(--gris);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* CONTENEDOR */
+.contenedor-buscador {
+    width: 90%;
+    margin: auto;
+    padding: 30px 0;
+}
+
+/* TITULO */
+.titulo {
+    text-align: center;
+    color: var(--azul);
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+/* BUSCADOR */
+.buscador-box {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+#buscar {
+    width: 60%;
+    padding: 14px;
+    border-radius: 25px;
+    border: 2px solid var(--azul);
+    font-size: 16px;
+    transition: 0.3s;
+    background: white;
+}
+
+#buscar:focus {
+    border-color: var(--rojo);
+    box-shadow: 0 0 8px rgba(13, 71, 161, 0.2);
+    outline: none;
+}
+
+/* GRID */
+.grid-libros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+/* CARD */
+.libro-card {
+    background: var(--blanco);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-top: 4px solid var(--azul);
+}
+
+.libro-card:hover {
+    transform: translateY(-4px);
+}
+
+/* IMAGEN */
+.libro-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+/* INFO */
+.libro-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.libro-info h5 {
+    color: var(--azul);
+    font-size: 15px;
+}
+
+/* BOTON */
+.btn-ver {
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--rojo);
+    color: white;
+    padding: 7px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-ver:hover {
+    background: var(--azul);
+}
+
+/* DETALLE AMARILLO SUTIL */
+.libro-card::after {
+    content: "";
+    display: block;
+    height: 4px;
+    background: var(--amarillo);
+}
+
+/* SIN RESULTADOS */
+.sin-resultados {
+    text-align: center;
+    color: var(--rojo);
+    font-weight: bold;
+}
