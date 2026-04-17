@@ -78,13 +78,6 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('buscador') ?>">
-                    <i class="fas fa-search"></i>
-                    <span>Buscar Libros</span>
-                </a>
-            </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 

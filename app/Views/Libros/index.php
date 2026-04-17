@@ -58,14 +58,14 @@
                             </div>
                         </div>
 
-                        <div class="border-top p-3 bg-light d-flex gap-2">
+                        <div class="border-top p-3 bg-light d-flex justify-content-between">
                             <a href="<?= base_url('libros/editar/' . $libro['idrecurso']) ?>"
-                                class="btn btn-sm btn-outline-primary flex-fill d-flex align-items-center justify-content-center gap-2">
+                                class="btn btn-sm btn-outline-primary d-flex align-items-center gap-2">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
 
                             <a href="<?= base_url('libros/eliminar/' . $libro['idrecurso']) ?>"
-                                class="btn btn-sm btn-outline-danger flex-fill d-flex align-items-center justify-content-center gap-2"
+                                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2"
                                 onclick="return confirm('¿Estás seguro de eliminar este libro?')">
                                 <i class="fas fa-trash-alt"></i> Eliminar
                             </a>
