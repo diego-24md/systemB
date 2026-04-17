@@ -11,21 +11,21 @@ class RecursosSeeder extends Seeder
         $data = [
             [
                 'idtiporecurso' => 1,
-                'idsubcategoria' => 1,
-                'titulo' => 'Cien años de soledad',
-                'isbn' => '9780307474728',
-                'anio' => 1967,
-                'portada' => null,
-                'numpaginas' => 417
+                'categoria_id'  => 1,
+                'titulo'        => 'Libro de Phyton I',
+                'isbn'          => '9780307474728',
+                'anio'          => 1967,
+                'portada'       => '1776442538_4699499bcb8287599e50.webp',
+                'numpaginas'    => 417
             ],
             [
                 'idtiporecurso' => 1,
-                'idsubcategoria' => 1,
-                'titulo' => 'Don Quijote de la Mancha',
-                'isbn' => '9788491050293',
-                'anio' => 1605,
-                'portada' => null,
-                'numpaginas' => 863
+                'categoria_id'  => 1,
+                'titulo'        => 'Libro de Matemática Vital 2',
+                'isbn'          => '9788491050293',
+                'anio'          => 1605,
+                'portada'       => '1776442659_a113e5624fb1880f13b7.png',
+                'numpaginas'    => 863
             ]
         ];
 
