@@ -9,12 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 
 //El slash "/" representa el HOME de tu aplicación
 //es decir www.miweb.com/programador
-
 $routes->get('/', 'Home::dashboard');
-
-//¿Cómo funciona una ruta?
-//$routes->verbo('/ruta/', 'Controlador::MetodoAccion');
-//Nota: Es posible crear más de una ruta para una vista
 
 $routes->get('libros', 'Libros::index');
 $routes->get('libros/registrar', 'Libros::registrar');
@@ -27,3 +22,9 @@ $routes->post('/alumnos/importar', 'Persona::importar');
 
 //Para el BUSCADOR
 $routes->get('buscador', 'Biblioteca::buscador');
+
+
+// Editar libro
+$routes->get('libros/editar/(:num)', 'Libros::editar/$1');
+//Actualizar libro
+$routes->post('libros/actualizar/(:num)', 'Libros::actualizar/$1');

@@ -1,62 +1,117 @@
 <?= $header ?>
 
-<div class="row">
-  <div class="col-md-12">
+<div class="container-fluid">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4>Lista de Libros</h4>
-
-      <a href="<?= base_url('libros/registrar') ?>" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Agregar Libro
-      </a>
+        <h4 class="mb-0">Lista de Libros</h4>
+        <a href="<?= base_url('libros/registrar') ?>" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Agregar Libro
+        </a>
     </div>
 
     <div class="row">
 
-      <?php if (!empty($recursos)): ?>
-        <?php foreach ($recursos as $recurso): ?>
-          <div class="col-md-3 mb-4">
-            <div class="card shadow h-100">
+        <?php if (!empty($libros)): ?>
+            <?php foreach ($libros as $libro): ?>
+                <div class="col-md-6 col-lg-4 col-xl-3">
 
-              <img src="<?= base_url('uploads/portadas/' . $recurso['portada']) ?>" 
-                   class="card-img-top"
-                   style="height:200px; object-fit:cover;"
-                   onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Imagen'">
+                    <div class="book-card h-100 bg-white border border-light rounded-3 overflow-hidden shadow-sm">
 
-              <div class="card-body text-center">
-                <h6 class="font-weight-bold"><?= esc($recurso['titulo']) ?></h6>
-                <p class="mb-1">ISBN: <?= esc($recurso['isbn']) ?></p>
-                <p class="mb-1">Año: <?= esc($recurso['anio']) ?></p>
-                <p class="mb-0">Páginas: <?= esc($recurso['numpaginas']) ?></p>
-              </div>
+                        <!-- Portada - Versión más completa -->
+                        <div class="cover-area position-relative"
+                            style="height: 280px; background-color: #f8fafc; padding: 12px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #e2e8f0;">
 
-              <div class="card-footer text-center bg-white">
-                <a href="<?= base_url('libros/editar/' . $recurso['id']) ?>" class="btn btn-sm btn-info">
-                  ✏ Editar
-                </a>
+                            <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
+                                <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>" class="w-100 h-100"
+                                    style="object-fit: contain; max-height: 100%;" alt="<?= esc($libro['titulo']) ?>">
+                            <?php else: ?>
+                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-center p-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="none" viewBox="0 0 24 24"
+                                        stroke="#cbd5e1" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18 9.246 18 10.832 18.477 12 19.253zm0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18 14.754 18 13.168 18.477 12 19.253z" />
+                                    </svg>
+                                    <p class="text-muted small mt-3 mb-0">Sin portada</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
-                <a href="<?= base_url('libros/eliminar/' . $recurso['id']) ?>" 
-                   class="btn btn-sm btn-danger"
-                   onclick="return confirm('¿Seguro que deseas eliminar este libro?')">
-                  🗑 Eliminar
-                </a>
-              </div>
+                        <!-- El resto del código (información y botones) se mantiene igual -->
+                        <div class="p-4">
+                            <h6 class="fw-bold text-dark mb-3 line-clamp-2" style="font-size: 1.05rem; line-height: 1.35;">
+                                <?= esc($libro['titulo']) ?>
+                            </h6>
 
+                            <div class="small text-muted">
+                                <div class="d-flex mb-1">
+                                    <span class="fw-semibold text-primary" style="width: 52px;">ISBN</span>
+                                    <span>: <?= esc($libro['isbn'] ?? '—') ?></span>
+                                </div>
+                                <div class="d-flex mb-1">
+                                    <span class="fw-semibold text-primary" style="width: 52px;">Año</span>
+                                    <span>: <?= esc($libro['anio'] ?? '—') ?></span>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="fw-semibold text-primary" style="width: 52px;">Págs.</span>
+                                    <span>: <?= esc($libro['numpaginas'] ?? '—') ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-top p-3 bg-light d-flex gap-2">
+                            <a href="<?= base_url('libros/editar/' . $libro['idrecurso']) ?>"
+                                class="btn btn-sm btn-outline-primary flex-fill d-flex align-items-center justify-content-center gap-2">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+
+                            <a href="<?= base_url('libros/eliminar/' . $libro['idrecurso']) ?>"
+                                class="btn btn-sm btn-outline-danger flex-fill d-flex align-items-center justify-content-center gap-2"
+                                onclick="return confirm('¿Estás seguro de eliminar este libro?')">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+        <?php else: ?>
+            <div class="col-12">
+                <div class="alert alert-warning text-center py-4">
+                    <i class="fas fa-book-open fa-2x mb-3 text-muted"></i>
+                    <h5>No hay libros registrados aún</h5>
+                </div>
             </div>
-          </div>
-        <?php endforeach; ?>
-      <?php else: ?>
-
-        <div class="col-12">
-          <div class="alert alert-warning text-center">
-            No hay libros registrados aún.
-          </div>
-        </div>
-
-      <?php endif; ?>
+        <?php endif; ?>
 
     </div>
-  </div>
 </div>
+
+<!-- Estilos adicionales para la tarjeta -->
+<style>
+    .book-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .book-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12) !important;
+        border-color: #cbd5e1;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .cover-area img {
+        transition: transform 0.4s ease;
+    }
+
+    .book-card:hover .cover-area img {
+        transform: scale(1.04);
+    }
+</style>
 
 <?= $footer ?>

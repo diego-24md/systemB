@@ -9,7 +9,16 @@ class TiporecursoSeeder extends Seeder
     public function run()
     {
         $data = [
-            ['idtiporecurso' => 1, 'nombre' => 'Libro']
+            ['tipo' => 'Libro'],
+            ['tipo' => 'Revista'],
+            ['tipo' => 'Artículo científico'],
+            ['tipo' => 'Tesis'],
+            ['tipo' => 'Enciclopedia'],
+            ['tipo' => 'Manual'],
+            ['tipo' => 'Diccionario'],
+            ['tipo' => 'Periódico'],
+            ['tipo' => 'Guía de estudio'],
+            ['tipo' => 'Documento digital'],
         ];
 
         $this->db->table('tiporecurso')->insertBatch($data);

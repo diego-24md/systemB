@@ -1,6 +1,5 @@
 <?= $header ?>
 
-
 <style>
     .btn-submit {
         background: #1a3c6e;
@@ -22,11 +21,33 @@
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
     }
 
-    .btn-submit:active {
-        transform: translateY(0);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    .btn-cancel {
+        background: #6c757d;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background: #6c757d;
+        color: #fff;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
     }
 </style>
+
 <div class="form-container">
     <h2>Registrar Libro</h2>
 
@@ -93,11 +114,19 @@
             <input type="file" name="portada" class="form-control" accept="image/*" onchange="previewImage(event)">
 
             <div class="preview">
-                <img id="previewImg" style="max-width: 200px; margin-top: 10px; display: none;">
+                <img id="previewImg" style="max-width: 200px; margin-top: 10px; display: none; border-radius: 6px;">
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">Guardar Libro</button>
+        <!-- Botones -->
+        <div class="btn-group">
+            <a href="<?= base_url('libros') ?>" class="btn-cancel">
+                Cancelar
+            </a>
+            <button type="submit" class="btn-submit">
+                Guardar Libro
+            </button>
+        </div>
 
     </form>
 </div>

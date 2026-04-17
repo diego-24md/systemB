@@ -14,12 +14,12 @@ class Libros extends BaseController
 
     public function __construct()
     {
-        $this->librosModel      = new LibrosModel();
+        $this->librosModel = new LibrosModel();
         $this->tipoRecursoModel = new TipoRecursoModel();
-        $this->categoriasModel  = new CategoriasModel();
+        $this->categoriasModel = new CategoriasModel();
     }
 
-    // ====================== LISTAR LIBROS ======================
+    // ====================== LISTAR LIBROS - VISTA ======================
     public function index()
     {
         $data['libros'] = $this->librosModel->findAll();
@@ -30,11 +30,11 @@ class Libros extends BaseController
         return view('libros/index', $data);
     }
 
-    // ====================== FORMULARIO REGISTRAR ======================
+    // ====================== FORMULARIO ======================
     public function registrar()
     {
         $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
-        $data['categorias']    = $this->categoriasModel->findAll();
+        $data['categorias'] = $this->categoriasModel->findAll();
 
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
@@ -42,7 +42,7 @@ class Libros extends BaseController
         return view('libros/registrar', $data);
     }
 
-    // ====================== GUARDAR LIBRO ======================
+    // ====================== GUARDAR ======================
     public function guardar()
     {
         $validation = \Config\Services::validation();
@@ -58,10 +58,12 @@ class Libros extends BaseController
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $validation->getErrors());
         }
 
-        // Subir imagen de portada
+        // ====================== PORTADA ======================
         $file = $this->request->getFile('portada');
         $nombreImagen = null;
 
@@ -70,30 +72,30 @@ class Libros extends BaseController
             $file->move('uploads/portadas/', $nombreImagen);
         }
 
-        // Datos a guardar
+        // ====================== DATA ======================
         $data = [
-            'titulo'        => $this->request->getPost('titulo'),
-            'autor'         => $this->request->getPost('autor'),
-            'isbn'          => $this->request->getPost('isbn'),
-            'idtiporecurso' => $this->request->getPost('id_tipo_recurso'),
-            'categoria_id'  => $this->request->getPost('categoria_id'),
-            'descripcion'   => $this->request->getPost('descripcion'),
-            'anio'          => $this->request->getPost('anio'),
-            'numpaginas'    => $this->request->getPost('numpaginas'),
-            'portada'       => $nombreImagen,
+            'titulo'       => $this->request->getPost('titulo'),
+            'autor'        => $this->request->getPost('autor'),
+            'isbn'         => $this->request->getPost('isbn'),
+            'idtiporecurso'=> $this->request->getPost('id_tipo_recurso'),
+            'idcategoria'  => $this->request->getPost('categoria_id'),
+            'descripcion'  => $this->request->getPost('descripcion'),
+            'anio'         => $this->request->getPost('anio'),
+            'numpaginas'   => $this->request->getPost('numpaginas'),
+            'portada'      => $nombreImagen,
         ];
 
         if ($this->librosModel->save($data)) {
             return redirect()->to('/libros')
-                             ->with('success', 'Libro registrado correctamente ✅');
-        } else {
-            return redirect()->back()
-                             ->withInput()
-                             ->with('error', 'Error al guardar el libro');
+                ->with('success', 'Libro registrado correctamente ✅');
         }
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Error al guardar el libro');
     }
 
-    // ====================== BUSCAR (AJAX) ======================
+    // ====================== BUSCAR ======================
     public function buscar()
     {
         $q          = $this->request->getGet('q') ?? '';
@@ -107,7 +109,7 @@ class Libros extends BaseController
             ->setJSON($resultados);
     }
 
-    // ====================== DETALLE DE LIBRO ======================
+    // ====================== DETALLE ======================
     public function detalle($id)
     {
         $db = \Config\Database::connect();
@@ -125,16 +127,17 @@ class Libros extends BaseController
                     ) THEN 1 ELSE 0 END
                 ) AS disponibles
             ')
-            ->join('autores a',      'a.idrecurso = r.idrecurso',        'left')
-            ->join('categorias c',   'c.idcategoria = r.categoria_id',   'left')
-            ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso','left')
-            ->join('activos act',    'act.idrecurso = r.idrecurso',      'left')
+            ->join('autores a', 'a.idrecurso = r.idrecurso', 'left')
+            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
+            ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
+            ->join('activos act', 'act.idrecurso = r.idrecurso', 'left')
             ->where('r.idrecurso', $id)
             ->groupBy('r.idrecurso')
             ->get()
             ->getRowObject();
 
         $data['libro'] = $libro;
+
         return view('libros/detalle', $data);
     }
 
@@ -153,7 +156,8 @@ class Libros extends BaseController
 
         $activo = $db->table('activos')
             ->where('idactivo', $idactivo)
-            ->get()->getRowObject();
+            ->get()
+            ->getRowObject();
 
         if (!$activo) {
             return $this->response
@@ -164,7 +168,8 @@ class Libros extends BaseController
         $prestamoActivo = $db->table('prestamos')
             ->where('idactivo', $idactivo)
             ->where('devolucion IS NULL')
-            ->get()->getRowObject();
+            ->get()
+            ->getRowObject();
 
         if ($prestamoActivo) {
             return $this->response
@@ -183,5 +188,76 @@ class Libros extends BaseController
         ]);
 
         return $this->response->setJSON(['success' => true]);
+    }
+
+    // ====================== EDITAR LIBRO ======================
+    public function editar($id)
+    {
+        $data['libro'] = $this->librosModel->find($id);
+
+        if (!$data['libro']) {
+            return redirect()->to(base_url('libros'))
+                ->with('error', 'Libro no encontrado');
+        }
+
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
+
+        return view('libros/editar', $data);
+    }
+
+    // ====================== ACTUALIZAR LIBRO ======================
+    public function actualizar($id)
+    {
+        // ================= VALIDACIÓN =================
+        // Solo validamos los campos que existen en el formulario editar.php
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'titulo'     => 'required|min_length[3]',
+            'isbn'       => 'permit_empty|min_length[10]',
+            'anio'       => 'permit_empty|integer|greater_than[1900]',
+            'numpaginas' => 'permit_empty|integer|greater_than[1]',
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $validation->getErrors());
+        }
+
+        // ================= IMAGEN =================
+        $file = $this->request->getFile('portada');
+        $nombreImagen = null;
+
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $nombreImagen = $file->getRandomName();
+            $file->move('uploads/portadas/', $nombreImagen);
+        }
+
+        // ================= DATA =================
+        // Solo incluimos los campos que el formulario editar.php envía
+        $data = [
+            'titulo'      => $this->request->getPost('titulo'),
+            'isbn'        => $this->request->getPost('isbn'),
+            'descripcion' => $this->request->getPost('descripcion'),
+            'anio'        => $this->request->getPost('anio'),
+            'numpaginas'  => $this->request->getPost('numpaginas'),
+        ];
+
+        // Solo actualiza portada si subieron una nueva
+        if ($nombreImagen) {
+            $data['portada'] = $nombreImagen;
+        }
+
+        // ================= UPDATE =================
+        if ($this->librosModel->update($id, $data)) {
+            return redirect()->to(base_url('libros'))
+                ->with('success', 'Libro actualizado correctamente ✅');
+        }
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Error al actualizar el libro');
     }
 }

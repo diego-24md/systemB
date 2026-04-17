@@ -15,18 +15,55 @@ class CreateRecursos extends Migration
                 'unsigned' => true,
                 'auto_increment' => true
             ],
-            'idtiporecurso' => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
-            'idsubcategoria' => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
-            'titulo' => ['type' => 'VARCHAR', 'constraint' => 200],
-            'isbn' => ['type' => 'VARCHAR', 'constraint' => 20],
-            'anio' => ['type' => 'YEAR'],
-            'portada' => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
-            'numpaginas' => ['type' => 'INT', 'constraint' => 11],
+            'idtiporecurso' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true
+            ],
+            'idcategoria' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true
+            ],
+            'titulo' => [
+                'type' => 'VARCHAR',
+                'constraint' => 200
+            ],
+            'isbn' => [
+                'type' => 'VARCHAR',
+                'constraint' => 20
+            ],
+            'anio' => [
+                'type' => 'YEAR'
+            ],
+            'portada' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => true
+            ],
+            'numpaginas' => [
+                'type' => 'INT',
+                'constraint' => 11
+            ],
         ]);
 
         $this->forge->addKey('idrecurso', true);
-        $this->forge->addForeignKey('idtiporecurso', 'tiporecurso', 'idtiporecurso', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('idsubcategoria', 'subcategorias', 'idsubcategoria', 'CASCADE', 'CASCADE');
+
+        $this->forge->addForeignKey(
+            'idtiporecurso',
+            'tiporecurso',
+            'idtiporecurso',
+            'CASCADE',
+            'CASCADE'
+        );
+
+        $this->forge->addForeignKey(
+            'idcategoria',
+            'categorias',
+            'idcategoria',
+            'CASCADE',
+            'CASCADE'
+        );
 
         $this->forge->createTable('recursos', true, ['ENGINE' => 'InnoDB']);
     }
