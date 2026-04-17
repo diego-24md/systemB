@@ -111,40 +111,61 @@
 
         <div class="form-group">
             <label>Portada</label>
-            <input type="file" name="portada" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <div class="mb-4">
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" type="button"
+                        onclick="document.getElementById('portada').click()">
+                        <i class="fas fa-upload"></i> Seleccionar archivo
+                    </button>
+                    <input type="text" id="file-name" class="form-control" placeholder="Ningún archivo seleccionado"
+                        readonly>
+                    <input type="file" name="portada" id="portada" class="d-none" accept="image/*"
+                        onchange="updateFileName(this)">
+                </div>
 
-            <div class="preview">
-                <img id="previewImg" style="max-width: 200px; margin-top: 10px; display: none; border-radius: 6px;">
+                <!-- Vista previa de la imagen -->
+                <div class="mt-3 text-center">
+                    <img id="previewImg"
+                        style="max-height: 220px; max-width: 100%; border-radius: 8px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
+                        alt="Vista previa">
+                </div>
             </div>
-        </div>
 
-        <!-- Botones -->
-        <div class="btn-group">
-            <a href="<?= base_url('libros') ?>" class="btn-cancel">
-                Cancelar
-            </a>
-            <button type="submit" class="btn-submit">
-                Guardar Libro
-            </button>
-        </div>
+            <!-- Botones -->
+            <div class="btn-group">
+                <a href="<?= base_url('libros') ?>" class="btn-cancel">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-submit">
+                    Guardar Libro
+                </button>
+            </div>
 
     </form>
 </div>
 
 <script>
-    function previewImage(event) {
-        const input = event.target;
-        const preview = document.getElementById('previewImg');
+    function updateFileName(input) {
+        const fileNameField = document.getElementById('file-name');
+        const previewImg = document.getElementById('previewImg');
 
-        if (input.files && input.files[0]) {
+        if (input.files.length > 0) {
+            const file = input.files[0];
+
+            // Mostrar nombre del archivo
+            fileNameField.value = file.name;
+
+            // Mostrar vista previa de la imagen
             const reader = new FileReader();
-
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
             }
+            reader.readAsDataURL(file);
 
-            reader.readAsDataURL(input.files[0]);
+        } else {
+            fileNameField.value = "Ningún archivo seleccionado";
+            previewImg.style.display = 'none';
         }
     }
 </script>
