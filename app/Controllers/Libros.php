@@ -77,7 +77,7 @@ class Libros extends BaseController
             'titulo'       => $this->request->getPost('titulo'),
             'autor'        => $this->request->getPost('autor'),
             'isbn'         => $this->request->getPost('isbn'),
-            'idtiporecurso'=> $this->request->getPost('id_tipo_recurso'),
+            'idtiporecurso' => $this->request->getPost('id_tipo_recurso'),
             'idcategoria'  => $this->request->getPost('categoria_id'),
             'descripcion'  => $this->request->getPost('descripcion'),
             'anio'         => $this->request->getPost('anio'),
@@ -93,20 +93,6 @@ class Libros extends BaseController
         return redirect()->back()
             ->withInput()
             ->with('error', 'Error al guardar el libro');
-    }
-
-    // ====================== BUSCAR ======================
-    public function buscar()
-    {
-        $q          = $this->request->getGet('q') ?? '';
-        $categoria  = $this->request->getGet('categoria') ?? '';
-        $disponible = $this->request->getGet('disponible') ?? '';
-
-        $resultados = $this->librosModel->buscar($q, $categoria, $disponible);
-
-        return $this->response
-            ->setContentType('application/json')
-            ->setJSON($resultados);
     }
 
     // ====================== DETALLE ======================
@@ -259,5 +245,29 @@ class Libros extends BaseController
         return redirect()->back()
             ->withInput()
             ->with('error', 'Error al actualizar el libro');
+    }
+
+    // ====================== VISTA USUARIO ======================
+    public function catalogo()
+    {
+        $data['libros'] = $this->librosModel->findAll(); // recomendados
+
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
+
+        return view('usuarios/catalogo', $data);
+    }
+
+    // ====================== BUSCADOR USUARIO ======================
+    public function buscarUsuario()
+    {
+        $q = $this->request->getGet('q');
+
+        $libros = $this->librosModel
+            ->like('titulo', $q)
+            ->orLike('autor', $q)
+            ->findAll();
+
+        return $this->response->setJSON($libros);
     }
 }

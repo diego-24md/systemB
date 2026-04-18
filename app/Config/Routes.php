@@ -21,7 +21,8 @@ $routes->post('/alumnos/importar', 'Persona::importar');
 
 
 //Para el BUSCADOR
-$routes->get('buscador', 'Biblioteca::buscador');
+$routes->get('catalogo', 'Libros::catalogo');
+$routes->get('buscar-libros', 'Libros::buscarUsuario');
 
 
 // Editar libro
