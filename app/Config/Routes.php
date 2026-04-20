@@ -29,3 +29,6 @@ $routes->get('buscar-libros', 'Libros::buscarUsuario');
 $routes->get('libros/editar/(:num)', 'Libros::editar/$1');
 //Actualizar libro
 $routes->post('libros/actualizar/(:num)', 'Libros::actualizar/$1');
+
+// Eliminar libro
+$routes->get('libros/eliminar/(:num)', 'Libros::eliminar/$1');

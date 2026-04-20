@@ -270,4 +270,30 @@ class Libros extends BaseController
 
         return $this->response->setJSON($libros);
     }
+
+    // ====================== ELIMINAR LIBRO ======================
+    public function eliminar($id)
+    {
+        // Verificar si existe
+        $libro = $this->librosModel->find($id);
+
+        if (!$libro) {
+            return redirect()->to(base_url('libros'))
+                ->with('error', 'Libro no encontrado');
+        }
+
+        // Eliminar imagen si existe
+        if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])) {
+            unlink('uploads/portadas/' . $libro['portada']);
+        }
+
+        // Eliminar libro
+        if ($this->librosModel->delete($id)) {
+            return redirect()->to(base_url('libros'))
+                ->with('success', 'Libro eliminado correctamente 🗑️');
+        }
+
+        return redirect()->to(base_url('libros'))
+            ->with('error', 'No se pudo eliminar el libro');
+    }
 }
