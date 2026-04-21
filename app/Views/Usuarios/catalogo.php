@@ -161,7 +161,7 @@ body {
     <h2>Buscar libros</h2>
 
     <!-- BUSCADOR -->
-    <input type="text" id="buscador" placeholder="Buscar por título o autor...">
+    <input type="text" id="buscador" placeholder="Buscar libro...">
 
     <!-- RESULTADOS -->
     <div id="resultados" class="row"></div>

@@ -94,11 +94,11 @@
                     aria-expanded="false"
                     aria-controls="collapseCatalogo">
                     <i class="fas fa-fw fa-book"></i>
-                    <span>Catálogo</span>
+                    <span>Libros</span>
                 </a>
                 <div id="collapseCatalogo" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Catálogos</h6>
+                        <h6 class="collapse-header">Libros</h6>
                         <a class="collapse-item" href="<?= base_url('libros') ?>">Libros</a>
                     </div>
                 </div>
