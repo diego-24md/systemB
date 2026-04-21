@@ -48,13 +48,13 @@ class Libros extends BaseController
         $validation = \Config\Services::validation();
 
         $validation->setRules([
-            'titulo'          => 'required|min_length[3]',
-            'autor'           => 'required|min_length[3]',
-            'isbn'            => 'required|min_length[10]',
+            'titulo' => 'required|min_length[3]',
+            'autor' => 'required|min_length[3]',
+            'isbn' => 'required|min_length[10]',
             'id_tipo_recurso' => 'required|integer',
-            'categoria_id'    => 'required|integer',
-            'anio'            => 'required|integer|greater_than[1900]',
-            'numpaginas'      => 'required|integer|greater_than[1]',
+            'categoria_id' => 'required|integer',
+            'anio' => 'required|integer|greater_than[1900]',
+            'numpaginas' => 'required|integer|greater_than[1]',
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -74,15 +74,15 @@ class Libros extends BaseController
 
         // ====================== DATA ======================
         $data = [
-            'titulo'       => $this->request->getPost('titulo'),
-            'autor'        => $this->request->getPost('autor'),
-            'isbn'         => $this->request->getPost('isbn'),
+            'titulo' => $this->request->getPost('titulo'),
+            'autor' => $this->request->getPost('autor'),
+            'isbn' => $this->request->getPost('isbn'),
             'idtiporecurso' => $this->request->getPost('id_tipo_recurso'),
-            'idcategoria'  => $this->request->getPost('categoria_id'),
-            'descripcion'  => $this->request->getPost('descripcion'),
-            'anio'         => $this->request->getPost('anio'),
-            'numpaginas'   => $this->request->getPost('numpaginas'),
-            'portada'      => $nombreImagen,
+            'idcategoria' => $this->request->getPost('categoria_id'),
+            'descripcion' => $this->request->getPost('descripcion'),
+            'anio' => $this->request->getPost('anio'),
+            'numpaginas' => $this->request->getPost('numpaginas'),
+            'portada' => $nombreImagen,
         ];
 
         if ($this->librosModel->save($data)) {
@@ -166,10 +166,10 @@ class Libros extends BaseController
         $idusuario = session()->get('idusuario') ?? 1;
 
         $db->table('prestamos')->insert([
-            'idactivo'         => $idactivo,
-            'entrega'          => date('Y-m-d'),
-            'devolucion'       => null,
-            'idusuario'        => $idusuario,
+            'idactivo' => $idactivo,
+            'entrega' => date('Y-m-d'),
+            'devolucion' => null,
+            'idusuario' => $idusuario,
             'condicionentrega' => $activo->condicion ?? 'Buena',
         ]);
 
@@ -200,9 +200,9 @@ class Libros extends BaseController
         $validation = \Config\Services::validation();
 
         $validation->setRules([
-            'titulo'     => 'required|min_length[3]',
-            'isbn'       => 'permit_empty|min_length[10]',
-            'anio'       => 'permit_empty|integer|greater_than[1900]',
+            'titulo' => 'required|min_length[3]',
+            'isbn' => 'permit_empty|min_length[10]',
+            'anio' => 'permit_empty|integer|greater_than[1900]',
             'numpaginas' => 'permit_empty|integer|greater_than[1]',
         ]);
 
@@ -224,11 +224,11 @@ class Libros extends BaseController
         // ================= DATA =================
         // Solo incluimos los campos que el formulario editar.php envía
         $data = [
-            'titulo'      => $this->request->getPost('titulo'),
-            'isbn'        => $this->request->getPost('isbn'),
+            'titulo' => $this->request->getPost('titulo'),
+            'isbn' => $this->request->getPost('isbn'),
             'descripcion' => $this->request->getPost('descripcion'),
-            'anio'        => $this->request->getPost('anio'),
-            'numpaginas'  => $this->request->getPost('numpaginas'),
+            'anio' => $this->request->getPost('anio'),
+            'numpaginas' => $this->request->getPost('numpaginas'),
         ];
 
         // Solo actualiza portada si subieron una nueva
@@ -259,13 +259,12 @@ class Libros extends BaseController
     }
 
     // ====================== BUSCADOR USUARIO ======================
-    public function buscarUsuario()
+    public function buscar()
     {
         $q = $this->request->getGet('q');
 
         $libros = $this->librosModel
             ->like('titulo', $q)
-            ->orLike('autor', $q)
             ->findAll();
 
         return $this->response->setJSON($libros);

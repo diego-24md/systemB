@@ -22,7 +22,7 @@ $routes->post('/alumnos/importar', 'Persona::importar');
 
 //Para el BUSCADOR
 $routes->get('catalogo', 'Libros::catalogo');
-$routes->get('buscar-libros', 'Libros::buscarUsuario');
+$routes->get('buscar-libros', 'Libros::buscar');
 
 
 // Editar libro
