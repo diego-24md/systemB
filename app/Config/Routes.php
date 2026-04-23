@@ -22,7 +22,6 @@ $routes->post('/importar-alumnas', 'Alumnas::importar');
 
 $routes->get('/secciones', 'Alumnas::seccionesPorGrado');
 
-
 //Para el BUSCADOR
 $routes->get('catalogo', 'Libros::catalogo');
 $routes->get('buscar-libros', 'Libros::buscar');
@@ -35,3 +34,6 @@ $routes->post('libros/actualizar/(:num)', 'Libros::actualizar/$1');
 
 // Eliminar libro
 $routes->get('libros/eliminar/(:num)', 'Libros::eliminar/$1');
+
+// Prestamos de libros - Registrar prestamo
+$routes->get('/prestamos', 'Prestamos::index');
