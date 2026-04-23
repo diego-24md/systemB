@@ -15,9 +15,12 @@ $routes->get('libros', 'Libros::index');
 $routes->get('libros/registrar', 'Libros::registrar');
 $routes->post('libros/guardar', 'Libros::guardar');
 
-//Rutas para el CRUD de personas(alumnos)
-$routes->get('/alumnos', 'Persona::index');
-$routes->post('/alumnos/importar', 'Persona::importar');
+//Rutas para las alumnas
+$routes->get('/alumnas', 'Alumnas::index');
+$routes->get('/obtener-alumnas', 'Alumnas::obtener');
+$routes->post('/importar-alumnas', 'Alumnas::importar');
+
+$routes->get('/secciones', 'Alumnas::seccionesPorGrado');
 
 
 //Para el BUSCADOR

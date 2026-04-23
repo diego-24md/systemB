@@ -117,7 +117,7 @@
                 <div id="collapseUsuarios" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Usuarios</h6>
-                        <a class="collapse-item" href="<?= base_url('alumnos') ?>">Alumnos</a>
+                        <a class="collapse-item" href="<?= base_url('alumnas') ?>">Alumnas</a>
                         <a class="collapse-item" href="<?= base_url('docentes') ?>">Docentes</a>
                     </div>
                 </div>
