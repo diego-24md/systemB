@@ -65,7 +65,11 @@
 
         <div class="form-group">
             <label>ISBN</label>
-            <input type="text" name="isbn" class="form-control" required>
+            <input type="text" name="isbn" class="form-control" maxlength="13" pattern="\d{10,13}"
+                title="El ISBN debe tener 10 o 13 dígitos numéricos"
+                oninput="this.value = this.value.replace(/\D/g, '').slice(0, 13)" placeholder="Ej: 9780306406157"
+                required>
+            <small class="text-muted" id="isbn-contador">0 / 13 dígitos</small>
         </div>
 
         <div class="form-group">
@@ -145,6 +149,11 @@
 </div>
 
 <script>
+    // Contador ISBN — fuera de updateFileName
+    document.querySelector('input[name="isbn"]').addEventListener('input', function () {
+        document.getElementById('isbn-contador').textContent = this.value.length + ' / 13 dígitos';
+    });
+
     function updateFileName(input) {
         const fileNameField = document.getElementById('file-name');
         const previewImg = document.getElementById('previewImg');
@@ -152,10 +161,8 @@
         if (input.files.length > 0) {
             const file = input.files[0];
 
-            // Mostrar nombre del archivo
             fileNameField.value = file.name;
 
-            // Mostrar vista previa de la imagen
             const reader = new FileReader();
             reader.onload = function (e) {
                 previewImg.src = e.target.result;

@@ -63,7 +63,7 @@
     }
 
     .page-card-body {
-        padding: 1.25rem;
+        padding: 1.5rem;
     }
 
     .section-label {
@@ -72,20 +72,20 @@
         color: #888;
         text-transform: uppercase;
         letter-spacing: .06em;
-        margin: 0 0 12px;
+        margin: 0 0 14px;
     }
 
     .form-label-custom {
         font-size: 13px;
         color: #666;
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
     }
 
     .form-select-custom,
     .form-input-custom {
         width: 100%;
-        padding: 9px 12px;
+        padding: 10px 13px;
         font-size: 14px;
         border: 1px solid #dde1e7;
         border-radius: 8px;
@@ -106,7 +106,7 @@
         background: #e7f1ff;
         color: #0a58ca;
         font-size: 11px;
-        padding: 4px 12px;
+        padding: 4px 14px;
         border-radius: 20px;
         font-weight: 600;
     }
@@ -122,7 +122,7 @@
     }
 
     .alumnas-table thead th {
-        padding: 10px 16px;
+        padding: 12px 20px;
         text-align: left;
         font-weight: 600;
         font-size: 12px;
@@ -146,21 +146,21 @@
     }
 
     .alumnas-table tbody td {
-        padding: 11px 16px;
+        padding: 13px 20px;
         color: #1a1a1a;
     }
 
     .alumnas-table .td-num {
         color: #bbb;
         font-size: 13px;
-        width: 48px;
+        width: 52px;
     }
 
     .alumnas-table .td-dni {
         font-family: monospace;
         font-size: 13px;
         color: #666;
-        width: 130px;
+        width: 140px;
     }
 
     .alumnas-table .td-nombre {
@@ -169,12 +169,12 @@
 
     .empty-state {
         text-align: center;
-        padding: 3rem 1rem;
+        padding: 3.5rem 1rem;
         color: #aaa;
     }
 
     .empty-state svg {
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         opacity: .4;
     }
 
@@ -187,7 +187,7 @@
         background: #f8f9fa;
         border: 2px dashed #cdd3da;
         border-radius: 10px;
-        padding: 2rem;
+        padding: 2.5rem 2rem;
         text-align: center;
         cursor: pointer;
         transition: border-color .15s, background .15s;
@@ -201,7 +201,7 @@
 
     .drop-zone svg {
         opacity: .45;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 
     .drop-zone p {
@@ -217,7 +217,7 @@
 
     .modal-header-custom {
         background: #f0f7ff;
-        padding: 1rem 1.25rem;
+        padding: 1.1rem 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -241,7 +241,7 @@
     }
 
     .modal-footer-custom {
-        padding: 1rem 1.25rem;
+        padding: 1.1rem 1.5rem;
         border-top: 1px solid #eee;
         display: flex;
         justify-content: flex-end;
@@ -249,21 +249,13 @@
     }
 </style>
 
-<div class="container py-4">
+<div class="container-fluid py-5 px-4 px-lg-5">
 
     <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-3">
-            <div style="width:42px;height:42px;background:#e7f1ff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a58ca" stroke-width="2">
-                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                </svg>
-            </div>
-            <div>
-                <h5 class="mb-0 fw-semibold">Gestión de alumnas</h5>
-                <small class="text-muted">Consulta e importación por grado y sección</small>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-2">
+        <div>
+            <h5 class="mb-1 fw-semibold">Gestión de alumnas</h5>
+            <small class="text-muted">Consulta e importación por grado y sección</small>
         </div>
         <button class="btn-success-custom" data-bs-toggle="modal" data-bs-target="#modalImportar">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -297,8 +289,10 @@
                 </div>
 
                 <div class="col-md-4">
-                    <button class="btn-primary-custom w-100" onclick="cargar()" style="justify-content:center;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <button class="btn-primary-custom w-100" onclick="cargar()"
+                        style="justify-content:center; background:#1a3c6e;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <circle cx="11" cy="11" r="8" />
                             <path d="M21 21l-4.35-4.35" />
                         </svg>
@@ -313,7 +307,7 @@
     <!-- TABLA -->
     <div class="page-card">
 
-        <div class="d-flex justify-content-between align-items-center px-3 py-3" style="border-bottom:1px solid #eee;">
+        <div class="d-flex justify-content-between align-items-center px-4 py-3" style="border-bottom:1px solid #eee;">
             <p class="section-label mb-0">Resultados</p>
             <span class="results-badge" id="contadorBadge" style="display:none;"></span>
         </div>
@@ -331,7 +325,8 @@
                     <tr>
                         <td colspan="3">
                             <div class="empty-state">
-                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5">
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#999"
+                                    stroke-width="1.5">
                                     <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                                     <circle cx="9" cy="7" r="4" />
                                     <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
@@ -356,7 +351,8 @@
 
             <div class="modal-header-custom">
                 <span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a58ca" stroke-width="2" style="margin-right:6px;vertical-align:middle;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a58ca" stroke-width="2"
+                        style="margin-right:6px;vertical-align:middle;">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
                     </svg>
                     Importar alumnas
@@ -365,7 +361,6 @@
             </div>
 
             <div class="modal-body p-4">
-
                 <div class="drop-zone mb-3" onclick="document.getElementById('excel').click()">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
@@ -375,7 +370,6 @@
                     <input type="file" id="excel" accept=".xlsx,.xls" style="display:none;"
                         onchange="document.getElementById('dropLabel').textContent = this.files[0]?.name || 'Arrastra tu archivo aquí'">
                 </div>
-
             </div>
 
             <div class="modal-footer-custom">
@@ -395,8 +389,7 @@
 
 <!-- JS -->
 <script>
-    // Cargar secciones según grado
-    document.getElementById('grado').addEventListener('change', function() {
+    document.getElementById('grado').addEventListener('change', function () {
         const grado_id = this.value;
         const sel = document.getElementById('seccion');
         sel.innerHTML = '<option value="">Seleccione sección</option>';
@@ -410,7 +403,6 @@
             });
     });
 
-    // Cargar alumnas
     function cargar() {
         const grado_id = document.getElementById('grado').value;
         const seccion_id = document.getElementById('seccion').value;
@@ -451,15 +443,11 @@
             });
     }
 
-    // Importar Excel
     function importar() {
         const grado_id = document.getElementById('grado').value;
         const seccion_id = document.getElementById('seccion').value;
         const file = document.getElementById('excel').files[0];
-        if (!file) {
-            alert('Selecciona un archivo Excel');
-            return;
-        }
+        if (!file) { alert('Selecciona un archivo Excel'); return; }
         if (!confirm('Se actualizarán las alumnas de esta sección. ¿Deseas continuar?')) return;
 
         const formData = new FormData();
@@ -467,10 +455,7 @@
         formData.append('grado_id', grado_id);
         formData.append('seccion_id', seccion_id);
 
-        fetch("<?= base_url('importar-alumnas') ?>", {
-                method: 'POST',
-                body: formData
-            })
+        fetch("<?= base_url('importar-alumnas') ?>", { method: 'POST', body: formData })
             .then(r => r.json())
             .then(() => {
                 alert('Importación exitosa');

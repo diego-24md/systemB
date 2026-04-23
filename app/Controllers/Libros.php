@@ -19,23 +19,21 @@ class Libros extends BaseController
         $this->categoriasModel = new CategoriasModel();
     }
 
-    // ====================== LISTAR LIBROS - VISTA ======================
+    // ====================== LISTAR LIBROS ======================
     public function index()
     {
         $data['libros'] = $this->librosModel->findAll();
-
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
 
         return view('libros/index', $data);
     }
 
-    // ====================== FORMULARIO ======================
+    // ====================== FORMULARIO REGISTRAR ======================
     public function registrar()
     {
         $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
         $data['categorias'] = $this->categoriasModel->findAll();
-
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
 
@@ -50,7 +48,6 @@ class Libros extends BaseController
         $validation->setRules([
             'titulo' => 'required|min_length[3]',
             'autor' => 'required|min_length[3]',
-            'isbn' => 'required|min_length[10]',
             'id_tipo_recurso' => 'required|integer',
             'categoria_id' => 'required|integer',
             'anio' => 'required|integer|greater_than[1900]',
@@ -61,6 +58,15 @@ class Libros extends BaseController
             return redirect()->back()
                 ->withInput()
                 ->with('errors', $validation->getErrors());
+        }
+
+        // ====================== VALIDAR ISBN ======================
+        $isbn = preg_replace('/\D/', '', $this->request->getPost('isbn'));
+
+        if (strlen($isbn) !== 13 && strlen($isbn) !== 10) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', ['isbn' => 'El ISBN debe tener exactamente 10 o 13 dígitos numéricos.']);
         }
 
         // ====================== PORTADA ======================
@@ -76,7 +82,7 @@ class Libros extends BaseController
         $data = [
             'titulo' => $this->request->getPost('titulo'),
             'autor' => $this->request->getPost('autor'),
-            'isbn' => $this->request->getPost('isbn'),
+            'isbn' => $isbn,
             'idtiporecurso' => $this->request->getPost('id_tipo_recurso'),
             'idcategoria' => $this->request->getPost('categoria_id'),
             'descripcion' => $this->request->getPost('descripcion'),
@@ -176,7 +182,7 @@ class Libros extends BaseController
         return $this->response->setJSON(['success' => true]);
     }
 
-    // ====================== EDITAR LIBRO ======================
+    // ====================== EDITAR ======================
     public function editar($id)
     {
         $data['libro'] = $this->librosModel->find($id);
@@ -192,16 +198,13 @@ class Libros extends BaseController
         return view('libros/editar', $data);
     }
 
-    // ====================== ACTUALIZAR LIBRO ======================
+    // ====================== ACTUALIZAR ======================
     public function actualizar($id)
     {
-        // ================= VALIDACIÓN =================
-        // Solo validamos los campos que existen en el formulario editar.php
         $validation = \Config\Services::validation();
 
         $validation->setRules([
             'titulo' => 'required|min_length[3]',
-            'isbn' => 'permit_empty|min_length[10]',
             'anio' => 'permit_empty|integer|greater_than[1900]',
             'numpaginas' => 'permit_empty|integer|greater_than[1]',
         ]);
@@ -212,7 +215,16 @@ class Libros extends BaseController
                 ->with('errors', $validation->getErrors());
         }
 
-        // ================= IMAGEN =================
+        // ====================== VALIDAR ISBN ======================
+        $isbn = preg_replace('/\D/', '', $this->request->getPost('isbn') ?? '');
+
+        if (!empty($isbn) && strlen($isbn) !== 13 && strlen($isbn) !== 10) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', ['isbn' => 'El ISBN debe tener exactamente 10 o 13 dígitos numéricos.']);
+        }
+
+        // ====================== PORTADA ======================
         $file = $this->request->getFile('portada');
         $nombreImagen = null;
 
@@ -221,22 +233,19 @@ class Libros extends BaseController
             $file->move('uploads/portadas/', $nombreImagen);
         }
 
-        // ================= DATA =================
-        // Solo incluimos los campos que el formulario editar.php envía
+        // ====================== DATA ======================
         $data = [
             'titulo' => $this->request->getPost('titulo'),
-            'isbn' => $this->request->getPost('isbn'),
+            'isbn' => $isbn ?: null,
             'descripcion' => $this->request->getPost('descripcion'),
             'anio' => $this->request->getPost('anio'),
             'numpaginas' => $this->request->getPost('numpaginas'),
         ];
 
-        // Solo actualiza portada si subieron una nueva
         if ($nombreImagen) {
             $data['portada'] = $nombreImagen;
         }
 
-        // ================= UPDATE =================
         if ($this->librosModel->update($id, $data)) {
             return redirect()->to(base_url('libros'))
                 ->with('success', 'Libro actualizado correctamente ✅');
@@ -247,18 +256,17 @@ class Libros extends BaseController
             ->with('error', 'Error al actualizar el libro');
     }
 
-    // ====================== VISTA USUARIO ======================
+    // ====================== CATÁLOGO USUARIO ======================
     public function catalogo()
     {
-        $data['libros'] = $this->librosModel->findAll(); // recomendados
-
+        $data['libros'] = $this->librosModel->findAll();
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
 
         return view('usuarios/catalogo', $data);
     }
 
-    // ====================== BUSCADOR USUARIO ======================
+    // ====================== BUSCADOR ======================
     public function buscar()
     {
         $q = $this->request->getGet('q');
@@ -270,10 +278,9 @@ class Libros extends BaseController
         return $this->response->setJSON($libros);
     }
 
-    // ====================== ELIMINAR LIBRO ======================
+    // ====================== ELIMINAR ======================
     public function eliminar($id)
     {
-        // Verificar si existe
         $libro = $this->librosModel->find($id);
 
         if (!$libro) {
@@ -281,12 +288,10 @@ class Libros extends BaseController
                 ->with('error', 'Libro no encontrado');
         }
 
-        // Eliminar imagen si existe
         if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])) {
             unlink('uploads/portadas/' . $libro['portada']);
         }
 
-        // Eliminar libro
         if ($this->librosModel->delete($id)) {
             return redirect()->to(base_url('libros'))
                 ->with('success', 'Libro eliminado correctamente 🗑️');
