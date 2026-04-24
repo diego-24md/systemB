@@ -138,8 +138,8 @@
                         <h6 class="collapse-header">Préstamos</h6>
                         <a class="collapse-item" href="<?= base_url('prestamos') ?>">Registrar préstamo</a>
                         <a class="collapse-item" href="<?= base_url('devoluciones') ?>">Devoluciones</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/activos') ?>">Préstamos activos</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/historial') ?>">Historial</a>
+                        <a class="collapse-item" href="<?= base_url('prestamos/pendientes') ?>">Préstamos pendientes</a>
+                        <a class="collapse-item" href="<?= base_url('prestamos/vencidos') ?>">Préstamos vencidos</a>
                     </div>
                 </div>
             </li>
@@ -154,9 +154,7 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header"></h6>
-                        <a class="collapse-item" href="utilities-color.html">Préstamos pendientes</a>
-                        <a class="collapse-item" href="utilities-border.html">Préstamos vencidos</a>
+                        <h6 class="collapse-header">DESCARGAR HISTORIAL</h6>
                         <a class="collapse-item" href="utilities-animation.html">Ver historial</a>
                         <a class="collapse-item" href="utilities-other.html">Exportar a PDF</a>
                     </div>

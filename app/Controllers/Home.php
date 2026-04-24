@@ -2,23 +2,38 @@
 
 namespace App\Controllers;
 
+use App\Models\LibrosModel;
+
 class Home extends BaseController
 {
-    public function index(): string
-    {
-        return view('index');
-    }
-
-    /**
-     * El Dashboard requiere dos partes escenciales: HEADER, FOOTER
-     * @return string
-     */
     public function dashboard(): string
     {
-        $data = [
-            'header'    => view('Partials/header'),
-            'footer'    => view('Partials/footer'),
-        ];
-        return view('dashboard', $data); //Vista a devolver
+        $librosModel = new LibrosModel();
+        $db = \Config\Database::connect();
+
+        // 📚 Total libros
+        $totalLibros = $librosModel->countAll();
+
+        // 📦 Libros prestados (no devueltos)
+        $prestados = $db->table('prestamos')
+            ->where('devolucion IS NULL', null, false)
+            ->countAllResults();
+
+        // 📖 Disponibles (aprox: activos - prestados)
+        $disponibles = $db->table('activos')
+            ->countAllResults() - $prestados;
+
+        // 👥 Usuarios
+        $usuarios = $db->table('usuarios')->countAllResults();
+
+        return view('dashboard', [
+            'header' => view('Partials/header'),
+            'footer' => view('Partials/footer'),
+
+            'totalLibros' => $totalLibros,
+            'prestados' => $prestados,
+            'disponibles' => $disponibles,
+            'usuarios' => $usuarios,
+        ]);
     }
 }
