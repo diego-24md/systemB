@@ -21,6 +21,11 @@ class CrearAlumnas extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 150
             ],
+            'clave' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'default'    => ''
+            ],
             'grado_id' => [
                 'type' => 'INT'
             ],

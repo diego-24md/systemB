@@ -195,7 +195,7 @@
                     <div class="book-info">
                         <p class="book-title"><?= esc($libro['titulo']) ?></p>
                         <p class="book-author"><?= esc($libro['autores'] ?? 'Sin autor') ?></p> <!-- ✅ corregido -->
-                        <a href="<?= base_url('usuarios/detalle/' . $libro['idrecurso']) ?>"
+                        <a href="<?= base_url('biblioteca/detalle/' . $libro['idrecurso']) ?>"
                             class="book-btn">Ver detalle</a> <!-- ✅ corregido -->
                     </div>
 
@@ -249,7 +249,7 @@
                             <div class="book-info">
                                 <p class="book-title">${libro.titulo}</p>
                                 <p class="book-author">${libro.autores ?? 'Sin autor'}</p> <!-- ✅ corregido -->
-                                <a href="/usuarios/detalle/${libro.idrecurso}" class="book-btn">Ver detalle</a> <!-- ✅ corregido -->
+                                <a href="/biblioteca/detalle/${libro.idrecurso}" class="book-btn">Ver detalle</a> <!-- ✅ corregido -->
                             </div>
                         </div>
                     `).join('');

@@ -25,6 +25,7 @@ $routes->get('/secciones', 'Alumnas::seccionesPorGrado');
 //Para el BUSCADOR
 $routes->get('catalogo', 'Biblioteca::catalogo');
 $routes->get('buscar-libros', 'Biblioteca::buscar');
+$routes->get('biblioteca/detalle/(:num)', 'Biblioteca::detalle/$1');
 
 
 // Editar libro
