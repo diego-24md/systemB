@@ -29,6 +29,11 @@ class CreateRecursos extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 200
             ],
+            'descripcion' => [
+                'type' => 'TEXT',
+                'null' => true,
+                'default' => null
+            ],
             'isbn' => [
                 'type' => 'VARCHAR',
                 'constraint' => 20

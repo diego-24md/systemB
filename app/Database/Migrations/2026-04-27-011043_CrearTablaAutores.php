@@ -4,26 +4,26 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateAutores extends Migration
+class CrearTablaAutores extends Migration
 {
     public function up()
     {
         $this->forge->addField([
             'idautor' => [
                 'type'           => 'INT',
-                'constraint'     => 11,
                 'unsigned'       => true,
-                'auto_increment' => true
+                'auto_increment' => true,
             ],
             'nombre' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 150,
-                'null'       => false
             ],
         ]);
 
         $this->forge->addKey('idautor', true);
-        $this->forge->createTable('autores', true, ['ENGINE' => 'InnoDB']);
+        $this->forge->addUniqueKey('nombre'); // 🔥 mejora
+
+        $this->forge->createTable('autores');
     }
 
     public function down()

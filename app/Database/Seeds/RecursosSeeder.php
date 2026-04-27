@@ -11,8 +11,8 @@ class RecursosSeeder extends Seeder
         $data = [
             [
                 'idtiporecurso' => 1,
-                'categoria_id'  => 1,
-                'titulo'        => 'Libro de Phyton I',
+                'idcategoria'   => 1,
+                'titulo'        => 'Libro de Python I',
                 'isbn'          => '9780307474728',
                 'anio'          => 1967,
                 'portada'       => '1776442538_4699499bcb8287599e50.webp',
@@ -20,7 +20,7 @@ class RecursosSeeder extends Seeder
             ],
             [
                 'idtiporecurso' => 1,
-                'categoria_id'  => 1,
+                'idcategoria'   => 1,
                 'titulo'        => 'Libro de Matemática Vital 2',
                 'isbn'          => '9788491050293',
                 'anio'          => 1605,

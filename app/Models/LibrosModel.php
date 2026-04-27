@@ -9,17 +9,17 @@ class LibrosModel extends Model
     protected $table      = 'recursos';
     protected $primaryKey = 'idrecurso';
 
-    // 🔥 IMPORTANTE: para usar $recurso['campo']
     protected $returnType = 'array';
 
     protected $allowedFields = [
         'idtiporecurso',
-        'idsubcategoria',
+        'idcategoria',    // ✅ corregido (era idsubcategoria)
         'titulo',
         'isbn',
         'anio',
         'portada',
-        'numpaginas'
+        'numpaginas',
+        'descripcion',    // ✅ agregado
     ];
 
     // =========================
@@ -34,14 +34,12 @@ class LibrosModel extends Model
                 r.isbn,
                 r.anio,
                 r.portada,
+                r.descripcion,
 
-                GROUP_CONCAT(DISTINCT a.datoautor SEPARATOR ", ") AS autor,
-                sc.subcategoria,
+                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
                 c.idcategoria,
                 c.categoria,
                 tr.tipo,
-
-                MAX(act.condicion) AS condicion,
 
                 SUM(
                     CASE 
@@ -54,9 +52,9 @@ class LibrosModel extends Model
                     END
                 ) AS disponible
             ')
-            ->join('autores a', 'a.idrecurso = r.idrecurso', 'left')
-            ->join('subcategorias sc', 'sc.idsubcategoria = r.idsubcategoria', 'left')
-            ->join('categorias c', 'c.idcategoria = sc.idcategoria', 'left')
+            ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')  // ✅ tabla pivote
+            ->join('autores a', 'a.idautor = ra.idautor', 'left')              // ✅ join correcto
+            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')   // ✅ directo a categorias
             ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
             ->join('activos act', 'act.idrecurso = r.idrecurso', 'left')
             ->groupBy('r.idrecurso');
@@ -66,8 +64,8 @@ class LibrosModel extends Model
             $builder->groupStart()
                 ->like('r.titulo', $q)
                 ->orLike('r.isbn', $q)
-                ->orLike('a.datoautor', $q)
-            ->groupEnd();
+                ->orLike('a.nombre', $q)  // ✅ campo correcto
+                ->groupEnd();
         }
 
         // 📂 filtro por categoría

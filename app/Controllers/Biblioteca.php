@@ -4,19 +4,27 @@ namespace App\Controllers;
 
 class Biblioteca extends BaseController
 {
-    public function buscador()
+    protected $db;
+
+    public function __construct()
     {
-        $categorias = [
-            ['idcategoria' => 1, 'categoria' => 'Novela'],
-            ['idcategoria' => 2, 'categoria' => 'Ciencia'],
-            ['idcategoria' => 3, 'categoria' => 'Historia'],
-            ['idcategoria' => 4, 'categoria' => 'Tecnología'],
-        ];
+        $this->db = \Config\Database::connect();
+    }
 
-        $data = [
-            'categorias' => $categorias
-        ];
+    // ====================== CATÁLOGO ======================
+    public function catalogo()
+    {
+        $data['libros'] = $this->db->table('recursos r')
+            ->select('
+                r.*,
+                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores
+            ')
+            ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
+            ->join('autores a', 'a.idautor = ra.idautor', 'left')
+            ->groupBy('r.idrecurso')
+            ->get()
+            ->getResultArray();
 
-        return view('Biblioteca/buscador', $data);
+        return view('Biblioteca/catalogo', $data);
     }
 }

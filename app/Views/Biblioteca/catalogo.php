@@ -98,6 +98,10 @@
             background: #f5f5f5;
             overflow: hidden;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
         }
 
         .book-cover img {
@@ -170,22 +174,31 @@
             <input type="text" id="buscador" placeholder="Título, autor o tema...">
         </div>
 
-        <!-- ✅ Div donde aparecen los resultados del buscador -->
         <div id="resultados" class="books-grid" style="margin-bottom: 32px;"></div>
 
         <p class="section-label" id="label-recomendados">Recomendados</p>
         <div class="books-grid" id="grid">
             <?php foreach ($libros as $libro): ?>
-                <div class="book-card" data-titulo="<?= strtolower(esc($libro['titulo'])) ?>"
-                    data-autor="<?= strtolower(esc($libro['autor'] ?? '')) ?>">
+                <div class="book-card"
+                    data-titulo="<?= strtolower(esc((string)$libro['titulo'])) ?>"
+                    data-autor="<?= strtolower(esc((string)($libro['autores'] ?? ''))) ?>">
+
                     <div class="book-cover">
-                        <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>" alt="">
+                        <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
+                            <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
+                                alt="<?= esc($libro['titulo']) ?>">
+                        <?php else: ?>
+                            <i class="fas fa-book fa-3x"></i> <!-- ✅ fallback -->
+                        <?php endif; ?>
                     </div>
+
                     <div class="book-info">
                         <p class="book-title"><?= esc($libro['titulo']) ?></p>
-                        <p class="book-author"><?= esc($libro['autor'] ?? 'Sin autor') ?></p>
-                        <a href="#" class="book-btn">Ver detalle</a>
+                        <p class="book-author"><?= esc($libro['autores'] ?? 'Sin autor') ?></p> <!-- ✅ corregido -->
+                        <a href="<?= base_url('usuarios/detalle/' . $libro['idrecurso']) ?>"
+                            class="book-btn">Ver detalle</a> <!-- ✅ corregido -->
                     </div>
+
                 </div>
             <?php endforeach; ?>
         </div>
@@ -198,10 +211,9 @@
         const grid = document.getElementById('grid');
         const labelRecom = document.getElementById('label-recomendados');
 
-        input.addEventListener('input', function () {
+        input.addEventListener('input', function() {
             const q = this.value.trim();
 
-            // Si está vacío, muestra los recomendados y limpia resultados
             if (q.length === 0) {
                 resultados.innerHTML = '';
                 grid.style.display = '';
@@ -209,7 +221,6 @@
                 return;
             }
 
-            // Oculta recomendados mientras se busca
             grid.style.display = 'none';
             labelRecom.style.display = 'none';
 
@@ -230,12 +241,15 @@
                     resultados.innerHTML = data.map(libro => `
                         <div class="book-card">
                             <div class="book-cover">
-                                <img src="/uploads/portadas/${libro.portada}" alt="">
+                                ${libro.portada
+                                    ? `<img src="/uploads/portadas/${libro.portada}" alt="${libro.titulo}">`
+                                    : `<i class="fas fa-book fa-3x"></i>`
+                                }
                             </div>
                             <div class="book-info">
                                 <p class="book-title">${libro.titulo}</p>
-                                <p class="book-author">${libro.autor ?? 'Sin autor'}</p>
-                                <a href="#" class="book-btn">Ver detalle</a>
+                                <p class="book-author">${libro.autores ?? 'Sin autor'}</p> <!-- ✅ corregido -->
+                                <a href="/usuarios/detalle/${libro.idrecurso}" class="book-btn">Ver detalle</a> <!-- ✅ corregido -->
                             </div>
                         </div>
                     `).join('');
