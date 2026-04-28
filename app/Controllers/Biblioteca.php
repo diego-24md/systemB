@@ -62,15 +62,22 @@ class Biblioteca extends BaseController
     {
         $libro = $this->db->table('recursos r')
             ->select('
-                r.*,
-                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
-                c.categoria,
-                tr.tipo
-            ')
+            r.*,
+            GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+            c.categoria,
+            tr.tipo,
+            COUNT(act.idactivo) AS total_ejemplares,
+            SUM(
+                CASE WHEN act.idactivo NOT IN (
+                    SELECT idactivo FROM prestamos WHERE devolucion IS NULL
+                ) THEN 1 ELSE 0 END
+            ) AS disponibles
+        ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
+            ->join('activos act', 'act.idrecurso = r.idrecurso', 'left')
             ->where('r.idrecurso', $id)
             ->groupBy('r.idrecurso')
             ->get()
@@ -82,6 +89,6 @@ class Biblioteca extends BaseController
 
         $data['libro'] = $libro;
 
-        return view('Biblioteca/detalle', $data);
+        return view('Biblioteca/detalles', $data);
     }
 }
