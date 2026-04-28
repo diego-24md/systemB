@@ -23,8 +23,8 @@ class Home extends BaseController
         $disponibles = $db->table('activos')
             ->countAllResults() - $prestados;
 
-        // 👥 Usuarios
-        $usuarios = $db->table('usuarios')->countAllResults();
+        // 👥 Alumnas
+        $usuarios = $db->table('alumnas')->countAllResults();
 
         return view('dashboard', [
             'header' => view('Partials/header'),
