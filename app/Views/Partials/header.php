@@ -47,6 +47,46 @@
         background: linear-gradient(135deg, #5a8dee, #2e59d9);
         transform: translateX(3px);
     }
+
+    /* ===== SIDEBAR FIJO ===== */
+    #wrapper {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        height: 100vh !important;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    #content-wrapper {
+        margin-left: 224px;
+        /* ancho del sidebar */
+        width: calc(100% - 224px);
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    /* Cuando el sidebar está colapsado */
+    body.sidebar-toggled #content-wrapper {
+        margin-left: 6.5rem;
+        width: calc(100% - 6.5rem);
+    }
+
+    /* Scrollbar del sidebar más discreta */
+    .sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+    }
 </style>
 
 <body id="page-top">
@@ -88,11 +128,8 @@
 
             <!-- CATÁLOGO -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#"
-                    data-toggle="collapse"
-                    data-target="#collapseCatalogo"
-                    aria-expanded="false"
-                    aria-controls="collapseCatalogo">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCatalogo"
+                    aria-expanded="false" aria-controls="collapseCatalogo">
                     <i class="fas fa-fw fa-book"></i>
                     <span>Libros</span>
                 </a>
@@ -106,11 +143,8 @@
 
             <!-- USUARIOS -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#"
-                    data-toggle="collapse"
-                    data-target="#collapseUsuarios"
-                    aria-expanded="false"
-                    aria-controls="collapseUsuarios">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsuarios"
+                    aria-expanded="false" aria-controls="collapseUsuarios">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Usuarios</span>
                 </a>
@@ -118,18 +152,14 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Usuarios</h6>
                         <a class="collapse-item" href="<?= base_url('alumnas') ?>">Alumnas</a>
-                        <a class="collapse-item" href="<?= base_url('docentes') ?>">Docentes</a>
                     </div>
                 </div>
             </li>
 
             <!-- PRÉSTAMOS -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#"
-                    data-toggle="collapse"
-                    data-target="#collapsePrestamos"
-                    aria-expanded="false"
-                    aria-controls="collapsePrestamos">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrestamos"
+                    aria-expanded="false" aria-controls="collapsePrestamos">
                     <i class="fas fa-fw fa-book-reader"></i>
                     <span>Préstamos</span>
                 </a>
@@ -227,7 +257,8 @@
                                 <h6 class="dropdown-header">
                                     Notificaciones
                                 </h6>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Mostrar todas las notificaciones</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Mostrar todas las
+                                    notificaciones</a>
                             </div>
                         </li>
 
