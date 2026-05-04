@@ -1,3 +1,7 @@
+<?php
+/** @var string $header */
+/** @var string $footer */
+?>
 <?= $header ?>
 
 <style>
@@ -259,11 +263,14 @@
     <div class="panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="panel-label mb-0">Resultados</div>
+
             <?php if (!empty($alumnas)): ?>
+                <?php $cantidad = (int) ($total ?? 0); ?>
+
                 <span class="total-badge">
-                    <?= esc($total ?? 0) ?> alumna<?= ($total ?? 0) != 1 ? 's' : '' ?>
-                    <?= !empty($grado) ? ' · ' . $grado . '°' : '' ?>
-                    <?= !empty($seccion) ? ' ' . $seccion : '' ?>
+                    <?= esc((string) $cantidad) ?> alumna<?= $cantidad != 1 ? 's' : '' ?>
+                    <?= !empty($grado) ? ' · ' . esc((string) $grado) . '°' : '' ?>
+                    <?= !empty($seccion) ? ' ' . esc((string) $seccion) : '' ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -290,35 +297,60 @@
                         </td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($alumnas as $i => $alumna): ?>
-                        <tr>
-                            <td class="num-col"><?= $i + 1 ?></td>
-                            <td><?= esc($alumna['dni']) ?></td>
-                            <td><?= esc($alumna['apellidos'] . ', ' . $alumna['nombres']) ?></td>
-                            <td><span class="badge-grado"><?= esc($alumna['grado']) ?>°</span></td>
-                            <td><span class="badge-seccion"><?= esc($alumna['seccion']) ?></span></td>
-                            <td class="text-center">
-                                <a href="<?= base_url('alumnas/editar/' . $alumna['id']) ?>" class="btn-accion editar me-1">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form method="POST" action="<?= base_url('alumnas/eliminar/' . $alumna['id']) ?>"
-                                    class="d-inline" onsubmit="return confirmarEliminar()">
-                                    <?= csrf_field() ?>
-                                    <button type="submit" class="btn-accion eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                    <?php if (!empty($alumnas) && is_array($alumnas)): ?>
+                        <?php foreach ($alumnas as $i => $alumna): ?>
+                            <tr>
+                                <td class="num-col"><?= esc((string) ($i + 1)) ?></td>
+
+                                <td><?= esc((string) ($alumna['dni'] ?? '')) ?></td>
+
+                                <td>
+                                    <?= esc(
+                                        (string) (($alumna['apellidos'] ?? '') . ', ' . ($alumna['nombres'] ?? ''))
+                                    ) ?>
+                                </td>
+
+                                <td>
+                                    <span class="badge-grado">
+                                        <?= esc((string) ($alumna['grado'] ?? '')) ?>°
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="badge-seccion">
+                                        <?= esc((string) ($alumna['seccion'] ?? '')) ?>
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <a href="<?= base_url('alumnas/editar/' . ($alumna['id'] ?? 0)) ?>"
+                                        class="btn-accion editar me-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form method="POST"
+                                        action="<?= base_url('alumnas/eliminar/' . ($alumna['id'] ?? 0)) ?>"
+                                        class="d-inline"
+                                        onsubmit="return confirmarEliminar()">
+
+                                        <?= csrf_field() ?>
+
+                                        <button type="submit" class="btn-accion eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 <?php endif; ?>
             </tbody>
         </table>
 
         <!-- Paginación -->
-        <?php if (!empty($alumnas)): ?>
+        <?php if (!empty($alumnas) && isset($pager) && is_object($pager)): ?>
             <div class="mt-3 d-flex justify-content-end">
-                <?= $pager->links() ?? '' ?>
+                <?= method_exists($pager, 'links') ? $pager->links() : '' ?>
             </div>
         <?php endif; ?>
 

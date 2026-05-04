@@ -1,49 +1,178 @@
 <?php
 
-namespace App\Database\Migrations;
+namespace App\Controllers;
 
-use CodeIgniter\Database\Migration;
+use App\Models\AlumnasModel;
 
-class CrearAlumnas extends Migration
+class Alumnas extends BaseController
 {
-    public function up()
+    protected $alumnasModel;
+
+    public function __construct()
     {
-        $this->forge->addField([
-            'id' => [
-                'type' => 'INT',
-                'auto_increment' => true
-            ],
-            'dni' => [
-                'type' => 'VARCHAR',
-                'constraint' => 15
-            ],
-            'nombre' => [
-                'type' => 'VARCHAR',
-                'constraint' => 150
-            ],
-            'clave' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
-                'default'    => ''
-            ],
-            'grado_id' => [
-                'type' => 'INT'
-            ],
-            'seccion_id' => [
-                'type' => 'INT'
-            ]
-        ]);
-
-        $this->forge->addKey('id', true);
-
-        $this->forge->addForeignKey('grado_id', 'grados', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('seccion_id', 'secciones', 'id', 'CASCADE', 'CASCADE');
-
-        $this->forge->createTable('alumnas');
+        $this->alumnasModel = new AlumnasModel();
+        helper(['form', 'text']);
     }
 
-    public function down()
+    // ====================== LISTAR ALUMNAS ======================
+    public function index()
     {
-        $this->forge->dropTable('alumnas');
+        $grado_id   = $this->request->getGet('grado');
+        $seccion_id = $this->request->getGet('seccion');
+        $buscar     = $this->request->getGet('buscar');
+
+        if ($grado_id)
+            $this->alumnasModel->where('grado_id', $grado_id);
+        if ($seccion_id)
+            $this->alumnasModel->where('seccion_id', $seccion_id);
+        if ($buscar) {
+            $this->alumnasModel->groupStart()
+                ->like('nombre', $buscar)
+                ->orLike('dni', $buscar)
+                ->groupEnd();
+        }
+
+        $data['alumnas'] = $this->alumnasModel->paginate(15);
+        $data['pager']   = $this->alumnasModel->pager;
+
+        $countModel = new \App\Models\AlumnasModel();
+        if ($grado_id)
+            $countModel->where('grado_id', $grado_id);
+        if ($seccion_id)
+            $countModel->where('seccion_id', $seccion_id);
+        if ($buscar) {
+            $countModel->groupStart()
+                ->like('nombre', $buscar)
+                ->orLike('dni', $buscar)
+                ->groupEnd();
+        }
+        $data['total'] = $countModel->countAllResults();
+
+        $data['grado']   = $grado_id;
+        $data['seccion'] = $seccion_id;
+        $data['buscar']  = $buscar;
+        $data['header']  = view('partials/header');
+        $data['footer']  = view('partials/footer');
+
+        return view('alumnas/index', $data);
+    }
+
+    // ====================== IMPORTAR EXCEL ======================
+    public function guardar()
+    {
+        $archivo    = $this->request->getFile('archivo');
+        $grado_id   = $this->request->getPost('grado');
+        $seccion_id = $this->request->getPost('seccion');
+
+        if (!$archivo || !$archivo->isValid()) {
+            return redirect()->back()->with('error', 'Debe seleccionar un archivo Excel válido.');
+        }
+
+        if (empty($grado_id) || empty($seccion_id)) {
+            return redirect()->back()->with('error', 'Grado y Sección son obligatorios.');
+        }
+
+        $archivo->move(WRITEPATH . 'uploads');
+        $ruta = WRITEPATH . 'uploads/' . $archivo->getName();
+
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($ruta);
+            $hoja        = $spreadsheet->getActiveSheet();
+            $filas       = $hoja->toArray();
+            $insertados  = 0;
+
+            // Eliminar alumnas anteriores del mismo grado y sección
+            $this->alumnasModel->where('grado_id', $grado_id)
+                ->where('seccion_id', $seccion_id)
+                ->delete();
+
+            foreach ($filas as $i => $fila) {
+                if ($i === 0) continue; // saltar cabecera
+
+                $nombre = trim($fila[0] ?? '');
+                $dni    = trim($fila[1] ?? '');
+
+                if (empty($nombre)) continue;
+
+                $data = [
+                    'nombre'     => $nombre,
+                    'dni'        => $dni,
+                    'grado_id'   => $grado_id,
+                    'seccion_id' => $seccion_id,
+                ];
+
+                if ($this->alumnasModel->save($data)) {
+                    $insertados++;
+                }
+            }
+
+            if (file_exists($ruta)) unlink($ruta);
+
+            return redirect()->to('/alumnas')
+                ->with('success', "Se importaron correctamente {$insertados} alumnas.");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error al procesar el archivo: ' . $e->getMessage());
+        }
+    }
+
+    // ====================== ELIMINAR ======================
+    public function eliminar($id)
+    {
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to('/alumnas');
+        }
+
+        if ($this->alumnasModel->delete($id)) {
+            return redirect()->to('/alumnas')->with('success', 'Alumna eliminada correctamente.');
+        }
+
+        return redirect()->to('/alumnas')->with('error', 'No se pudo eliminar la alumna.');
+    }
+
+    // ====================== EDITAR ======================
+    public function editar($id)
+    {
+        $data['alumna'] = $this->alumnasModel->find($id);
+
+        if (empty($data['alumna'])) {
+            return redirect()->to('/alumnas')->with('error', 'Alumna no encontrada.');
+        }
+
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
+
+        return view('alumnas/editar', $data);
+    }
+
+    // ====================== ACTUALIZAR ======================
+    public function actualizar($id)
+    {
+        $rules = [
+            'nombre'     => 'required|min_length[2]|max_length[150]',
+            'dni'        => 'required|max_length[15]',
+            'grado_id'   => 'required|is_natural_no_zero',
+            'seccion_id' => 'required|is_natural_no_zero',
+        ];
+
+        if (!$this->validate($rules)) {
+            $data['alumna'] = $this->alumnasModel->find($id);
+            $data['header'] = view('partials/header');
+            $data['footer'] = view('partials/footer');
+            return view('alumnas/editar', $data);
+        }
+
+        $dataUpdate = [
+            'nombre'     => $this->request->getPost('nombre'),
+            'dni'        => $this->request->getPost('dni'),
+            'grado_id'   => $this->request->getPost('grado_id'),
+            'seccion_id' => $this->request->getPost('seccion_id'),
+        ];
+
+        if ($this->alumnasModel->update($id, $dataUpdate)) {
+            return redirect()->to('/alumnas')->with('success', 'Alumna actualizada correctamente.');
+        }
+
+        return redirect()->to('/alumnas')->with('error', 'Error al actualizar la alumna.');
     }
 }
