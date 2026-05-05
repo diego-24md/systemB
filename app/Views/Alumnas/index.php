@@ -172,6 +172,94 @@
         color: #475569;
         height: 42px;
     }
+
+    /* Botón personalizado - Botón cerrar alerta */
+    .alert-success-custom {
+        background-color: #f0fdf4;
+        color: #166534;
+        border: 1px solid #86efac;
+        border-radius: 12px;
+        padding: 14px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .alert-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-content i {
+        font-size: 1.3rem;
+        color: #4ade80;
+    }
+
+    .alert-content span {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    /* Alerta de éxito */
+    .alert-success-custom {
+        background-color: #f0fdf4;
+        color: #166534;
+        border: 1px solid #86efac;
+        border-radius: 12px;
+        padding: 14px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    /* Contenido */
+    .alert-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .alert-content i {
+        font-size: 1.35rem;
+        color: #4ade80;
+    }
+
+    .alert-content span {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    /* Botón cerrar */
+    .btn-close-custom {
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #166534;
+        opacity: 0.7;
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.25s ease;
+        padding: 0;
+        margin-left: 10px;
+    }
+
+    .btn-close-custom:hover {
+        opacity: 1;
+        color: #14532d;
+        background-color: rgba(22, 101, 52, 0.1);
+    }
 </style>
 
 <div class="container-fluid px-4 py-4">
@@ -189,9 +277,18 @@
 
     <!-- Mensajes -->
     <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show" style="background:#f0fdf4;color:#15803d;">
-            <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="alert alert-success-custom fade show" role="alert">
+            <div class="alert-content">
+                <i class="fas fa-check-circle"></i>
+                <span><?= session()->getFlashdata('success') ?></span>
+            </div>
+
+            <button type="button"
+                class="btn-close-custom"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar">
+                ✕
+            </button>
         </div>
     <?php endif; ?>
 

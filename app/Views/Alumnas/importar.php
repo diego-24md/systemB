@@ -108,13 +108,36 @@
         color: #15803d;
     }
 
-    .badge-col {
-        background-color: #e0f2fe;
-        color: #0369a1;
-        font-weight: 600;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 0.78rem;
+    .step-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .step-number {
+        background-color: #1e3a5f;
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    .step-text {
+        font-size: 0.83rem;
+        color: #475569;
+        line-height: 1.5;
+    }
+
+    .step-text strong {
+        color: #1a1a2e;
     }
 </style>
 
@@ -160,8 +183,8 @@
                                 <option value="">Seleccione grado</option>
                                 <?php if (!empty($grados)): ?>
                                     <?php foreach ($grados as $g): ?>
-                                        <option value="<?= esc((string)$g['id'] ?? '') ?>">
-                                            <?= esc((string)$g['nombre'] ?? $g['name'] ?? 'Grado sin nombre') ?> Secundaria
+                                        <option value="<?= esc((string)$g['id']) ?>">
+                                            <?= esc((string)$g['nombre']) ?> Secundaria
                                         </option>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -173,7 +196,7 @@
                         <!-- SECCIÓN -->
                         <div class="col-md-6">
                             <label class="form-label-custom">Sección <span class="text-danger">*</span></label>
-                            <select name="seccion" id="seccion" class="form-select" required>
+                            <select name="seccion" id="seccion" class="form-select" required disabled>
                                 <option value="">Primero seleccione un grado</option>
                             </select>
                         </div>
@@ -200,29 +223,28 @@
 
                 <!-- Instrucciones -->
                 <div class="panel">
-                    <div class="panel-label">Formato del Excel SIAGIE</div>
+                    <div class="panel-label">¿Cómo importar?</div>
                     <div class="info-box mb-3">
-                        <i class="fas fa-info-circle"></i>
-                        Exporta la nómina del SIAGIE. El sistema detectará automáticamente la pestaña correcta.
+                        <i class="fas fa-magic me-1"></i>
+                        El sistema detecta automáticamente los datos del archivo SIAGIE.
                     </div>
-                    <table class="table table-sm mb-0" style="font-size:0.82rem;">
-                        <thead>
-                            <tr>
-                                <th style="color:#94a3b8;font-weight:700;">Columna</th>
-                                <th style="color:#94a3b8;font-weight:700;">Contenido</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="badge-col">C</span></td>
-                                <td>Apellidos y Nombres</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge-col">E</span></td>
-                                <td>N° Documento (DNI)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Ingresa al <strong>SIAGIE</strong> y exporta la nómina de matrícula del grado y sección que deseas importar.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Selecciona el <strong>grado y sección</strong> correspondiente en los campos de arriba.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Sube el archivo <strong>.xlsx o .xls</strong> exportado del SIAGIE sin modificarlo.</div>
+                    </div>
+                    <div class="step-item mb-0">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Haz clic en <strong>Importar alumnas</strong> y el sistema procesará todo automáticamente.</div>
+                    </div>
                 </div>
 
                 <!-- Advertencia -->
@@ -247,7 +269,6 @@
     </form>
 </div>
 
-<!-- Script -->
 <script>
     const todasSecciones = <?= json_encode($secciones ?? []) ?>;
 
@@ -255,7 +276,12 @@
         const select = document.getElementById('seccion');
         select.innerHTML = '<option value="">Seleccione sección</option>';
 
-        if (!gradoId) return;
+        if (!gradoId) {
+            select.disabled = true;
+            return;
+        }
+
+        select.disabled = false;
 
         const filtradas = todasSecciones.filter(s => String(s.grado_id) === String(gradoId));
 

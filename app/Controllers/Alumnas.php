@@ -159,20 +159,65 @@ class Alumnas extends BaseController
                     ->with('error', "No se encontró la pestaña \"{$nombreHoja}\" en el archivo Excel.");
             }
 
-            $filas      = $hoja->toArray();
+            $filas = $hoja->toArray();
+
+            // ====================== DETECTAR COLUMNAS POR NOMBRE ======================
+            $colNombre = null;
+            $colDni    = null;
+            $filaEncabezado = null;
+
+            foreach ($filas as $rowIndex => $fila) {
+                foreach ($fila as $colIndex => $celda) {
+                    $valor = strtoupper(trim((string)($celda ?? '')));
+
+                    // Buscar columna de nombres
+                    if ($colNombre === null && (
+                        str_contains($valor, 'APELLIDOS Y NOMBRES') ||
+                        str_contains($valor, 'APELLIDOS') ||
+                        str_contains($valor, 'NOMBRES')
+                    )) {
+                        $colNombre = $colIndex;
+                    }
+
+                    // Buscar columna de DNI
+                    if ($colDni === null && (
+                        str_contains($valor, 'N° DOCUMENTO') ||
+                        str_contains($valor, 'DOCUMENTO') ||
+                        str_contains($valor, 'DNI')
+                    )) {
+                        $colDni = $colIndex;
+                    }
+                }
+
+                // Si encontró ambas columnas, esta es la fila de encabezado
+                if ($colNombre !== null && $colDni !== null) {
+                    $filaEncabezado = $rowIndex;
+                    break;
+                }
+            }
+
+            if ($colNombre === null || $colDni === null) {
+                if (file_exists($ruta)) unlink($ruta);
+                return redirect()->back()
+                    ->with('error', 'No se encontraron las columnas de Apellidos/Nombres y DNI en el archivo.');
+            }
+            // =========================================================================
+
             $insertados = 0;
 
+            // Eliminar alumnas existentes
             $this->alumnasModel->where('grado_id', $grado_id)
                 ->where('seccion_id', $seccion_id)
                 ->delete();
 
-            foreach ($filas as $index => $fila) {
-                if ($index === 0) continue;
+            foreach ($filas as $rowIndex => $fila) {
+                // Saltar filas hasta después del encabezado
+                if ($rowIndex <= $filaEncabezado) continue;
 
-                $posibleDni = trim($fila[4] ?? '');
-                $nombre     = trim($fila[2] ?? '');
+                $nombre     = trim((string)($fila[$colNombre] ?? ''));
+                $posibleDni = trim((string)($fila[$colDni]    ?? ''));
 
-                if (!preg_match('/^\d{8}$/', $posibleDni) || empty($nombre)) {
+                if (empty($nombre) || !preg_match('/^\d{8}$/', $posibleDni)) {
                     continue;
                 }
 
@@ -202,15 +247,8 @@ class Alumnas extends BaseController
     // ====================== ELIMINAR ======================
     public function eliminar($id)
     {
-        if ($this->request->getMethod() !== 'post') {
-            return redirect()->to('/alumnas');
-        }
-
-        if ($this->alumnasModel->delete($id)) {
-            return redirect()->to('/alumnas')->with('success', 'Alumna eliminada correctamente.');
-        }
-
-        return redirect()->to('/alumnas')->with('error', 'No se pudo eliminar la alumna.');
+        $this->alumnasModel->delete($id);
+        return redirect()->to('/alumnas')->with('success', 'Alumna eliminada correctamente.');
     }
 
     // ====================== EDITAR ======================
