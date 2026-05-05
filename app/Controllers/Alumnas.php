@@ -38,8 +38,8 @@ class Alumnas extends BaseController
                 ->groupEnd();
         }
 
-        $data['alumnas'] = $this->alumnasModel->paginate(15);
-        $data['pager']   = $this->alumnasModel->pager;
+        $data['alumnas'] = $this->alumnasModel->findAll();
+        $data['pager']   = null;
 
         // Conteo total
         $countModel = new \App\Models\AlumnasModel();

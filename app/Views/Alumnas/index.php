@@ -222,10 +222,10 @@
 
                 <div class="col-md-3">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Sección</label>
-                    <select name="seccion" class="form-select" id="selectSeccion">
+                    <select name="seccion" class="form-select" id="selectSeccion" <?= empty($grado) ? 'disabled' : '' ?>>
                         <option value="">Todas las secciones</option>
                         <?php foreach ($secciones as $s): ?>
-                            <?php if (empty($grado) || $s['grado_id'] == $grado): ?>
+                            <?php if (!empty($grado) && $s['grado_id'] == $grado): ?>
                                 <option value="<?= $s['id'] ?>" <?= ($seccion ?? '') == $s['id'] ? 'selected' : '' ?>>
                                     <?= esc((string)$s['nombre']) ?>
                                 </option>
@@ -333,12 +333,6 @@
                 </tbody>
             </table>
 
-            <?php if (isset($pager) && !empty($alumnas)): ?>
-                <div class="mt-4 d-flex justify-content-end">
-                    <?= $pager->links() ?>
-                </div>
-            <?php endif; ?>
-
         <?php else: ?>
             <div class="empty-state">
                 <i class="fas fa-filter"></i>
@@ -362,8 +356,15 @@
 
         selectSeccion.innerHTML = '<option value="">Todas las secciones</option>';
 
+        if (!gradoId) {
+            selectSeccion.disabled = true;
+            return;
+        }
+
+        selectSeccion.disabled = false;
+
         todasLasSecciones.forEach(function(s) {
-            if (!gradoId || s.grado_id == gradoId) {
+            if (s.grado_id == gradoId) {
                 const opt = document.createElement('option');
                 opt.value = s.id;
                 opt.textContent = s.nombre;
