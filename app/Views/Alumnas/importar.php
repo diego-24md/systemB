@@ -2,6 +2,8 @@
 
 /** @var string $header */
 /** @var string $footer */
+/** @var array $grados */
+/** @var array $secciones */
 ?>
 <?= $header ?>
 
@@ -65,7 +67,6 @@
 
     .btn-guardar:hover {
         background-color: #16304f;
-        color: #fff;
     }
 
     .btn-cancelar {
@@ -75,11 +76,6 @@
         padding: 10px 24px;
         font-size: 0.9rem;
         background: #fff;
-    }
-
-    .btn-cancelar:hover {
-        background-color: #f8fafc;
-        color: #475569;
     }
 
     .upload-area {
@@ -103,16 +99,6 @@
         color: #2e7d52;
     }
 
-    .upload-area p {
-        font-size: 0.88rem;
-        margin: 0;
-    }
-
-    .upload-area small {
-        font-size: 0.78rem;
-        color: #cbd5e1;
-    }
-
     .info-box {
         background: #f0fdf4;
         border: 1px solid #bbf7d0;
@@ -122,8 +108,13 @@
         color: #15803d;
     }
 
-    .info-box i {
-        margin-right: 6px;
+    .badge-col {
+        background-color: #e0f2fe;
+        color: #0369a1;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.78rem;
     }
 </style>
 
@@ -161,25 +152,32 @@
                 <div class="panel">
                     <div class="panel-label">Grado y sección</div>
                     <div class="row g-3">
+
+                        <!-- GRADO -->
                         <div class="col-md-6">
                             <label class="form-label-custom">Grado <span class="text-danger">*</span></label>
-                            <select name="grado" class="form-select" required>
+                            <select name="grado" id="grado" class="form-select" required onchange="filtrarSecciones(this.value)">
                                 <option value="">Seleccione grado</option>
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <option value="<?= $i ?>"><?= $i ?>° Secundaria</option>
-                                <?php endfor; ?>
+                                <?php if (!empty($grados)): ?>
+                                    <?php foreach ($grados as $g): ?>
+                                        <option value="<?= esc((string)$g['id'] ?? '') ?>">
+                                            <?= esc((string)$g['nombre'] ?? $g['name'] ?? 'Grado sin nombre') ?> Secundaria
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="">No hay grados disponibles</option>
+                                <?php endif; ?>
                             </select>
                         </div>
+
+                        <!-- SECCIÓN -->
                         <div class="col-md-6">
                             <label class="form-label-custom">Sección <span class="text-danger">*</span></label>
-                            <select name="seccion" class="form-select" required>
-                                <option value="">Seleccione sección</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
+                            <select name="seccion" id="seccion" class="form-select" required>
+                                <option value="">Primero seleccione un grado</option>
                             </select>
                         </div>
+
                     </div>
                 </div>
 
@@ -202,10 +200,10 @@
 
                 <!-- Instrucciones -->
                 <div class="panel">
-                    <div class="panel-label">Formato del Excel</div>
+                    <div class="panel-label">Formato del Excel SIAGIE</div>
                     <div class="info-box mb-3">
                         <i class="fas fa-info-circle"></i>
-                        El archivo debe tener la primera fila como cabecera y los datos desde la fila 2.
+                        Exporta la nómina del SIAGIE. El sistema detectará automáticamente la pestaña correcta.
                     </div>
                     <table class="table table-sm mb-0" style="font-size:0.82rem;">
                         <thead>
@@ -216,12 +214,12 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="badge-grado">A</span></td>
-                                <td>Nombre completo</td>
+                                <td><span class="badge-col">C</span></td>
+                                <td>Apellidos y Nombres</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-grado">B</span></td>
-                                <td>DNI</td>
+                                <td><span class="badge-col">E</span></td>
+                                <td>N° Documento (DNI)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -246,12 +244,29 @@
             </button>
             <a href="<?= base_url('alumnas') ?>" class="btn btn-cancelar">Cancelar</a>
         </div>
-
     </form>
-
 </div>
 
+<!-- Script -->
 <script>
+    const todasSecciones = <?= json_encode($secciones ?? []) ?>;
+
+    function filtrarSecciones(gradoId) {
+        const select = document.getElementById('seccion');
+        select.innerHTML = '<option value="">Seleccione sección</option>';
+
+        if (!gradoId) return;
+
+        const filtradas = todasSecciones.filter(s => String(s.grado_id) === String(gradoId));
+
+        filtradas.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.nombre;
+            select.appendChild(opt);
+        });
+    }
+
     function mostrarNombre(input) {
         const nombre = input.files[0]?.name ?? 'Haz clic para seleccionar el archivo';
         document.getElementById('upload-text').textContent = nombre;

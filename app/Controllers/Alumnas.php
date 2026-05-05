@@ -12,7 +12,7 @@ class Alumnas extends BaseController
     public function __construct()
     {
         $this->alumnasModel = new AlumnasModel();
-        $this->db = \Config\Database::connect(); // ← agregado
+        $this->db = \Config\Database::connect();
         helper(['form', 'text']);
     }
 
@@ -23,10 +23,14 @@ class Alumnas extends BaseController
         $seccion_id = $this->request->getGet('seccion');
         $buscar     = $this->request->getGet('buscar');
 
-        if ($grado_id)
-            $this->alumnasModel->where('grado_id', $grado_id);
-        if ($seccion_id)
-            $this->alumnasModel->where('seccion_id', $seccion_id);
+        if ($grado_id !== null && $grado_id !== '') {
+            $this->alumnasModel->where('grado_id', (int)$grado_id);
+        }
+
+        if ($seccion_id !== null && $seccion_id !== '') {
+            $this->alumnasModel->where('seccion_id', (int)$seccion_id);
+        }
+
         if ($buscar) {
             $this->alumnasModel->groupStart()
                 ->like('nombre', $buscar)
@@ -37,11 +41,14 @@ class Alumnas extends BaseController
         $data['alumnas'] = $this->alumnasModel->paginate(15);
         $data['pager']   = $this->alumnasModel->pager;
 
+        // Conteo total
         $countModel = new \App\Models\AlumnasModel();
-        if ($grado_id)
-            $countModel->where('grado_id', $grado_id);
-        if ($seccion_id)
-            $countModel->where('seccion_id', $seccion_id);
+        if ($grado_id !== null && $grado_id !== '') {
+            $countModel->where('grado_id', (int)$grado_id);
+        }
+        if ($seccion_id !== null && $seccion_id !== '') {
+            $countModel->where('seccion_id', (int)$seccion_id);
+        }
         if ($buscar) {
             $countModel->groupStart()
                 ->like('nombre', $buscar)
@@ -49,6 +56,18 @@ class Alumnas extends BaseController
                 ->groupEnd();
         }
         $data['total'] = $countModel->countAllResults();
+
+        // Cargar grados y secciones desde la BD
+        $data['grados'] = $this->db->table('grados')
+            ->select('id, nombre')
+            ->orderBy('id', 'ASC')
+            ->get()->getResultArray();
+
+        $data['secciones'] = $this->db->table('secciones')
+            ->select('id, nombre, grado_id')
+            ->orderBy('grado_id', 'ASC')
+            ->orderBy('nombre', 'ASC')
+            ->get()->getResultArray();
 
         $data['grado']   = $grado_id;
         $data['seccion'] = $seccion_id;
@@ -64,29 +83,29 @@ class Alumnas extends BaseController
     {
         try {
             $grados = $this->db->table('grados')
+                ->select('id, nombre')
                 ->orderBy('id', 'ASC')
                 ->get()
                 ->getResultArray();
 
             $secciones = $this->db->table('secciones')
-                ->select('id, nombre, grado_id')   // ← importante agregar grado_id
+                ->select('id, nombre, grado_id')
                 ->orderBy('grado_id', 'ASC')
                 ->orderBy('nombre', 'ASC')
                 ->get()
                 ->getResultArray();
 
             $data = [
-                'grados'     => $grados,
-                'secciones'  => $secciones,
-                'header'     => view('partials/header'),
-                'footer'     => view('partials/footer')
+                'grados'    => $grados,
+                'secciones' => $secciones,
+                'header'    => view('partials/header'),
+                'footer'    => view('partials/footer')
             ];
 
             return view('alumnas/importar', $data);
         } catch (\Exception $e) {
             log_message('error', 'Error al cargar importar: ' . $e->getMessage());
-
-            return redirect()->back()
+            return redirect()->to('/alumnas')
                 ->with('error', 'Error al cargar el formulario. Verifique las tablas de grados y secciones.');
         }
     }
@@ -110,7 +129,6 @@ class Alumnas extends BaseController
         $ruta = WRITEPATH . 'uploads/' . $archivo->getName();
 
         try {
-            // Obtener nombre del grado y sección desde la BD
             $grado   = $this->db->table('grados')->where('id', $grado_id)->get()->getRowArray();
             $seccion = $this->db->table('secciones')->where('id', $seccion_id)->get()->getRowArray();
 
@@ -119,11 +137,21 @@ class Alumnas extends BaseController
                 return redirect()->back()->with('error', 'Grado o sección no válidos.');
             }
 
-            // Construir nombre de pestaña: ej. "1° A"
-            $nombreHoja = $grado['nombre'] . ' ' . $seccion['nombre'];
-
+            $nombreHoja = trim($grado['nombre']) . ' ' . trim($seccion['nombre']);
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($ruta);
-            $hoja        = $spreadsheet->getSheetByName($nombreHoja);
+            $hoja = $spreadsheet->getSheetByName($nombreHoja);
+
+            if (!$hoja) {
+                foreach ($spreadsheet->getSheetNames() as $sheetName) {
+                    if (
+                        stripos($sheetName, $grado['nombre']) !== false &&
+                        stripos($sheetName, $seccion['nombre']) !== false
+                    ) {
+                        $hoja = $spreadsheet->getSheetByName($sheetName);
+                        break;
+                    }
+                }
+            }
 
             if (!$hoja) {
                 if (file_exists($ruta)) unlink($ruta);
@@ -138,24 +166,24 @@ class Alumnas extends BaseController
                 ->where('seccion_id', $seccion_id)
                 ->delete();
 
-            foreach ($filas as $fila) {
+            foreach ($filas as $index => $fila) {
+                if ($index === 0) continue;
+
                 $posibleDni = trim($fila[4] ?? '');
+                $nombre     = trim($fila[2] ?? '');
 
-                // Solo filas con DNI de 8 dígitos
-                if (!preg_match('/^\d{8}$/', $posibleDni)) continue;
+                if (!preg_match('/^\d{8}$/', $posibleDni) || empty($nombre)) {
+                    continue;
+                }
 
-                $nombre = trim($fila[2] ?? '');
-
-                if (empty($nombre)) continue;
-
-                $data = [
+                $dataInsert = [
                     'nombre'     => $nombre,
                     'dni'        => $posibleDni,
                     'grado_id'   => $grado_id,
                     'seccion_id' => $seccion_id,
                 ];
 
-                if ($this->alumnasModel->save($data)) {
+                if ($this->alumnasModel->save($dataInsert)) {
                     $insertados++;
                 }
             }
@@ -163,8 +191,9 @@ class Alumnas extends BaseController
             if (file_exists($ruta)) unlink($ruta);
 
             return redirect()->to('/alumnas')
-                ->with('success', "Se importaron correctamente {$insertados} alumnas.");
+                ->with('success', "Se importaron correctamente {$insertados} alumnas en {$grado['nombre']} {$seccion['nombre']}.");
         } catch (\Exception $e) {
+            if (file_exists($ruta ?? '')) unlink($ruta);
             return redirect()->back()
                 ->with('error', 'Error al procesar el archivo: ' . $e->getMessage());
         }
@@ -193,6 +222,17 @@ class Alumnas extends BaseController
             return redirect()->to('/alumnas')->with('error', 'Alumna no encontrada.');
         }
 
+        $data['grados'] = $this->db->table('grados')
+            ->select('id, nombre')
+            ->orderBy('id', 'ASC')
+            ->get()->getResultArray();
+
+        $data['secciones'] = $this->db->table('secciones')
+            ->select('id, nombre, grado_id')
+            ->orderBy('grado_id', 'ASC')
+            ->orderBy('nombre', 'ASC')
+            ->get()->getResultArray();
+
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
 
@@ -210,9 +250,11 @@ class Alumnas extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            $data['alumna'] = $this->alumnasModel->find($id);
-            $data['header'] = view('partials/header');
-            $data['footer'] = view('partials/footer');
+            $data['alumna']   = $this->alumnasModel->find($id);
+            $data['grados']   = $this->db->table('grados')->select('id, nombre')->orderBy('id', 'ASC')->get()->getResultArray();
+            $data['secciones'] = $this->db->table('secciones')->select('id, nombre, grado_id')->orderBy('grado_id', 'ASC')->orderBy('nombre', 'ASC')->get()->getResultArray();
+            $data['header']   = view('partials/header');
+            $data['footer']   = view('partials/footer');
             return view('alumnas/editar', $data);
         }
 

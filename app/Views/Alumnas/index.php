@@ -1,6 +1,15 @@
 <?php
+
 /** @var string $header */
 /** @var string $footer */
+/** @var array $alumnas */
+/** @var array $grados */
+/** @var array $secciones */
+/** @var object $pager */
+/** @var int $total */
+/** @var string|null $grado */
+/** @var string|null $seccion */
+/** @var string|null $buscar */
 ?>
 <?= $header ?>
 
@@ -51,7 +60,6 @@
 
     .btn-buscar:hover {
         background-color: #16304f;
-        color: #fff;
     }
 
     .btn-importar {
@@ -65,7 +73,6 @@
 
     .btn-importar:hover {
         background-color: #256743;
-        color: #fff;
     }
 
     .table thead th {
@@ -74,7 +81,6 @@
         letter-spacing: 0.07em;
         color: #94a3b8;
         text-transform: uppercase;
-        border-bottom: 1px solid #e2e8f0;
         background: #fff;
         padding: 12px 16px;
     }
@@ -85,10 +91,6 @@
         color: #334155;
         border-bottom: 1px solid #f1f5f9;
         vertical-align: middle;
-    }
-
-    .table tbody tr:last-child td {
-        border-bottom: none;
     }
 
     .table tbody tr:hover {
@@ -104,12 +106,6 @@
     .empty-state i {
         font-size: 2.5rem;
         margin-bottom: 12px;
-        display: block;
-    }
-
-    .empty-state p {
-        font-size: 0.88rem;
-        margin: 0;
     }
 
     .badge-grado {
@@ -160,20 +156,21 @@
         background-color: #fecaca;
     }
 
-    .form-select {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.88rem;
-        padding: 10px 14px;
-        color: #475569;
-    }
-
     .total-badge {
         font-size: 0.82rem;
         color: #475569;
         background: #f1f5f9;
         border-radius: 20px;
         padding: 4px 12px;
+    }
+
+    .form-select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        padding: 10px 14px;
+        color: #475569;
+        height: 42px;
     }
 </style>
 
@@ -192,16 +189,14 @@
 
     <!-- Mensajes -->
     <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show rounded-3 border-0"
-            style="background:#f0fdf4;color:#15803d;">
+        <div class="alert alert-success alert-dismissible fade show" style="background:#f0fdf4;color:#15803d;">
             <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0"
-            style="background:#fef2f2;color:#dc2626;">
+        <div class="alert alert-danger alert-dismissible fade show" style="background:#fef2f2;color:#dc2626;">
             <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -215,42 +210,46 @@
 
                 <div class="col-md-3">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Grado</label>
-                    <select name="grado" class="form-select">
-                        <option value="">Seleccione grado</option>
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <option value="<?= $i ?>" <?= ($grado ?? '') == $i ? 'selected' : '' ?>>
-                                <?= $i ?>° Secundaria
+                    <select name="grado" class="form-select" id="selectGrado">
+                        <option value="">Todos los grados</option>
+                        <?php foreach ($grados as $g): ?>
+                            <option value="<?= $g['id'] ?>" <?= ($grado ?? '') == $g['id'] ? 'selected' : '' ?>>
+                                <?= esc((string)$g['nombre']) ?>
                             </option>
-                        <?php endfor; ?>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Sección</label>
-                    <select name="seccion" class="form-select">
-                        <option value="">Seleccione sección</option>
-                        <option value="A" <?= ($seccion ?? '') == 'A' ? 'selected' : '' ?>>A</option>
-                        <option value="B" <?= ($seccion ?? '') == 'B' ? 'selected' : '' ?>>B</option>
-                        <option value="C" <?= ($seccion ?? '') == 'C' ? 'selected' : '' ?>>C</option>
-                        <option value="D" <?= ($seccion ?? '') == 'D' ? 'selected' : '' ?>>D</option>
+                    <select name="seccion" class="form-select" id="selectSeccion">
+                        <option value="">Todas las secciones</option>
+                        <?php foreach ($secciones as $s): ?>
+                            <?php if (empty($grado) || $s['grado_id'] == $grado): ?>
+                                <option value="<?= $s['id'] ?>" <?= ($seccion ?? '') == $s['id'] ? 'selected' : '' ?>>
+                                    <?= esc((string)$s['nombre']) ?>
+                                </option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Buscar por nombre o DNI</label>
-                    <input type="text" name="buscar" class="form-select" placeholder="Ej: María o 72894561"
+                    <input type="text" name="buscar" class="form-control"
+                        placeholder="Ej: María o 72894561"
                         value="<?= esc($buscar ?? '') ?>">
                 </div>
 
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-buscar">
-                        <i class="fas fa-search me-2"></i> Buscar alumnas
+                        <i class="fas fa-search me-2"></i> Buscar
                     </button>
                 </div>
 
                 <div class="col-md-1">
                     <a href="<?= base_url('alumnas') ?>" class="btn w-100"
-                        style="border:1px solid #e2e8f0;color:#64748b;border-radius:8px;padding:10px;">
+                        style="border:1px solid #e2e8f0;color:#64748b;border-radius:8px;padding:10px;height:42px;">
                         <i class="fas fa-eraser"></i>
                     </a>
                 </div>
@@ -263,78 +262,66 @@
     <div class="panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="panel-label mb-0">Resultados</div>
-
-            <?php if (!empty($alumnas)): ?>
-                <?php $cantidad = (int) ($total ?? 0); ?>
-
+            <?php if (!empty($alumnas) && $grado !== null && $grado !== '' && $seccion !== null && $seccion !== ''): ?>
                 <span class="total-badge">
-                    <?= esc((string) $cantidad) ?> alumna<?= $cantidad != 1 ? 's' : '' ?>
-                    <?= !empty($grado) ? ' · ' . esc((string) $grado) . '°' : '' ?>
-                    <?= !empty($seccion) ? ' ' . esc((string) $seccion) : '' ?>
+                    <?= number_format($total ?? 0) ?> alumna<?= ($total ?? 0) != 1 ? 's' : '' ?>
                 </span>
             <?php endif; ?>
         </div>
 
-        <table class="table mb-0">
-            <thead>
-                <tr>
-                    <th style="width:40px;">#</th>
-                    <th>DNI</th>
-                    <th>Nombre completo</th>
-                    <th>Grado</th>
-                    <th>Sección</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($alumnas)): ?>
+        <?php if ($grado !== null && $grado !== '' && $seccion !== null && $seccion !== ''): ?>
+
+            <?php
+            $mapaGrados    = array_column($grados,    'nombre', 'id');
+            $mapaSecciones = array_column($secciones, 'nombre', 'id');
+            ?>
+
+            <table class="table mb-0">
+                <thead>
                     <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <i class="fas fa-user-friends"></i>
-                                <p>Selecciona un grado y sección para ver las alumnas</p>
-                            </div>
-                        </td>
+                        <th style="width:40px;">#</th>
+                        <th>DNI</th>
+                        <th>Nombre completo</th>
+                        <th>Grado</th>
+                        <th>Sección</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
-                <?php else: ?>
-                    <?php if (!empty($alumnas) && is_array($alumnas)): ?>
+                </thead>
+                <tbody>
+                    <?php if (empty($alumnas)): ?>
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-user-friends"></i>
+                                    <p>No se encontraron alumnas con los filtros seleccionados</p>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php else: ?>
                         <?php foreach ($alumnas as $i => $alumna): ?>
                             <tr>
-                                <td class="num-col"><?= esc((string) ($i + 1)) ?></td>
-
-                                <td><?= esc((string) ($alumna['dni'] ?? '')) ?></td>
-
-                                <td>
-                                    <?= esc(
-                                        (string) (($alumna['apellidos'] ?? '') . ', ' . ($alumna['nombres'] ?? ''))
-                                    ) ?>
-                                </td>
-
+                                <td class="num-col"><?= $i + 1 ?></td>
+                                <td><?= esc((string)($alumna['dni'] ?? '')) ?></td>
+                                <td><?= esc((string)($alumna['nombre'] ?? '')) ?></td>
                                 <td>
                                     <span class="badge-grado">
-                                        <?= esc((string) ($alumna['grado'] ?? '')) ?>°
+                                        <?= esc((string)($mapaGrados[$alumna['grado_id']] ?? $alumna['grado_id'])) ?>
                                     </span>
                                 </td>
-
                                 <td>
                                     <span class="badge-seccion">
-                                        <?= esc((string) ($alumna['seccion'] ?? '')) ?>
+                                        <?= esc((string)($mapaSecciones[$alumna['seccion_id']] ?? $alumna['seccion_id'])) ?>
                                     </span>
                                 </td>
-
                                 <td class="text-center">
                                     <a href="<?= base_url('alumnas/editar/' . ($alumna['id'] ?? 0)) ?>"
                                         class="btn-accion editar me-1">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form method="POST"
-                                        action="<?= base_url('alumnas/eliminar/' . ($alumna['id'] ?? 0)) ?>"
-                                        class="d-inline"
-                                        onsubmit="return confirmarEliminar()">
-
+                                    <form method="POST" action="<?= base_url('alumnas/eliminar/' . ($alumna['id'] ?? 0)) ?>"
+                                        class="d-inline" onsubmit="return confirmarEliminar()">
                                         <?= csrf_field() ?>
-
                                         <button type="submit" class="btn-accion eliminar">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -343,25 +330,47 @@
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <!-- Paginación -->
-        <?php if (!empty($alumnas) && isset($pager) && is_object($pager)): ?>
-            <div class="mt-3 d-flex justify-content-end">
-                <?= method_exists($pager, 'links') ? $pager->links() : '' ?>
+            <?php if (isset($pager) && !empty($alumnas)): ?>
+                <div class="mt-4 d-flex justify-content-end">
+                    <?= $pager->links() ?>
+                </div>
+            <?php endif; ?>
+
+        <?php else: ?>
+            <div class="empty-state">
+                <i class="fas fa-filter"></i>
+                <p>Selecciona un grado y una sección para ver las alumnas</p>
             </div>
         <?php endif; ?>
 
     </div>
-
 </div>
 
 <script>
     function confirmarEliminar() {
-        return confirm('¿Estás seguro de eliminar esta alumna?');
+        return confirm('¿Estás seguro de eliminar esta alumna? Esta acción no se puede deshacer.');
     }
+
+    const todasLasSecciones = <?= json_encode($secciones) ?>;
+
+    document.getElementById('selectGrado').addEventListener('change', function() {
+        const gradoId = parseInt(this.value);
+        const selectSeccion = document.getElementById('selectSeccion');
+
+        selectSeccion.innerHTML = '<option value="">Todas las secciones</option>';
+
+        todasLasSecciones.forEach(function(s) {
+            if (!gradoId || s.grado_id == gradoId) {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.nombre;
+                selectSeccion.appendChild(opt);
+            }
+        });
+    });
 </script>
 
 <?= $footer ?>
