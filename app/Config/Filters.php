@@ -34,6 +34,8 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'auth.bibliotecario' => \App\Filters\AuthBibliotecario::class,
+        'auth.alumna' => \App\Filters\AuthAlumna::class,
     ];
 
     /**

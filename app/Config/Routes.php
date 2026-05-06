@@ -6,28 +6,48 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-$routes->get('/', 'Home::dashboard');
+// ====================== AUTH BIBLIOTECARIO ======================
+$routes->get('login', 'Auth::index');
+$routes->post('login', 'Auth::login');
+$routes->get('logout', 'Auth::logout');
 
-// ====================== LIBROS ======================
-$routes->get('libros', 'Libros::index');
-$routes->get('libros/registrar', 'Libros::registrar');
-$routes->post('libros/guardar', 'Libros::guardar');
-$routes->get('libros/editar/(:num)', 'Libros::editar/$1');
-$routes->post('libros/actualizar/(:num)', 'Libros::actualizar/$1');
-$routes->post('libros/eliminar/(:num)', 'Libros::eliminar/$1');
+// ====================== AUTH ALUMNAS ======================
+$routes->get('alumnas/login', 'AuthAlumna::index');
+$routes->post('alumnas/login', 'AuthAlumna::login');
+$routes->get('alumnas/logout', 'AuthAlumna::logout');
 
-// ====================== ALUMNAS ======================
-$routes->get('alumnas', 'Alumnas::index');
-$routes->get('alumnas/importar', 'Alumnas::importar');      // ← agregada
-$routes->post('alumnas/guardar', 'Alumnas::guardar');
-$routes->get('alumnas/editar/(:num)', 'Alumnas::editar/$1');
-$routes->post('alumnas/actualizar/(:num)', 'Alumnas::actualizar/$1');
-$routes->post('alumnas/eliminar/(:num)', 'Alumnas::eliminar/$1'); // ← cambiado a post
+// ====================== RUTAS PROTEGIDAS (solo bibliotecario) ======================
+$routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
 
-// ====================== BIBLIOTECA ======================
-$routes->get('catalogo', 'Biblioteca::catalogo');
-$routes->get('buscar-libros', 'Biblioteca::buscar');
-$routes->get('biblioteca/detalle/(:num)', 'Biblioteca::detalle/$1');
+    $routes->get('/', 'Home::dashboard');
 
-// ====================== PRESTAMOS ======================
-$routes->get('prestamos', 'Prestamos::index');
+    // Libros
+    $routes->get('libros', 'Libros::index');
+    $routes->get('libros/registrar', 'Libros::registrar');
+    $routes->post('libros/guardar', 'Libros::guardar');
+    $routes->get('libros/editar/(:num)', 'Libros::editar/$1');
+    $routes->post('libros/actualizar/(:num)', 'Libros::actualizar/$1');
+    $routes->post('libros/eliminar/(:num)', 'Libros::eliminar/$1');
+
+    // Alumnas
+    $routes->get('alumnas', 'Alumnas::index');
+    $routes->get('alumnas/importar', 'Alumnas::importar');
+    $routes->post('alumnas/guardar', 'Alumnas::guardar');
+    $routes->get('alumnas/editar/(:num)', 'Alumnas::editar/$1');
+    $routes->post('alumnas/actualizar/(:num)', 'Alumnas::actualizar/$1');
+    $routes->post('alumnas/eliminar/(:num)', 'Alumnas::eliminar/$1');
+
+    // Préstamos
+    $routes->get('prestamos', 'Prestamos::index');
+
+    // Perfil
+    $routes->get('perfil', 'Auth::perfil');
+    $routes->post('perfil/cambiar-password', 'Auth::cambiarPassword');
+});
+
+// ====================== BIBLIOTECA (protegida para alumnas) ======================
+$routes->group('', ['filter' => 'auth.alumna'], function ($routes) {
+    $routes->get('catalogo', 'Biblioteca::catalogo');
+    $routes->get('buscar-libros', 'Biblioteca::buscar');
+    $routes->get('biblioteca/detalle/(:num)', 'Biblioteca::detalle/$1');
+});
