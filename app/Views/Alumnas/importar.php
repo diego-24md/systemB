@@ -156,10 +156,21 @@
 
     <!-- Mensajes -->
     <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0"
+        <div id="alerta-error"
+            class="alert alert-danger rounded-3 border-0"
             style="background:#fef2f2;color:#dc2626;">
-            <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <?= session()->getFlashdata('error') ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('success')): ?>
+        <div id="alerta-success"
+            class="alert alert-success rounded-3 border-0">
+
+            <i class="fas fa-check-circle mr-2"></i>
+            <?= session()->getFlashdata('success') ?>
         </div>
     <?php endif; ?>
 
@@ -297,6 +308,20 @@
         const nombre = input.files[0]?.name ?? 'Haz clic para seleccionar el archivo';
         document.getElementById('upload-text').textContent = nombre;
     }
+
+    // Auto ocultar alertas después de 5 segundos
+    setTimeout(() => {
+        const alertaError = document.getElementById('alerta-error');
+        const alertaSuccess = document.getElementById('alerta-success');
+
+        if (alertaError) {
+            alertaError.remove();
+        }
+
+        if (alertaSuccess) {
+            alertaSuccess.remove();
+        }
+    }, 5000);
 </script>
 
 <?= $footer ?>

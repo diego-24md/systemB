@@ -38,6 +38,7 @@ class Auth extends BaseController
             'nombre'     => $user['nombre'],
             'usuario'    => $user['usuario'],
             'rol'        => $user['rol'],
+            'foto'       => $user['foto'],
         ]);
 
         return redirect()->to('/');

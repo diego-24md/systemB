@@ -41,8 +41,9 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('prestamos', 'Prestamos::index');
 
     // Perfil
-    $routes->get('perfil', 'Auth::perfil');
-    $routes->post('perfil/cambiar-password', 'Auth::cambiarPassword');
+    $routes->get('perfil', 'PerfilController::index');
+    $routes->post('perfil/actualizar', 'PerfilController::actualizar');
+    $routes->post('perfil/actualizar-foto', 'PerfilController::actualizarFoto');
 });
 
 // ====================== BIBLIOTECA (protegida para alumnas) ======================

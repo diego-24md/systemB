@@ -235,31 +235,6 @@
         font-size: 1rem;
         font-weight: 500;
     }
-
-    /* Botón cerrar */
-    .btn-close-custom {
-        background: none;
-        border: none;
-        font-size: 1.8rem;
-        font-weight: 300;
-        color: #166534;
-        opacity: 0.7;
-        width: 34px;
-        height: 34px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: all 0.25s ease;
-        padding: 0;
-        margin-left: 10px;
-    }
-
-    .btn-close-custom:hover {
-        opacity: 1;
-        color: #14532d;
-        background-color: rgba(22, 101, 52, 0.1);
-    }
 </style>
 
 <div class="container-fluid px-4 py-4">
@@ -277,18 +252,11 @@
 
     <!-- Mensajes -->
     <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success-custom fade show" role="alert">
+        <div id="success-alert" class="alert alert-success-custom" role="alert">
             <div class="alert-content">
                 <i class="fas fa-check-circle"></i>
                 <span><?= session()->getFlashdata('success') ?></span>
             </div>
-
-            <button type="button"
-                class="btn-close-custom"
-                data-bs-dismiss="alert"
-                aria-label="Cerrar">
-                ✕
-            </button>
         </div>
     <?php endif; ?>
 
@@ -469,6 +437,19 @@
             }
         });
     });
+
+    // Auto ocultar alerta de éxito después de 5 segundos
+    setTimeout(() => {
+        const alerta = document.getElementById('success-alert');
+        if (alerta) {
+            alerta.style.transition = "opacity 0.5s ease";
+            alerta.style.opacity = "0";
+
+            setTimeout(() => {
+                alerta.remove();
+            }, 500);
+        }
+    }, 5000);
 </script>
 
 <?= $footer ?>

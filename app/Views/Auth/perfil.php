@@ -4,6 +4,7 @@
 /** @var string $footer */
 /** @var array $usuario */
 ?>
+
 <?= $header ?>
 
 <style>
@@ -41,35 +42,18 @@
     }
 
     .avatar {
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid #e2e8f0;
+        border: 4px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.3s;
     }
 
-    .info-label {
-        font-size: 0.75rem;
-        color: #94a3b8;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 2px;
-    }
-
-    .info-value {
-        font-size: 0.92rem;
-        color: #1a1a2e;
-        font-weight: 600;
-    }
-
-    .badge-rol {
-        background-color: #e0f2fe;
-        color: #0369a1;
-        font-weight: 600;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.78rem;
+    .avatar:hover {
+        border-color: #4e73df;
+        transform: scale(1.05);
     }
 
     .form-label-custom {
@@ -79,17 +63,29 @@
         margin-bottom: 6px;
     }
 
-    .form-control {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.88rem;
-        padding: 10px 14px;
-        color: #475569;
+    /* CORRECCIÓN DEL OJO */
+
+    .password-toggle {
+        position: relative;
     }
 
-    .form-control:focus {
-        border-color: #4e73df;
-        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+    .password-toggle input {
+        padding-right: 45px;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 42px;
+        color: #4e73df;
+        font-size: 1.1rem;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .toggle-password:hover {
+        color: #2c4a9c;
+        transform: scale(1.1);
     }
 
     .btn-guardar {
@@ -97,115 +93,270 @@
         color: #fff;
         border: none;
         border-radius: 8px;
-        padding: 10px 24px;
-        font-size: 0.9rem;
+        padding: 11px 24px;
+        font-size: 0.95rem;
+        font-weight: 600;
     }
 
     .btn-guardar:hover {
         background-color: #16304f;
-        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .upload-label {
+        cursor: pointer;
+        color: #4e73df;
+        font-weight: 600;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    .badge-rol {
+        display: inline-block;
+        background: #eef2ff;
+        color: #1e40af;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
     }
 </style>
 
 <div class="container-fluid px-4 py-4">
 
-    <!-- Encabezado -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="page-title">Mi perfil</div>
-            <div class="page-subtitle">Información de tu cuenta</div>
+            <div class="page-subtitle">Gestiona tu información personal</div>
         </div>
     </div>
 
-    <!-- Mensajes -->
+    <!-- Alertas -->
     <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show" style="background:#f0fdf4;color:#15803d;">
-            <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div id="success-alert" class="alert alert-success">
+            <?= session()->getFlashdata('success') ?>
         </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show" style="background:#fef2f2;color:#dc2626;">
-            <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div id="error-alert" class="alert alert-danger">
+            <?= session()->getFlashdata('error') ?>
         </div>
     <?php endif; ?>
 
     <div class="row g-4">
 
-        <!-- Columna izquierda - Info -->
+        <!-- FOTO DE PERFIL -->
         <div class="col-md-4">
             <div class="panel text-center">
-                <img src="<?= base_url('img/bibliotecario.png') ?>" class="avatar mb-3">
-                <div style="font-size:1.1rem;font-weight:700;color:#1a1a2e;">
-                    <?= esc((string)($usuario['nombre'] ?? '')) ?>
-                </div>
-                <div class="mt-2">
-                    <span class="badge-rol">
+
+                <form method="POST"
+                    action="<?= base_url('perfil/actualizar-foto') ?>"
+                    enctype="multipart/form-data"
+                    id="form-foto">
+
+                    <?= csrf_field() ?>
+
+                    <label for="foto" class="d-inline-block">
+                        <img
+                            src="<?= base_url($usuario['foto'] ?? 'img/bibliotecario.png') ?>"
+                            class="avatar mb-3"
+                            id="preview-avatar">
+                    </label>
+
+                    <input
+                        type="file"
+                        name="foto"
+                        id="foto"
+                        accept="image/*"
+                        style="display:none;"
+                        onchange="previewImage(event)">
+
+                    <div class="mt-2">
+                        <label for="foto" class="upload-label">
+                            <i class="fas fa-camera"></i> Cambiar foto
+                        </label>
+                    </div>
+                </form>
+
+                <div class="mt-4">
+                    <div class="panel-label">Datos actuales</div>
+
+                    <div class="info-value">
+                        <?= esc((string)($usuario['nombre'] ?? '')) ?>
+                    </div>
+
+                    <div class="badge-rol mt-2">
                         <i class="fas fa-shield-alt me-1"></i>
                         <?= ucfirst(esc((string)($usuario['rol'] ?? ''))) ?>
-                    </span>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-label">Información de cuenta</div>
-                <div class="mb-3">
-                    <div class="info-label">Usuario</div>
-                    <div class="info-value"><?= esc((string)($usuario['usuario'] ?? '')) ?></div>
-                </div>
-                <div class="mb-3">
-                    <div class="info-label">Nombre completo</div>
-                    <div class="info-value"><?= esc((string)($usuario['nombre'] ?? '')) ?></div>
-                </div>
-                <div>
-                    <div class="info-label">Estado</div>
-                    <div class="info-value">
-                        <?php if ($usuario['activo']): ?>
-                            <span style="color:#15803d;"><i class="fas fa-circle me-1" style="font-size:0.6rem;"></i>Activo</span>
-                        <?php else: ?>
-                            <span style="color:#dc2626;"><i class="fas fa-circle me-1" style="font-size:0.6rem;"></i>Inactivo</span>
-                        <?php endif; ?>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- Columna derecha - Cambiar contraseña -->
+        <!-- FORMULARIOS -->
         <div class="col-md-8">
-            <div class="panel">
-                <div class="panel-label">Cambiar contraseña</div>
 
-                <form method="POST" action="<?= base_url('perfil/cambiar-password') ?>">
+            <!-- ACTUALIZAR NOMBRE -->
+            <div class="panel">
+                <div class="panel-label">
+                    Actualizar Nombre Completo
+                </div>
+
+                <form method="POST" action="<?= base_url('perfil/actualizar') ?>">
                     <?= csrf_field() ?>
 
-                    <div class="mb-3">
-                        <label class="form-label-custom">Contraseña actual <span class="text-danger">*</span></label>
-                        <input type="password" name="password_actual" class="form-control"
-                            placeholder="Ingresa tu contraseña actual" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label-custom">Nueva contraseña <span class="text-danger">*</span></label>
-                        <input type="password" name="password_nueva" class="form-control"
-                            placeholder="Mínimo 6 caracteres" required>
-                    </div>
+                    <input type="hidden" name="tipo" value="nombre">
 
                     <div class="mb-4">
-                        <label class="form-label-custom">Confirmar nueva contraseña <span class="text-danger">*</span></label>
-                        <input type="password" name="password_confirmar" class="form-control"
-                            placeholder="Repite la nueva contraseña" required>
+                        <label class="form-label-custom">
+                            Nombre completo
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nombre"
+                            value="<?= esc((string)($usuario['nombre'] ?? '')) ?>"
+                            class="form-control"
+                            required>
                     </div>
 
                     <button type="submit" class="btn btn-guardar">
-                        <i class="fas fa-save me-2"></i> Guardar cambios
+                        <i class="fas fa-save me-2"></i>
+                        Actualizar Nombre
                     </button>
                 </form>
             </div>
-        </div>
 
+            <!-- CAMBIAR CONTRASEÑA -->
+            <div class="panel">
+                <div class="panel-label">
+                    Cambiar Contraseña
+                </div>
+
+                <form method="POST" action="<?= base_url('perfil/actualizar') ?>">
+                    <?= csrf_field() ?>
+
+                    <input type="hidden" name="tipo" value="password">
+
+                    <!-- Contraseña actual -->
+                    <div class="mb-3 password-toggle">
+                        <label class="form-label-custom">
+                            Contraseña actual
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password_actual"
+                            id="password_actual"
+                            class="form-control"
+                            required>
+
+                        <i
+                            class="toggle-password fas fa-eye"
+                            data-target="password_actual">
+                        </i>
+                    </div>
+
+                    <!-- Nueva contraseña -->
+                    <div class="mb-3 password-toggle">
+                        <label class="form-label-custom">
+                            Nueva contraseña
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password_nueva"
+                            id="password_nueva"
+                            class="form-control"
+                            required>
+
+                        <i
+                            class="toggle-password fas fa-eye"
+                            data-target="password_nueva">
+                        </i>
+                    </div>
+
+                    <!-- Confirmar contraseña -->
+                    <div class="mb-4 password-toggle">
+                        <label class="form-label-custom">
+                            Confirmar nueva contraseña
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password_confirmar"
+                            id="password_confirmar"
+                            class="form-control"
+                            required>
+
+                        <i
+                            class="toggle-password fas fa-eye"
+                            data-target="password_confirmar">
+                        </i>
+                    </div>
+
+                    <button type="submit" class="btn btn-guardar">
+                        <i class="fas fa-key me-2"></i>
+                        Cambiar Contraseña
+                    </button>
+                </form>
+            </div>
+
+        </div>
     </div>
 </div>
 
 <?= $footer ?>
+
+<script>
+    // Preview de imagen antes de subir
+    function previewImage(event) {
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            document.getElementById('preview-avatar').src = reader.result;
+        }
+
+        reader.readAsDataURL(event.target.files[0]);
+
+        // Enviar automáticamente el formulario
+        setTimeout(() => {
+            document.getElementById('form-foto').submit();
+        }, 800);
+    }
+
+    // Mostrar / ocultar contraseña
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+    });
+
+    // Auto ocultar alertas
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            alert.remove();
+        });
+    }, 5000);
+</script>
