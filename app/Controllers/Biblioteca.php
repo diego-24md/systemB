@@ -14,7 +14,7 @@ class Biblioteca extends BaseController
     // ====================== CATÁLOGO ======================
     public function catalogo()
     {
-        $data['libros'] = $this->db->table('recursos r')
+        $libros = $this->db->table('recursos r')
             ->select('
                 r.*,
                 GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores
@@ -24,6 +24,11 @@ class Biblioteca extends BaseController
             ->groupBy('r.idrecurso')
             ->get()
             ->getResultArray();
+
+        $data['libros'] = array_map(function ($libro) {
+            $libro['autores'] = (string)($libro['autores'] ?? 'Sin autor');
+            return $libro;
+        }, $libros);
 
         return view('Biblioteca/catalogo', $data);
     }
@@ -54,6 +59,11 @@ class Biblioteca extends BaseController
             ->get()
             ->getResultArray();
 
+        $resultados = array_map(function ($r) {
+            $r['autores'] = (string)($r['autores'] ?? 'Sin autor');
+            return $r;
+        }, $resultados);
+
         return $this->response->setJSON($resultados);
     }
 
@@ -62,17 +72,17 @@ class Biblioteca extends BaseController
     {
         $libro = $this->db->table('recursos r')
             ->select('
-            r.*,
-            GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
-            c.categoria,
-            tr.tipo,
-            COUNT(act.idactivo) AS total_ejemplares,
-            SUM(
-                CASE WHEN act.idactivo NOT IN (
-                    SELECT idactivo FROM prestamos WHERE devolucion IS NULL
-                ) THEN 1 ELSE 0 END
-            ) AS disponibles
-        ')
+                r.*,
+                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+                c.categoria,
+                tr.tipo,
+                COUNT(act.idactivo) AS total_ejemplares,
+                SUM(
+                    CASE WHEN act.idactivo NOT IN (
+                        SELECT idactivo FROM prestamos WHERE devolucion IS NULL
+                    ) THEN 1 ELSE 0 END
+                ) AS disponibles
+            ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
@@ -86,6 +96,8 @@ class Biblioteca extends BaseController
         if (!$libro) {
             return redirect()->to('/catalogo')->with('error', 'Libro no encontrado');
         }
+
+        $libro['autores'] = (string)($libro['autores'] ?? 'Sin autor');
 
         $data['libro'] = $libro;
 

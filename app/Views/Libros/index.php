@@ -1,3 +1,17 @@
+<?php
+/**
+ * @var string $header
+ * @var string $footer
+ * @var array{
+ *   titulo: string,
+ *   autores: string,
+ *   portada: string|null,
+ *   isbn: string|null,
+ *   anio: string|null,
+ *   numpaginas: string|null
+ * } $libro
+ */
+?>
 <?= $header ?>
 
 <style>

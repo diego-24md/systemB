@@ -1,3 +1,7 @@
+<?php
+/** @var string $header */
+/** @var string $footer */
+?>
 <?= $header ?>
 
 <style>

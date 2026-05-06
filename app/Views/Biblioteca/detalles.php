@@ -1,9 +1,26 @@
+<?php
+
+/** @var array{
+ *   titulo: string,
+ *   autores: string,
+ *   isbn: string|null,
+ *   anio: string|null,
+ *   numpaginas: string|null,
+ *   categoria: string|null,
+ *   tipo: string|null,
+ *   portada: string|null,
+ *   descripcion: string|null,
+ *   total_ejemplares: int|string,
+ *   disponibles: int|string
+ * } $libro
+ */
+?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <title><?= esc($libro['titulo']) ?> - Biblioteca</title>
+    <title><?= esc((string)($libro['titulo'] ?? 'Libro')) ?> - Biblioteca</title>
 
     <style>
         * {

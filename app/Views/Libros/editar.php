@@ -1,3 +1,23 @@
+<?php
+/** @var string $header */
+/** @var string $footer */
+/** @var array{
+ *   idrecurso: int|string,
+ *   titulo: string,
+ *   portada: string|null,
+ *   isbn: string|null,
+ *   anio: string|null,
+ *   numpaginas: string|null,
+ *   descripcion: string|null,
+ *   idtiporecurso: int|string,
+ *   idcategoria: int|string
+ * } $libro
+ *
+ * @var array<int, array{nombre: string}> $autores
+ * @var array<int, array{idtiporecurso: int|string, tipo: string}> $tipos_recurso
+ * @var array<int, array{idcategoria: int|string, categoria: string}> $categorias
+ */
+?>
 <?= $header ?>
 
 <style>

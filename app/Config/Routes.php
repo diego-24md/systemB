@@ -51,4 +51,8 @@ $routes->group('', ['filter' => 'auth.alumna'], function ($routes) {
     $routes->get('catalogo', 'Biblioteca::catalogo');
     $routes->get('buscar-libros', 'Biblioteca::buscar');
     $routes->get('biblioteca/detalle/(:num)', 'Biblioteca::detalle/$1');
+
+    // Favoritos
+    $routes->post('favoritos/toggle', 'Favoritos::toggle');
+    $routes->get('favoritos/ids',     'Favoritos::ids');
 });
