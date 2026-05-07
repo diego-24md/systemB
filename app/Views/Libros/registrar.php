@@ -1,6 +1,8 @@
 <?php
 /** @var string $header */
 /** @var string $footer */
+/** @var array<int, array<string, string>> $tipos_recurso */
+/** @var array<int, array<string, string>> $categorias */
 ?>
 <?= $header ?>
 
