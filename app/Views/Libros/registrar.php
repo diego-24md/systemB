@@ -1,4 +1,5 @@
 <?php
+
 /** @var string $header */
 /** @var string $footer */
 /** @var array<int, array<string, string>> $tipos_recurso */
@@ -148,9 +149,9 @@
         </div>
 
         <div class="form-group">
-            <label>Tipo de Recurso</label>
-            <select name="id_tipo_recurso" class="form-control" required>
-                <option value="">Seleccione...</option>
+            <label>Tipo de Recurso <span class="text-danger">*</span></label>
+            <select name="id_tipo_recurso" id="tipo_recurso" class="form-control" required>
+                <option value="">Seleccione un tipo de recurso...</option>
                 <?php foreach ($tipos_recurso as $tipo): ?>
                     <option value="<?= $tipo['idtiporecurso'] ?>">
                         <?= esc($tipo['tipo']) ?>
@@ -160,14 +161,9 @@
         </div>
 
         <div class="form-group">
-            <label>Categoría</label>
-            <select name="categoria_id" class="form-control" required>
-                <option value="">Seleccione...</option>
-                <?php foreach ($categorias as $cat): ?>
-                    <option value="<?= $cat['idcategoria'] ?>">
-                        <?= esc($cat['categoria']) ?>
-                    </option>
-                <?php endforeach; ?>
+            <label>Categoría <span class="text-danger">*</span></label>
+            <select name="categoria_id" id="categoria" class="form-control" required disabled>
+                <option value="">Seleccione primero el tipo de recurso...</option>
             </select>
         </div>
 
@@ -255,6 +251,36 @@
         if (!valido) {
             e.preventDefault();
             alert('Debe ingresar al menos un autor válido');
+        }
+    });
+
+    const tipoSelect = document.getElementById('tipo_recurso');
+    const categoriaSelect = document.getElementById('categoria');
+
+    tipoSelect.addEventListener('change', function() {
+        const tipoId = this.value;
+
+        // Limpiar categorías
+        categoriaSelect.innerHTML = '<option value="">Seleccione una categoría...</option>';
+
+        // Habilitar o deshabilitar
+        if (tipoId) {
+            categoriaSelect.disabled = false;
+
+            const categoriasPorTipo = <?= json_encode($categorias_por_tipo ?? []) ?>;
+
+            if (categoriasPorTipo[tipoId] && categoriasPorTipo[tipoId].length > 0) {
+                categoriasPorTipo[tipoId].forEach(function(cat) {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.nombre;
+                    categoriaSelect.appendChild(option);
+                });
+            } else {
+                categoriaSelect.innerHTML = '<option value="">No hay categorías disponibles para este tipo</option>';
+            }
+        } else {
+            categoriaSelect.disabled = true;
         }
     });
 </script>

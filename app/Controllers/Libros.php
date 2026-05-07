@@ -44,13 +44,39 @@ class Libros extends BaseController
         return view('libros/index', $data);
     }
 
-    // ====================== FORMULARIO ======================
+    // ====================== FORMULARIO REGISTRAR ======================
     public function registrar()
     {
         $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
-        $data['categorias']    = $this->categoriasModel->findAll();
-        $data['header']        = view('partials/header');
-        $data['footer']        = view('partials/footer');
+
+        // Cargamos las categorías con su tipo
+        $categorias = $this->categoriasModel
+            ->select('idcategoria, categoria, idtiporecurso')
+            ->orderBy('categoria', 'ASC')
+            ->findAll();
+
+        $categorias_por_tipo = [];
+
+        foreach ($categorias as $cat) {
+            $tipoId = $cat['idtiporecurso'];
+
+            // Solo agregamos si tiene idtiporecurso asignado
+            if ($tipoId !== null) {
+                if (!isset($categorias_por_tipo[$tipoId])) {
+                    $categorias_por_tipo[$tipoId] = [];
+                }
+
+                $categorias_por_tipo[$tipoId][] = [
+                    'id'     => $cat['idcategoria'],
+                    'nombre' => $cat['categoria']
+                ];
+            }
+        }
+
+        $data['categorias_por_tipo'] = $categorias_por_tipo;
+
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
 
         return view('libros/registrar', $data);
     }
