@@ -1,3 +1,18 @@
+<?php
+/**
+ * Vista: Gestión de Préstamos
+ *
+ * @var string $header
+ * @var string $footer
+ * @var array<int, array{
+ *     alumna_id:int|string,
+ *     libro_id:int|string,
+ *     fecha_prestamo:string,
+ *     fecha_devolucion:string|null
+ * }> $prestamos
+ * @var object $pager
+ */
+?>
 <?= $header ?>
 
 <style>

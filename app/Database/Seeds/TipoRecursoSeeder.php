@@ -4,7 +4,7 @@ namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
 
-class TiporecursoSeeder extends Seeder
+class TipoRecursoSeeder extends Seeder
 {
     public function run()
     {
