@@ -1,272 +1,285 @@
 <?php
 http_response_code(404);
-$nombre_biblioteca = "Biblioteca - Colegio Chinchaysuyo";
+
 $url_actual = htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/');
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 — Página no encontrada</title>
+    <title>404 | Biblioteca Escolar</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #07111f;
+            --card: rgba(15, 23, 42, .78);
+            --line: rgba(255, 255, 255, .08);
+            --primary: #3b82f6;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: system-ui, sans-serif;
-            background: #f6f4f1;
-            color: #1a1a1a;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            color: var(--text);
+
+            background:
+                radial-gradient(circle at top left, rgba(59, 130, 246, .15), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(96, 165, 250, .18), transparent 28%),
+                linear-gradient(135deg, #020617 0%, #07111f 45%, #0f172a 100%);
+
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        header {
-            background: #b8001e;
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .hdr-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
+        .wrapper {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            padding: 24px;
         }
 
-        .hdr-logo svg {
-            width: 20px;
-            height: 20px;
+        .card {
+            width: 100%;
+            max-width: 1100px;
+            min-height: auto;
+
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            overflow: hidden;
+
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, .35);
+        }
+
+        /* LEFT */
+
+        .left {
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+
+            padding: 10px 18px;
+            border-radius: 999px;
+
+            background: rgba(59, 130, 246, .10);
+            border: 1px solid rgba(96, 165, 250, .18);
+
+            color: #bfdbfe;
+            font-size: .8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .code {
+            font-size: 7rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 12px;
+
+            background: linear-gradient(180deg, #ffffff, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .desc {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 28px;
+            max-width: 520px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .btn {
+            height: 52px;
+            padding: 0 24px;
+            border-radius: 14px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .95rem;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+        }
+
+        .btn-secondary {
+            border: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .04);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .url-box {
+            padding: 20px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .url-label {
+            font-size: .75rem;
+            color: #60a5fa;
+            font-weight: 700;
+            letter-spacing: .08em;
+            margin-bottom: 10px;
+        }
+
+        .url-text {
+            color: #cbd5e1;
+            font-size: .92rem;
+            word-break: break-word;
+        }
+
+        /* RIGHT */
+
+        .right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 500px;
+            background:
+                linear-gradient(180deg,
+                    rgba(255, 255, 255, .02),
+                    rgba(255, 255, 255, .01));
+        }
+
+        .circle {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .05);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book {
+            width: 160px;
+            height: 200px;
+            border-radius: 18px;
+
+            background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transform: rotate(-12deg);
+
+            box-shadow:
+                0 20px 50px rgba(37, 99, 235, .35);
+        }
+
+        .book svg {
+            width: 60px;
+            height: 60px;
             stroke: white;
             fill: none;
             stroke-width: 1.8;
         }
 
-        header h1 {
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-        }
+        /* RESPONSIVE */
 
-        header p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 12px;
-            margin-top: 1px;
-        }
-
-        .body {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid #e0ddd8;
-            border-top: 4px solid #b8001e;
-            max-width: 520px;
-            width: 100%;
-            padding: 48px 40px;
-            text-align: center;
-        }
-
-        .illus {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
-            background: #fdf0f0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .illus svg {
-            width: 36px;
-            height: 36px;
-            stroke: #b8001e;
-            fill: none;
-            stroke-width: 1.6;
-            stroke-linecap: round;
-        }
-
-        .code {
-            font-size: 72px;
-            font-weight: 700;
-            color: #b8001e;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .desc {
-            font-size: 14px;
-            color: #777;
-            line-height: 1.7;
-            margin-bottom: 24px;
-        }
-
-        .url-box {
-            background: #fdf0f0;
-            border: 1px solid #f5c0c0;
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: #5a1a1a;
-            text-align: left;
-            margin-bottom: 28px;
-            word-break: break-all;
-        }
-
-        .url-box strong {
-            display: block;
-            color: #b8001e;
-            margin-bottom: 3px;
-            font-size: 11px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-
-        .btns {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 32px;
-        }
-
-        .btn-prim {
-            padding: 10px 22px;
-            border-radius: 8px;
-            background: #b8001e;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-
-        .btn-prim:hover {
-            background: #8f0017;
-        }
-
-        .btn-sec {
-            padding: 10px 22px;
-            border-radius: 8px;
-            background: white;
-            color: #b8001e;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid #b8001e;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-
-        .btn-sec:hover {
-            background: #fdf0f0;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #e8e5e0;
-            margin: 0 0 24px;
-        }
-
-        .ql-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #aaa;
-            margin-bottom: 14px;
-        }
-
-        .links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 10px;
-        }
-
-        .lnk {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 10px;
-            background: #faf9f7;
-            border: 1px solid #e0ddd8;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #1a1a1a;
-            font-size: 12px;
-            font-weight: 500;
-            transition: background 0.2s, border-color 0.2s, color 0.2s;
-        }
-
-        .lnk:hover {
-            background: #fdf0f0;
-            border-color: #f5c0c0;
-            color: #b8001e;
-        }
-
-        .lnk svg {
-            width: 20px;
-            height: 20px;
-            stroke: #b8001e;
-            fill: none;
-            stroke-width: 1.6;
-            stroke-linecap: round;
-        }
-
-        footer {
-            background: #b8001e;
-            padding: 14px 20px;
-            text-align: center;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        footer a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            color: white;
-        }
-
-        @media (max-width: 480px) {
+        @media (max-width: 900px) {
             .card {
-                padding: 32px 20px;
+                grid-template-columns: 1fr;
+            }
+
+            .right {
+                min-height: 300px;
+            }
+
+            .left {
+                padding: 36px 28px;
             }
 
             .code {
-                font-size: 56px;
+                font-size: 5rem;
+            }
+
+            .title {
+                font-size: 1.7rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .code {
+                font-size: 4rem;
+            }
+
+            .title {
+                font-size: 1.4rem;
+            }
+
+            .circle {
+                width: 240px;
+                height: 240px;
+            }
+
+            .book {
+                width: 120px;
+                height: 150px;
             }
         }
     </style>
@@ -274,88 +287,66 @@ $url_actual = htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/');
 
 <body>
 
-    <header>
-        <div class="hdr-logo">
-            <svg viewBox="0 0 24 24">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
-        </div>
-        <div>
-            <h1>Institución Educativa Chinchaysuyo</h1>
-            <p>Biblioteca escolar</p>
-        </div>
-    </header>
+    <div class="wrapper">
 
-    <div class="body">
         <div class="card">
 
-            <div class="illus">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    <line x1="11" y1="8" x2="11" y2="14" />
-                    <line x1="11" y1="16" x2="11.01" y2="16" />
-                </svg>
+            <div class="left">
+
+                <div class="badge">
+                    ● SISTEMA DE BIBLIOTECA ESCOLAR
+                </div>
+
+                <div class="code">404</div>
+
+                <h1 class="title">
+                    La página se perdió entre los libros.
+                </h1>
+
+                <p class="desc">
+                    La dirección que intentas abrir no existe, fue movida
+                    o ya no está disponible dentro del sistema.
+                    Puedes regresar al panel principal o volver a la página anterior.
+                </p>
+
+                <div class="actions">
+                    <a href="<?= base_url('/') ?>" class="btn btn-primary">
+                        ⌂ Volver al inicio
+                    </a>
+
+                    <a href="javascript:history.back()" class="btn btn-secondary">
+                        ← Regresar
+                    </a>
+                </div>
+
+                <div class="url-box">
+                    <div class="url-label">
+                        RUTA SOLICITADA
+                    </div>
+
+                    <div class="url-text">
+                        <?= $url_actual ?>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="code">404</div>
-            <div class="title">Página no encontrada</div>
-            <p class="desc">La página que buscas no existe o fue movida.<br>Verifica la dirección o regresa al inicio.
-            </p>
+            <div class="right">
 
-            <div class="url-box">
-                <strong>URL solicitada</strong>
-                <?= $url_actual ?>
-            </div>
+                <div class="circle">
+                    <div class="book">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                </div>
 
-            <div class="btns">
-                <a href="<?= base_url('/') ?>" class="btn-prim">&#8962; Ir al inicio</a>
-                <a href="javascript:history.back()" class="btn-sec">&#8592; Regresar</a>
-            </div>
-
-            <hr>
-
-            <p class="ql-label">Accesos rápidos</p>
-            <div class="links">
-                <a href="<?= base_url('catalogo') ?>" class="lnk">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                    </svg>
-                    Catálogo
-                </a>
-                <a href="<?= base_url('buscar-libros') ?>" class="lnk">
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    Buscar libros
-                </a>
-                <a href="<?= base_url('prestamos') ?>" class="lnk">
-                    <svg viewBox="0 0 24 24">
-                        <polyline points="9 11 12 14 22 4" />
-                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                    </svg>
-                    Mis préstamos
-                </a>
-                <a href="<?= base_url('contacto') ?>" class="lnk">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    Contacto
-                </a>
             </div>
 
         </div>
-    </div>
 
-    <footer>
-        &copy; <?= date('Y') ?> Colegio Chinchaysuyo — Biblioteca Central &nbsp;·&nbsp;
-        <a href="<?= base_url('/') ?>">Inicio</a> &nbsp;·&nbsp;
-        <a href="<?= base_url('ayuda') ?>">Ayuda</a>
-    </footer>
+    </div>
 
 </body>
 
