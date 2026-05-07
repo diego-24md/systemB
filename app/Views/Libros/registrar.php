@@ -3,7 +3,7 @@
 /** @var string $header */
 /** @var string $footer */
 /** @var array<int, array<string, string>> $tipos_recurso */
-/** @var array<int, array<string, string>> $categorias */
+/** @var array<int, array<string, string>> $categorias_por_tipo */
 ?>
 <?= $header ?>
 
@@ -131,8 +131,8 @@
 
         <div class="form-group">
             <label>ISBN</label>
-            <input type="text" name="isbn" class="form-control" maxlength="13" pattern="\d{10,13}"
-                title="El ISBN debe tener 10 o 13 dígitos numéricos"
+            <input type="text" name="isbn" class="form-control" maxlength="13"
+                pattern="\d{10,13}" title="El ISBN debe tener 10 o 13 dígitos numéricos"
                 oninput="this.value = this.value.replace(/\D/g, '').slice(0, 13)"
                 placeholder="Ej: 9780306406157" required>
             <small class="text-muted" id="isbn-contador">0 / 13 dígitos</small>
@@ -165,6 +165,11 @@
             <select name="categoria_id" id="categoria" class="form-control" required disabled>
                 <option value="">Seleccione primero el tipo de recurso...</option>
             </select>
+        </div>
+
+        <div class="form-group">
+            <label>Cantidad de Ejemplares <span class="text-danger">*</span></label>
+            <input type="number" name="cantidad" class="form-control" min="1" value="1" required>
         </div>
 
         <div class="form-group">
@@ -213,7 +218,6 @@
         if (input.files.length > 0) {
             const file = input.files[0];
             fileNameField.value = file.name;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 previewImg.src = e.target.result;
@@ -229,7 +233,7 @@
     function agregarAutor() {
         const container = document.getElementById('autores-container');
         const div = document.createElement('div');
-        div.className = 'autor-item'; // ✅ misma clase y estilo
+        div.className = 'autor-item';
         div.innerHTML = `
             <input type="text" name="autores[]" placeholder="Escribe el autor">
             <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
@@ -237,17 +241,12 @@
         container.appendChild(div);
     }
 
-    // ✅ Un solo evento submit
     document.querySelector('form').addEventListener('submit', function(e) {
         const autores = document.querySelectorAll('input[name="autores[]"]');
         let valido = false;
-
         autores.forEach(input => {
-            if (input.value.trim() !== '') {
-                valido = true;
-            }
+            if (input.value.trim() !== '') valido = true;
         });
-
         if (!valido) {
             e.preventDefault();
             alert('Debe ingresar al menos un autor válido');
@@ -259,14 +258,10 @@
 
     tipoSelect.addEventListener('change', function() {
         const tipoId = this.value;
-
-        // Limpiar categorías
         categoriaSelect.innerHTML = '<option value="">Seleccione una categoría...</option>';
 
-        // Habilitar o deshabilitar
         if (tipoId) {
             categoriaSelect.disabled = false;
-
             const categoriasPorTipo = <?= json_encode($categorias_por_tipo ?? []) ?>;
 
             if (categoriasPorTipo[tipoId] && categoriasPorTipo[tipoId].length > 0) {
@@ -277,7 +272,7 @@
                     categoriaSelect.appendChild(option);
                 });
             } else {
-                categoriaSelect.innerHTML = '<option value="">No hay categorías disponibles para este tipo</option>';
+                categoriaSelect.innerHTML = '<option value="">No hay categorías disponibles</option>';
             }
         } else {
             categoriaSelect.disabled = true;

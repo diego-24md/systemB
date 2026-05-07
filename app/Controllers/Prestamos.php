@@ -84,6 +84,13 @@ class Prestamos extends BaseController
             'estado'              => ($activo['cantidad_disponible'] - 1) <= 0 ? 'agotado' : 'disponible',
         ]);
 
+        \App\Models\NotificacionesModel::registrar(
+            'prestamo',
+            'Nuevo préstamo registrado para: ' . $alumna['nombre'],
+            'fas fa-book-reader',
+            'warning'
+        );
+
         return redirect()->to(base_url('prestamos'))
             ->with('success', 'Préstamo registrado correctamente.');
     }

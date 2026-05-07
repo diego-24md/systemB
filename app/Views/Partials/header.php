@@ -243,22 +243,60 @@
                             </div>
                         </li>
 
-                        <!-- Nav Item - Alerts -->
+                        <?php
+                        $notifModel = new \App\Models\NotificacionesModel();
+                        $notificaciones = $notifModel->getNoLeidas();
+                        $totalNoLeidas  = $notifModel->contarNoLeidas();
+                        ?>
+
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">1+</span>
+                                <?php if ($totalNoLeidas > 0): ?>
+                                    <span class="badge badge-danger badge-counter">
+                                        <?= $totalNoLeidas > 9 ? '9+' : $totalNoLeidas ?>
+                                    </span>
+                                <?php endif; ?>
                             </a>
-                            <!-- Dropdown - Alerts -->
+
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
                                 <h6 class="dropdown-header">
                                     Notificaciones
+                                    <?php if ($totalNoLeidas > 0): ?>
+                                        <span class="float-right badge badge-light"><?= $totalNoLeidas ?> nuevas</span>
+                                    <?php endif; ?>
                                 </h6>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Mostrar todas las
-                                    notificaciones</a>
+
+                                <?php if (!empty($notificaciones)): ?>
+                                    <?php foreach ($notificaciones as $n): ?>
+                                        <a class="dropdown-item d-flex align-items-center"
+                                            href="<?= base_url('notificaciones/marcar/' . $n['id']) ?>">
+                                            <div class="mr-3">
+                                                <div class="icon-circle bg-<?= esc((string)$n['color']) ?>">
+                                                    <i class="<?= esc((string)$n['icono']) ?> text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500">
+                                                    <?= date('d/m/Y H:i', strtotime((string)$n['created_at'])) ?>
+                                                </div>
+                                                <span class="font-weight-bold"><?= esc((string)$n['mensaje']) ?></span>
+                                            </div>
+                                        </a>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="dropdown-item text-center small text-gray-500 py-3">
+                                        <i class="fas fa-check-circle text-success mr-1"></i>
+                                        Sin notificaciones nuevas
+                                    </div>
+                                <?php endif; ?>
+
+                                <a class="dropdown-item text-center small text-gray-500"
+                                    href="<?= base_url('notificaciones') ?>">
+                                    Mostrar todas las notificaciones
+                                </a>
                             </div>
                         </li>
 

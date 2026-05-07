@@ -48,6 +48,9 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     //Guardar préstamos
     $routes->post('prestamos/guardar', 'Prestamos::guardar');
     $routes->get('prestamos/buscar-alumna', 'Prestamos::buscarAlumna');
+
+    //Notificaciones
+    $routes->get('notificaciones/marcar/(:num)', 'Notificaciones::marcar/$1');
 });
 
 // ====================== BIBLIOTECA (protegida para alumnas) ======================

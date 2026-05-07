@@ -36,7 +36,7 @@ class Libros extends BaseController
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->groupBy('r.idrecurso')
             ->get()
-            ->getResultArray(); // ✅ corregido
+            ->getResultArray();
 
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
@@ -49,7 +49,6 @@ class Libros extends BaseController
     {
         $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
 
-        // Cargamos las categorías con su tipo
         $categorias = $this->categoriasModel
             ->select('idcategoria, categoria, idtiporecurso')
             ->orderBy('categoria', 'ASC')
@@ -59,13 +58,10 @@ class Libros extends BaseController
 
         foreach ($categorias as $cat) {
             $tipoId = $cat['idtiporecurso'];
-
-            // Solo agregamos si tiene idtiporecurso asignado
             if ($tipoId !== null) {
                 if (!isset($categorias_por_tipo[$tipoId])) {
                     $categorias_por_tipo[$tipoId] = [];
                 }
-
                 $categorias_por_tipo[$tipoId][] = [
                     'id'     => $cat['idcategoria'],
                     'nombre' => $cat['categoria']
@@ -74,7 +70,6 @@ class Libros extends BaseController
         }
 
         $data['categorias_por_tipo'] = $categorias_por_tipo;
-
         $data['header'] = view('partials/header');
         $data['footer'] = view('partials/footer');
 
@@ -92,6 +87,7 @@ class Libros extends BaseController
             'categoria_id'    => 'required|integer',
             'anio'            => 'required|integer|greater_than[1900]',
             'numpaginas'      => 'required|integer|greater_than[1]',
+            'cantidad'        => 'required|integer|greater_than[0]',
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -100,7 +96,6 @@ class Libros extends BaseController
                 ->with('errors', $validation->getErrors());
         }
 
-        // ISBN
         $isbn = preg_replace('/\D/', '', $this->request->getPost('isbn'));
 
         if (strlen($isbn) !== 13 && strlen($isbn) !== 10) {
@@ -109,7 +104,6 @@ class Libros extends BaseController
                 ->with('errors', ['isbn' => 'El ISBN debe tener 10 o 13 dígitos']);
         }
 
-        // PORTADA
         $file         = $this->request->getFile('portada');
         $nombreImagen = null;
 
@@ -118,7 +112,6 @@ class Libros extends BaseController
             $file->move('uploads/portadas/', $nombreImagen);
         }
 
-        // GUARDAR RECURSO
         $data = [
             'titulo'        => $this->request->getPost('titulo'),
             'isbn'          => $isbn,
@@ -132,13 +125,26 @@ class Libros extends BaseController
 
         $idRecurso = $this->librosModel->insert($data);
 
+        // ====================== ACTIVOS ======================
+        $cantidad = (int)$this->request->getPost('cantidad');
+
+        if ($cantidad > 0) {
+            $this->db->table('activos')->insert([
+                'titulo'              => $this->request->getPost('titulo'),
+                'idcategoria'         => $this->request->getPost('categoria_id'),
+                'idtiporecurso'       => $this->request->getPost('id_tipo_recurso'),
+                'cantidad_total'      => $cantidad,
+                'cantidad_disponible' => $cantidad,
+                'estado'              => 'disponible',
+            ]);
+        }
+
         // ====================== AUTORES ======================
         $autores = $this->request->getPost('autores');
 
         if ($autores) {
             foreach ($autores as $nombreAutor) {
                 $nombreAutor = trim($nombreAutor);
-
                 if ($nombreAutor === '') continue;
 
                 $autor = $this->db->table('autores')
@@ -159,8 +165,15 @@ class Libros extends BaseController
             }
         }
 
+        \App\Models\NotificacionesModel::registrar(
+            'libro',
+            'Nuevo libro registrado: ' . $this->request->getPost('titulo'),
+            'fas fa-book',
+            'success'
+        );
+
         return redirect()->to('/libros')
-            ->with('success', 'Libro registrado correctamente ✅');
+            ->with('success', 'Libro registrado correctamente');
     }
 
     // ====================== DETALLE ======================
@@ -187,15 +200,15 @@ class Libros extends BaseController
             ->where('r.idrecurso', $id)
             ->groupBy('r.idrecurso')
             ->get()
-            ->getRowArray(); // ✅ corregido
+            ->getRowArray();
 
         if (!$libro) {
             return redirect()->to('/libros')->with('error', 'Libro no encontrado');
         }
 
         $data['libro']  = $libro;
-        $data['header'] = view('partials/header'); // ✅ agregado
-        $data['footer'] = view('partials/footer'); // ✅ agregado
+        $data['header'] = view('partials/header');
+        $data['footer'] = view('partials/footer');
 
         return view('libros/detalle', $data);
     }
@@ -206,7 +219,7 @@ class Libros extends BaseController
         $data['libro'] = $this->db->table('recursos')
             ->where('idrecurso', $id)
             ->get()
-            ->getRowArray(); // ✅ consulta directa
+            ->getRowArray();
 
         if (!$data['libro']) {
             return redirect()->to('/libros')->with('error', 'Libro no encontrado');
@@ -219,6 +232,12 @@ class Libros extends BaseController
             ->get()
             ->getResultArray();
 
+        // Activo relacionado
+        $data['activo'] = $this->db->table('activos')
+            ->where('titulo', $data['libro']['titulo'])
+            ->get()
+            ->getRowArray();
+
         $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
         $data['categorias']    = $this->categoriasModel->findAll();
         $data['header']        = view('partials/header');
@@ -230,19 +249,16 @@ class Libros extends BaseController
     // ====================== ACTUALIZAR ======================
     public function actualizar($id)
     {
-        // ISBN
         $isbn = preg_replace('/\D/', '', $this->request->getPost('isbn'));
 
-        // PORTADA
         $file         = $this->request->getFile('portada');
-        $nombreImagen = $this->request->getPost('portada_actual'); // conservar si no se sube nueva
+        $nombreImagen = $this->request->getPost('portada_actual');
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $nombreImagen = $file->getRandomName();
             $file->move('uploads/portadas/', $nombreImagen);
         }
 
-        // ACTUALIZAR RECURSO
         $data = [
             'titulo'        => $this->request->getPost('titulo'),
             'isbn'          => $isbn,
@@ -256,8 +272,39 @@ class Libros extends BaseController
 
         $this->librosModel->update($id, $data);
 
-        // ✅ ACTUALIZAR AUTORES
-        // Eliminar relaciones anteriores
+        // ====================== ACTUALIZAR ACTIVO ======================
+        $cantidad = (int)$this->request->getPost('cantidad');
+
+        if ($cantidad > 0) {
+            $activo = $this->db->table('activos')
+                ->where('titulo', $this->request->getPost('titulo'))
+                ->get()->getRowArray();
+
+            if ($activo) {
+                $diff = $cantidad - $activo['cantidad_total'];
+                $nuevaDisponible = max(0, $activo['cantidad_disponible'] + $diff);
+
+                $this->db->table('activos')
+                    ->where('idactivo', $activo['idactivo'])
+                    ->update([
+                        'titulo'              => $this->request->getPost('titulo'),
+                        'cantidad_total'      => $cantidad,
+                        'cantidad_disponible' => $nuevaDisponible,
+                        'estado'              => $nuevaDisponible > 0 ? 'disponible' : 'agotado',
+                    ]);
+            } else {
+                $this->db->table('activos')->insert([
+                    'titulo'              => $this->request->getPost('titulo'),
+                    'idcategoria'         => $this->request->getPost('categoria_id'),
+                    'idtiporecurso'       => $this->request->getPost('id_tipo_recurso'),
+                    'cantidad_total'      => $cantidad,
+                    'cantidad_disponible' => $cantidad,
+                    'estado'              => 'disponible',
+                ]);
+            }
+        }
+
+        // ====================== ACTUALIZAR AUTORES ======================
         $this->db->table('recurso_autor')->where('idrecurso', $id)->delete();
 
         $autores = $this->request->getPost('autores');
@@ -265,7 +312,6 @@ class Libros extends BaseController
         if ($autores) {
             foreach ($autores as $nombreAutor) {
                 $nombreAutor = trim($nombreAutor);
-
                 if ($nombreAutor === '') continue;
 
                 $autor = $this->db->table('autores')
@@ -286,19 +332,31 @@ class Libros extends BaseController
             }
         }
 
+        \App\Models\NotificacionesModel::registrar(
+            'libro',
+            'Libro actualizado: ' . $this->request->getPost('titulo'),
+            'fas fa-edit',
+            'info'
+        );
+
         return redirect()->to('/libros')
-            ->with('success', 'Libro actualizado correctamente ✅');
+            ->with('success', 'Libro actualizado correctamente');
     }
 
     // ====================== ELIMINAR ======================
     public function eliminar($id)
     {
-        // ✅ Eliminar relaciones primero
         $this->db->table('recurso_autor')->where('idrecurso', $id)->delete();
-
         $this->librosModel->delete($id);
 
+        \App\Models\NotificacionesModel::registrar(
+            'libro',
+            'Libro eliminado (ID: ' . $id . ')',
+            'fas fa-trash',
+            'danger'
+        );
+
         return redirect()->to('/libros')
-            ->with('success', 'Libro eliminado ✅');
+            ->with('success', 'Libro eliminado');
     }
 }

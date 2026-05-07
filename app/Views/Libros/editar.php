@@ -1,4 +1,5 @@
 <?php
+
 /** @var string $header */
 /** @var string $footer */
 /** @var array{
@@ -16,6 +17,7 @@
  * @var array<int, array{nombre: string}> $autores
  * @var array<int, array{idtiporecurso: int|string, tipo: string}> $tipos_recurso
  * @var array<int, array{idcategoria: int|string, categoria: string}> $categorias
+ * @var array<string, mixed>|null $activo
  */
 ?>
 <?= $header ?>
@@ -68,6 +70,16 @@
     .btn-add:hover {
         background: #2457a6;
     }
+
+    .ejemplares-info {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        color: #0369a1;
+        margin-top: 8px;
+    }
 </style>
 
 <div class="container-fluid">
@@ -88,8 +100,6 @@
                         enctype="multipart/form-data">
 
                         <?= csrf_field() ?>
-
-                        <!-- Campo hidden para conservar portada actual -->
                         <input type="hidden" name="portada_actual" value="<?= esc($libro['portada'] ?? '') ?>">
 
                         <!-- Título -->
@@ -187,6 +197,21 @@
                             </select>
                         </div>
 
+                        <!-- Cantidad de Ejemplares -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Cantidad de Ejemplares <span class="text-danger">*</span></label>
+                            <input type="number" name="cantidad" class="form-control" min="1"
+                                value="<?= (int)($activo['cantidad_total'] ?? 1) ?>" required>
+                            <?php if (!empty($activo)): ?>
+                                <div class="ejemplares-info">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Actualmente: <strong><?= (int)$activo['cantidad_total'] ?></strong> totales,
+                                    <strong><?= (int)$activo['cantidad_disponible'] ?></strong> disponibles.
+                                    Al cambiar la cantidad se ajustará proporcionalmente.
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
                         <!-- Descripción -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Descripción</label>
@@ -254,15 +279,12 @@
         container.appendChild(div);
     }
 
-    // Validar al menos un autor
     document.querySelector('form').addEventListener('submit', function(e) {
         const autores = document.querySelectorAll('input[name="autores[]"]');
         let valido = false;
-
         autores.forEach(input => {
             if (input.value.trim() !== '') valido = true;
         });
-
         if (!valido) {
             e.preventDefault();
             alert('Debe ingresar al menos un autor válido');
