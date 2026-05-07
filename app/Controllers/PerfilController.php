@@ -115,7 +115,7 @@ class PerfilController extends BaseController
 
         $archivo->move('uploads/perfiles', $nombreNuevo);
 
-        $rutaFoto = 'uploads/perfiles/' . $nombreNuevo;
+        $rutaFoto = $nombreNuevo;
 
         $this->usuarioModel->update($idUsuario, [
             'foto' => $rutaFoto
