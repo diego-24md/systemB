@@ -14,6 +14,7 @@ class CreateUsuarios extends Migration
             'usuario'    => ['type' => 'VARCHAR', 'constraint' => 20, 'unique' => true],
             'password'   => ['type' => 'VARCHAR', 'constraint' => 255],
             'rol'        => ['type' => 'ENUM', 'constraint' => ['bibliotecario', 'alumna']],
+            'foto' => ['type'       => 'VARCHAR', 'constraint' => 255, 'null'       => true,],
             'activo'     => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 1],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
             'updated_at' => ['type' => 'DATETIME', 'null' => true],

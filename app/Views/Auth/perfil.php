@@ -161,9 +161,13 @@
 
                     <?= csrf_field() ?>
 
+                    <?php
+                    $foto = $usuario['foto'] ?? '1778168204_5dcdf5ba90d9177c6739.png';
+                    ?>
+
                     <label for="foto" class="d-inline-block">
                         <img
-                            src="<?= base_url($usuario['foto'] ?? 'img/bibliotecario.png') ?>"
+                            src="<?= base_url('uploads/perfiles/' . $foto) ?>"
                             class="avatar mb-3"
                             id="preview-avatar">
                     </label>
