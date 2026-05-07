@@ -44,6 +44,10 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('perfil', 'PerfilController::index');
     $routes->post('perfil/actualizar', 'PerfilController::actualizar');
     $routes->post('perfil/actualizar-foto', 'PerfilController::actualizarFoto');
+
+    //Guardar préstamos
+    $routes->post('prestamos/guardar', 'Prestamos::guardar');
+    $routes->get('prestamos/buscar-alumna', 'Prestamos::buscarAlumna');
 });
 
 // ====================== BIBLIOTECA (protegida para alumnas) ======================

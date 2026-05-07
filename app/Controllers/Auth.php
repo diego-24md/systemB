@@ -6,8 +6,7 @@ class Auth extends BaseController
 {
     public function index()
     {
-        // Si ya tiene sesión activa, redirigir al dashboard
-        if (session()->get('usuario_id') && session()->get('rol') === 'bibliotecario') {
+        if (session()->get('usuario_id') && session()->get('bibliotecario_rol') === 'bibliotecario') {
             return redirect()->to('/');
         }
 
@@ -34,11 +33,11 @@ class Auth extends BaseController
         }
 
         session()->set([
-            'usuario_id' => $user['id'],
-            'nombre'     => $user['nombre'],
-            'usuario'    => $user['usuario'],
-            'rol'        => $user['rol'],
-            'foto'       => $user['foto'],
+            'usuario_id'        => $user['id'],
+            'nombre'            => $user['nombre'],
+            'usuario'           => $user['usuario'],
+            'bibliotecario_rol' => 'bibliotecario',
+            'foto'              => $user['foto'],
         ]);
 
         return redirect()->to('/');
@@ -46,11 +45,16 @@ class Auth extends BaseController
 
     public function logout()
     {
-        session()->destroy();
+        session()->remove([
+            'usuario_id',
+            'nombre',
+            'usuario',
+            'bibliotecario_rol',
+            'foto',
+        ]);
         return redirect()->to('/login');
     }
 
-    // ====================== PERFIL ======================
     public function perfil()
     {
         $db   = \Config\Database::connect();

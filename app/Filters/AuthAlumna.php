@@ -10,7 +10,7 @@ class AuthAlumna implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session()->get('alumna_id') || session()->get('rol') !== 'alumna') {
+        if (!session()->get('alumna_id')) {
             return redirect()->to('/alumnas/login');
         }
     }

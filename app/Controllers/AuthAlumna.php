@@ -30,7 +30,6 @@ class AuthAlumna extends BaseController
                 ->with('error', 'DNI no encontrado.');
         }
 
-        // Verificar que el nombre coincida (parcialmente)
         $nombreBD = strtoupper(trim($alumna['nombre']));
         if (strpos($nombreBD, $nombre) === false && strpos($nombre, explode(',', $nombreBD)[0]) === false) {
             return redirect()->to('/alumnas/login')
@@ -38,12 +37,11 @@ class AuthAlumna extends BaseController
         }
 
         session()->set([
-            'alumna_id'     => $alumna['id'],
-            'alumna_nombre' => $alumna['nombre'],
-            'alumna_dni'    => $alumna['dni'],
-            'alumna_grado'  => $alumna['grado_id'],
+            'alumna_id'      => $alumna['id'],
+            'alumna_nombre'  => $alumna['nombre'],
+            'alumna_dni'     => $alumna['dni'],
+            'alumna_grado'   => $alumna['grado_id'],
             'alumna_seccion' => $alumna['seccion_id'],
-            'rol'           => 'alumna',
         ]);
 
         return redirect()->to('/catalogo');
@@ -58,7 +56,6 @@ class AuthAlumna extends BaseController
             'alumna_grado',
             'alumna_seccion',
         ]);
-        session()->set('rol', null);
         return redirect()->to('/alumnas/login');
     }
 }

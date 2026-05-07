@@ -10,7 +10,7 @@ class AuthBibliotecario implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session()->get('usuario_id') || session()->get('rol') !== 'bibliotecario') {
+        if (!session()->get('usuario_id') || session()->get('bibliotecario_rol') !== 'bibliotecario') {
             return redirect()->to('/login');
         }
     }
