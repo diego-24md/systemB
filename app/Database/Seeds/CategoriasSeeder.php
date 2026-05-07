@@ -31,14 +31,15 @@ class CategoriasSeeder extends Seeder
             ['categoria' => 'Ciencia y Tecnología', 'idtiporecurso' => 5],
 
             // ==================== EDUCACIÓN RELIGIOSA ====================
-            ['categoria' => 'Educación Religiosa', 'idtiporecurso' => 1],   // por ahora en Libro (puedes cambiarlo después)
+            ['categoria' => 'Educación Religiosa', 'idtiporecurso' => 1],
         ];
 
-        // Limpiamos la tabla antes de insertar (recomendado en seeders)
+        $this->db->query('SET FOREIGN_KEY_CHECKS = 0');
         $this->db->table('categorias')->truncate();
+        $this->db->query('SET FOREIGN_KEY_CHECKS = 1');
 
         $this->db->table('categorias')->insertBatch($data);
 
-        echo "✅ Seeder de Categorías ejecutado correctamente con idtiporecurso.\n";
+        echo "Seeder de Categorías ejecutado correctamente.\n";
     }
 }
