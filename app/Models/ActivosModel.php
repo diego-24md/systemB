@@ -34,10 +34,14 @@ class ActivosModel extends Model
 
     public function buscarLibros($q)
     {
-        return $this->select('idactivo, titulo, autor, cantidad_disponible')
+        return $this->select('idactivo, titulo, autor, cantidad_disponible, foto')
+            ->groupStart()
             ->like('titulo', $q)
             ->orLike('autor', $q)
-            ->where('estado', 'Activo')
+            ->groupEnd()
+            ->where([
+                'estado' => 'Activo'
+            ])
             ->where('cantidad_disponible >', 0)
             ->findAll(10);
     }

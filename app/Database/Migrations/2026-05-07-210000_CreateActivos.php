@@ -13,57 +13,79 @@ class CreateActivos extends Migration
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
-                'auto_increment' => true
+                'auto_increment' => true,
             ],
             'titulo' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 200,
+                'null'       => false,
             ],
             'autor' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 150,
-                'null'       => true
+                'null'       => true,
             ],
             'idcategoria' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
-                'null'       => true
+                'null'       => true,
             ],
             'idtiporecurso' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
-                'null'       => true
+                'null'       => true,
+            ],
+            'foto' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true,
             ],
             'cantidad_total' => [
                 'type'       => 'INT',
                 'constraint' => 11,
-                'default'    => 1
+                'unsigned'   => true,
+                'default'    => 1,
             ],
             'cantidad_disponible' => [
                 'type'       => 'INT',
                 'constraint' => 11,
-                'default'    => 1
+                'unsigned'   => true,
+                'default'    => 1,
             ],
             'estado' => [
                 'type'       => 'ENUM',
                 'constraint' => ['disponible', 'agotado'],
-                'default'    => 'disponible'
+                'default'    => 'disponible',
+                'null'       => false,
             ],
-            'created_at' => ['type' => 'DATETIME', 'null' => true],
-            'updated_at' => ['type' => 'DATETIME', 'null' => true],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
         ]);
 
-        $this->forge->addKey('idactivo', true);
-        $this->forge->addForeignKey('idcategoria',    'categorias',   'idcategoria', 'SET NULL', 'SET NULL');
-        $this->forge->addForeignKey('idtiporecurso',  'tiporecurso',  'idtiporecurso', 'SET NULL', 'SET NULL');
+        // Mejor usar addPrimaryKey
+        $this->forge->addPrimaryKey('idactivo');
 
-        $this->forge->createTable('activos', true, ['ENGINE' => 'InnoDB']);
+        // Foreign Keys
+        $this->forge->addForeignKey('idcategoria', 'categorias', 'idcategoria', 'SET NULL', 'SET NULL');
+        $this->forge->addForeignKey('idtiporecurso', 'tiporecurso', 'idtiporecurso', 'SET NULL', 'SET NULL');
+
+        $this->forge->createTable('activos', true, [
+            'ENGINE'        => 'InnoDB',
+            'CHARACTER SET' => 'utf8mb4',
+            'COLLATE'       => 'utf8mb4_general_ci'
+        ]);
     }
 
     public function down()
     {
-        $this->forge->dropTable('activos');
+        $this->forge->dropTable('activos', true);
     }
 }

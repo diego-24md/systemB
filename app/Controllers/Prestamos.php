@@ -114,9 +114,22 @@ class Prestamos extends BaseController
         $q = $this->request->getGet('q');
 
         $data = $this->activosModel
-            ->select('idactivo, titulo, cantidad_disponible')
+            ->select('idactivo, titulo, autor, cantidad_disponible, foto')
+            ->groupStart()
             ->like('titulo', $q)
+            ->orLike('autor', $q)
+            ->groupEnd()
+            ->where('estado', 'disponible')
+            ->where('cantidad_disponible >', 0)
             ->findAll(10);
+
+        foreach ($data as &$row) {
+            if (!empty($row['foto'])) {
+                $row['foto_url'] = base_url('public/uploads/portadas/' . $row['foto']);
+            } else {
+                $row['foto_url'] = base_url('assets/img/default-book.png');
+            }
+        }
 
         return $this->response->setJSON($data);
     }
