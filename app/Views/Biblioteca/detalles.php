@@ -261,7 +261,7 @@
             <div class="info-side">
 
                 <h1 class="book-titulo"><?= esc($libro['titulo']) ?></h1>
-                <p class="book-autores">✍️ <?= esc($libro['autores'] ?? 'Sin autor') ?></p>
+                <p class="book-autores">Autor(es): <?= esc($libro['autores'] ?? 'Sin autor') ?></p>
 
                 <hr class="divider">
 
@@ -302,20 +302,20 @@
                 <!-- DISPONIBILIDAD -->
                 <?php if ($libro['total_ejemplares'] == 0): ?>
                     <div class="disponibilidad no-disponible">
-                        📚 Sin ejemplares registrados
+                        Sin ejemplares registrados
                     </div>
                     <a class="btn-reservar disabled">No disponible</a>
 
                 <?php elseif ($libro['disponibles'] > 0): ?>
                     <div class="disponibilidad disponible">
-                        ✅ <?= $libro['disponibles'] ?> ejemplar(es) disponible(s)
+                        <?= $libro['disponibles'] ?> ejemplar(es) disponible(s)
                     </div>
                     <a href="<?= base_url('biblioteca/reservar/' . $libro['idrecurso']) ?>"
                         class="btn-reservar">Reservar</a>
 
                 <?php else: ?>
                     <div class="disponibilidad no-disponible">
-                        ❌ No hay ejemplares disponibles
+                        No hay ejemplares disponibles
                     </div>
                     <a class="btn-reservar disabled">No disponible</a>
                 <?php endif; ?>
