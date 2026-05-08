@@ -1,3 +1,13 @@
+<?php
+
+/** @var int $totalLibros */
+/** @var int $prestados */
+/** @var int $disponibles */
+/** @var int $usuarios */
+/** @var string $title */
+/** @var string $header */
+/** @var string $footer */
+?>
 <?= $header ?>
 
 <style>
@@ -153,7 +163,7 @@
                     <i class="fas fa-book"></i>
                 </div>
                 <div>
-                    <div class="stat-label">Libros Totales</div>
+                    <div class="stat-label">Recursos Totales</div>
                     <div class="stat-value"><?= $totalLibros ?></div>
                 </div>
             </div>
@@ -208,7 +218,7 @@
 <!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -224,11 +234,30 @@
                 week: 'Semana',
                 día: 'Día'
             },
-            events: [
-                { title: "Cien Años de Soledad - Ana García", start: "2026-04-10", end: "2026-04-12", color: "#3b82f6" },
-                { title: "Don Quijote - Luis Mendoza", start: "2026-04-14", end: "2026-04-18", color: "#10b981" },
-                { title: "1984 - María Torres (VENCIDO)", start: "2026-04-05", end: "2026-04-07", color: "#ef4444" },
-                { title: "El Principito - Carlos Ruiz", start: "2026-04-20", end: "2026-04-22", color: "#3b82f6" }
+            events: [{
+                    title: "Cien Años de Soledad - Ana García",
+                    start: "2026-04-10",
+                    end: "2026-04-12",
+                    color: "#3b82f6"
+                },
+                {
+                    title: "Don Quijote - Luis Mendoza",
+                    start: "2026-04-14",
+                    end: "2026-04-18",
+                    color: "#10b981"
+                },
+                {
+                    title: "1984 - María Torres (VENCIDO)",
+                    start: "2026-04-05",
+                    end: "2026-04-07",
+                    color: "#ef4444"
+                },
+                {
+                    title: "El Principito - Carlos Ruiz",
+                    start: "2026-04-20",
+                    end: "2026-04-22",
+                    color: "#3b82f6"
+                }
             ]
         });
         calendar.render();

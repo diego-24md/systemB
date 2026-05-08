@@ -219,7 +219,7 @@
                             <div class="cover-area">
                                 <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
                                     <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
-                                        alt="<?= esc($libro['titulo']) ?>">
+                                        alt="<?= esc((string)$libro['titulo']) ?>">
                                 <?php else: ?>
                                     <div class="text-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none"
@@ -234,14 +234,14 @@
 
                             <!-- Info -->
                             <div class="book-info">
-                                <div class="book-title"><?= esc($libro['titulo']) ?></div>
+                                <div class="book-title"><?= esc((string)$libro['titulo']) ?></div>
                                 <div class="book-author">
-                                    <i class="fas fa-user-edit me-1"></i><?= esc($libro['autores'] ?? '—') ?>
+                                    <i class="fas fa-user-edit me-1"></i><?= esc((string)$libro['autores'] ?? '—') ?>
                                 </div>
                                 <div class="book-meta">
-                                    <div class="mb-1"><span class="label">ISBN</span>: <?= esc($libro['isbn'] ?? '—') ?></div>
-                                    <div class="mb-1"><span class="label">Año</span>: <?= esc($libro['anio'] ?? '—') ?></div>
-                                    <div><span class="label">Págs.</span>: <?= esc($libro['numpaginas'] ?? '—') ?></div>
+                                    <div class="mb-1"><span class="label">ISBN</span>: <?= esc((string)$libro['isbn'] ?? '—') ?></div>
+                                    <div class="mb-1"><span class="label">Año</span>: <?= esc((string)$libro['anio'] ?? '—') ?></div>
+                                    <div><span class="label">Págs.</span>: <?= esc((string)$libro['numpaginas'] ?? '—') ?></div>
                                 </div>
                             </div>
 
