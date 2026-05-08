@@ -215,15 +215,8 @@
                 <!-- Seleccionar activo -->
                 <div class="col-md-4 form-group">
                     <label>Libro / Activo</label>
-                    <select name="idactivo" class="form-select" required>
-                        <option value="">Seleccionar libro...</option>
-                        <?php foreach ($activos as $activo): ?>
-                            <option value="<?= (int)$activo['idactivo'] ?>">
-                                <?= esc((string)$activo['titulo']) ?>
-                                (<?= (int)$activo['cantidad_disponible'] ?> disponibles)
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+
+                    <select id="libro-select" name="idactivo" placeholder="Buscar libro..." required></select>
                 </div>
 
                 <!-- Fecha entrega -->
@@ -358,6 +351,38 @@
         if (!document.getElementById('idalumna').value) {
             e.preventDefault();
             alert('Debes buscar y seleccionar una alumna por DNI.');
+        }
+    });
+
+    new TomSelect("#libro-select", {
+        valueField: "idactivo",
+        labelField: "titulo",
+        searchField: "titulo",
+        placeholder: "Buscar libro...",
+
+        load: function(query, callback) {
+            if (!query.length) return callback();
+
+            fetch(`<?= base_url('prestamos/buscar-libros?q=') ?>${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => callback(data))
+                .catch(() => callback());
+        },
+
+        render: {
+            option: function(data, escape) {
+                return `
+                <div>
+                    <strong>${escape(data.titulo)}</strong>
+                    <div style="font-size:12px;color:#94a3b8;">
+                        ${data.cantidad_disponible} disponibles
+                    </div>
+                </div>
+            `;
+            },
+            item: function(data, escape) {
+                return `<div>${escape(data.titulo)}</div>`;
+            }
         }
     });
 

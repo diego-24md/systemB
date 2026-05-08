@@ -24,6 +24,10 @@
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Librería de Tom Select -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
 </head>
 <style>
     .nav-buscar-libros {
@@ -168,8 +172,7 @@
                         <h6 class="collapse-header">Préstamos</h6>
                         <a class="collapse-item" href="<?= base_url('prestamos') ?>">Registrar préstamo</a>
                         <a class="collapse-item" href="<?= base_url('devoluciones') ?>">Devoluciones</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/pendientes') ?>">Préstamos pendientes</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/vencidos') ?>">Préstamos vencidos</a>
+                        <a class="collapse-item" href="<?= base_url('') ?>">Ver Historial</a>
                     </div>
                 </div>
             </li>
@@ -178,14 +181,13 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Reportes</span>
+                    <i class="fas fa-fw fa-file-export"></i>
+                    <span>Exportar</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">DESCARGAR HISTORIAL</h6>
-                        <a class="collapse-item" href="utilities-animation.html">Ver historial</a>
                         <a class="collapse-item" href="utilities-other.html">Exportar a PDF</a>
                     </div>
                 </div>

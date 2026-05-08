@@ -39,6 +39,7 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
 
     // Préstamos
     $routes->get('prestamos', 'Prestamos::index');
+    $routes->get('prestamos/buscar-libros', 'Prestamos::buscarLibros');
 
     // Perfil
     $routes->get('perfil', 'PerfilController::index');

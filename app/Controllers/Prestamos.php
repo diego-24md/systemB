@@ -3,14 +3,17 @@
 namespace App\Controllers;
 
 use App\Models\PrestamosModel;
+use App\Models\ActivosModel;
 
 class Prestamos extends BaseController
 {
     protected $prestamosModel;
+    protected $activosModel;
 
     public function __construct()
     {
         $this->prestamosModel = new PrestamosModel();
+        $this->activosModel   = new ActivosModel();
     }
 
     public function index()
@@ -104,5 +107,17 @@ class Prestamos extends BaseController
 
         return redirect()->to(base_url('prestamos'))
             ->with('success', 'Préstamo registrado correctamente.');
+    }
+
+    public function buscarLibros()
+    {
+        $q = $this->request->getGet('q');
+
+        $data = $this->activosModel
+            ->select('idactivo, titulo, cantidad_disponible')
+            ->like('titulo', $q)
+            ->findAll(10);
+
+        return $this->response->setJSON($data);
     }
 }
