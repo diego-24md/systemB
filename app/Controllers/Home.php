@@ -21,7 +21,10 @@ class Home extends BaseController
 
         // 📖 Disponibles (aprox: activos - prestados)
         $disponibles = $db->table('activos')
-            ->countAllResults() - $prestados;
+            ->selectSum('cantidad_disponible')
+            ->get()
+            ->getRow()
+            ->cantidad_disponible;
 
         // 👥 Alumnas
         $usuarios = $db->table('alumnas')->countAllResults();

@@ -181,22 +181,27 @@ class Libros extends BaseController
     {
         $libro = $this->db->table('recursos r')
             ->select('
-                r.*,
-                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
-                c.categoria,
-                tr.tipo,
-                COUNT(act.idactivo) AS total_ejemplares,
-                SUM(
-                    CASE WHEN act.idactivo NOT IN (
-                        SELECT idactivo FROM prestamos WHERE devolucion IS NULL
-                    ) THEN 1 ELSE 0 END
-                ) AS disponibles
-            ')
+            r.*,
+            GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+            c.categoria,
+            tr.tipo,
+
+            COALESCE((
+                SELECT SUM(act.cantidad_total)
+                FROM activos act
+                WHERE act.idrecurso = r.idrecurso
+            ), 0) AS total_ejemplares,
+
+            COALESCE((
+                SELECT SUM(act.cantidad_disponible)
+                FROM activos act
+                WHERE act.idrecurso = r.idrecurso
+            ), 0) AS disponibles
+        ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
-            ->join('activos act', 'act.idrecurso = r.idrecurso', 'left')
             ->where('r.idrecurso', $id)
             ->groupBy('r.idrecurso')
             ->get()
