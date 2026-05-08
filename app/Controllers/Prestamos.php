@@ -53,23 +53,40 @@ class Prestamos extends BaseController
         $idalumna = $this->request->getPost('idalumna');
         $idactivo = $this->request->getPost('idactivo');
 
-        $db     = \Config\Database::connect();
-        $alumna = $db->table('alumnas')->where('id', $idalumna)->get()->getRowArray();
+        $db = \Config\Database::connect();
+
+        //Validación
+        $activo = $db->table('activos')
+            ->where('idactivo', $idactivo)
+            ->where('cantidad_disponible >', 0)
+            ->get()
+            ->getRowArray();
+
+        if (!$activo) {
+            return redirect()->back()->with('error', 'No hay disponibilidad.');
+        }
+
+        // Validar alumna
+        $alumna = $db->table('alumnas')
+            ->where('id', $idalumna)
+            ->get()->getRowArray();
 
         if (!$alumna) {
             return redirect()->back()->with('error', 'La alumna no existe.');
         }
 
-        $activo = $db->table('activos')->where('idactivo', $idactivo)->get()->getRowArray();
+        // Validar duplicado ANTES de insertar
+        $existe = $db->table('prestamos')
+            ->where('idalumna', $idalumna)
+            ->where('idactivo', $idactivo)
+            ->where('devolucion IS NULL', null, false)
+            ->countAllResults();
 
-        if (!$activo) {
-            return redirect()->back()->with('error', 'El activo no existe.');
+        if ($existe > 0) {
+            return redirect()->back()->with('error', 'Este libro ya está prestado a esta alumna.');
         }
 
-        if ($activo['cantidad_disponible'] <= 0) {
-            return redirect()->back()->with('error', 'No hay ejemplares disponibles de ese libro.');
-        }
-
+        // Insertar préstamo
         $this->prestamosModel->insert([
             'idalumna'         => $idalumna,
             'idactivo'         => $idactivo,
@@ -78,18 +95,12 @@ class Prestamos extends BaseController
             'condicionentrega' => $this->request->getPost('condicionentrega'),
         ]);
 
-        // Reducir cantidad disponible
-        $db->table('activos')->where('idactivo', $idactivo)->update([
-            'cantidad_disponible' => $activo['cantidad_disponible'] - 1,
-            'estado'              => ($activo['cantidad_disponible'] - 1) <= 0 ? 'agotado' : 'disponible',
-        ]);
-
-        \App\Models\NotificacionesModel::registrar(
-            'prestamo',
-            'Nuevo préstamo registrado para: ' . $alumna['nombre'],
-            'fas fa-book-reader',
-            'warning'
-        );
+        // Descontar stock
+        $db->table('activos')
+            ->set('cantidad_disponible', 'cantidad_disponible - 1', false)
+            ->set("estado", "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
+            ->where('idactivo', $idactivo)
+            ->update();
 
         return redirect()->to(base_url('prestamos'))
             ->with('success', 'Préstamo registrado correctamente.');
