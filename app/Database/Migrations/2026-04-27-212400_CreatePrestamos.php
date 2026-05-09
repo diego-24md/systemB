@@ -40,6 +40,24 @@ class CreatePrestamos extends Migration
                 'constraint' => 50,
                 'null'       => false,
             ],
+            'hora_entrega' => [
+                'type' => 'TIME',
+                'null' => true,
+            ],
+            'hora_devolucion' => [
+                'type' => 'TIME',
+                'null' => true,
+            ],
+            'minutos' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'null'       => true,
+            ],
+            'estado' => [
+                'type'       => 'ENUM',
+                'constraint' => ['activo', 'devuelto'],
+                'default'    => 'activo',
+            ],
         ]);
 
         $this->forge->addPrimaryKey('idprestamo');

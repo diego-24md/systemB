@@ -3,7 +3,6 @@
 /** @var string $header */
 /** @var string $footer */
 /** @var array<int, array<string, mixed>> $prestamos */
-/** @var array<int, array<string, mixed>> $activos */
 ?>
 <?= $header ?>
 
@@ -167,6 +166,15 @@
         background: #fef2f2;
         color: #dc2626;
     }
+
+    .badge-activo {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
 </style>
 
 <div class="container-fluid px-4 py-4">
@@ -179,16 +187,14 @@
     </div>
 
     <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-dismissible fade show rounded-3 border-0 mb-3" style="background:#f0fdf4;color:#15803d;">
+        <div class="alert fade show rounded-3 border-0 mb-3" style="background:#f0fdf4;color:#15803d;">
             <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-dismissible fade show rounded-3 border-0 mb-3" style="background:#fef2f2;color:#dc2626;">
+        <div class="alert fade show rounded-3 border-0 mb-3" style="background:#fef2f2;color:#dc2626;">
             <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
 
@@ -215,35 +221,19 @@
                 <!-- Seleccionar activo -->
                 <div class="col-md-4 form-group">
                     <label>Libro / Activo</label>
-
                     <select id="libro-select" name="idactivo" placeholder="Buscar libro..." required></select>
 
                     <div id="libro-preview" style="margin-top:10px; padding:12px; border:1px solid #e2e8f0; border-radius:8px; display:flex; gap:10px; align-items:center;">
-
-    <img id="libro-img"
-        src="<?= base_url('img/default-book.jpg') ?>"
-        style="width:70px; height:90px; object-fit:cover; border-radius:6px;">
-
-    <div>
-        <div id="libro-title" style="font-weight:600; color:#475569;">Selecciona un libro</div>
-        <div id="libro-author" style="font-size:12px; color:#64748b;">Autor: —</div>
-        <div id="libro-category" style="font-size:12px; color:#64748b;">Categoría: —</div>
-        <div id="libro-stock" style="font-size:12px; color:#64748b;">— disponibles</div>
-    </div>
-
-</div>
-                </div>
-
-                <!-- Fecha entrega -->
-                <div class="col-md-2 form-group">
-                    <label>Fecha Entrega</label>
-                    <input type="date" name="entrega" class="form-control" required>
-                </div>
-
-                <!-- Fecha devolución -->
-                <div class="col-md-2 form-group">
-                    <label>Fecha Devolución</label>
-                    <input type="date" name="devolucion" class="form-control">
+                        <img id="libro-img"
+                            src="<?= base_url('img/default-book.jpg') ?>"
+                            style="width:70px; height:90px; object-fit:cover; border-radius:6px;">
+                        <div>
+                            <div id="libro-title" style="font-weight:600; color:#475569;">Selecciona un libro</div>
+                            <div id="libro-author" style="font-size:12px; color:#64748b;">Autor: —</div>
+                            <div id="libro-category" style="font-size:12px; color:#64748b;">Categoría: —</div>
+                            <div id="libro-stock" style="font-size:12px; color:#64748b;">— disponibles</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Condición -->
@@ -257,7 +247,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-9 d-flex align-items-end justify-content-end">
+                <div class="col-md-12 d-flex align-items-end justify-content-end">
                     <button type="submit" class="btn-guardar">
                         <i class="fas fa-save me-2"></i> Guardar Préstamo
                     </button>
@@ -267,9 +257,9 @@
         </form>
     </div>
 
-    <!-- Tabla -->
+    <!-- Tabla préstamos activos -->
     <div class="panel">
-        <div class="panel-label">Listado de Préstamos</div>
+        <div class="panel-label">Préstamos Activos</div>
         <table class="table mb-0">
             <thead>
                 <tr>
@@ -277,9 +267,10 @@
                     <th>Alumna</th>
                     <th>DNI</th>
                     <th>Libro</th>
-                    <th>F. Entrega</th>
-                    <th>F. Devolución</th>
+                    <th>Fecha</th>
+                    <th>Hora Entrega</th>
                     <th>Condición</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -291,7 +282,7 @@
                             <td><?= esc((string)$p['dni']) ?></td>
                             <td><?= esc((string)($p['titulo'] ?? '—')) ?></td>
                             <td><?= esc((string)$p['entrega']) ?></td>
-                            <td><?= $p['devolucion'] ? esc((string)$p['devolucion']) : '<span style="color:#cbd5e1">—</span>' ?></td>
+                            <td><?= esc((string)$p['hora_entrega']) ?></td>
                             <td>
                                 <?php
                                 $condicion = strtolower((string)($p['condicionentrega'] ?? ''));
@@ -306,14 +297,15 @@
                                     <?= esc((string)$p['condicionentrega']) ?>
                                 </span>
                             </td>
+                            <td><span class="badge-activo"><i class="fas fa-circle me-1" style="font-size:0.5rem;"></i> Activo</span></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="empty-state">
                                 <i class="fas fa-book-open"></i>
-                                <p>No hay préstamos registrados</p>
+                                <p>No hay préstamos activos</p>
                             </div>
                         </td>
                     </tr>
@@ -329,7 +321,6 @@
 <script>
     const defaultImg = "<?= base_url('img/default-book.jpg') ?>";
 
-    // Buscar alumna por DNI
     let buscarTimeout;
     document.getElementById('dni-input').addEventListener('input', function() {
         const dni = this.value.trim();
@@ -363,7 +354,6 @@
         }, 500);
     });
 
-    // Validar que se encontró una alumna antes de enviar
     document.getElementById('form-prestamo').addEventListener('submit', function(e) {
         if (!document.getElementById('idalumna').value) {
             e.preventDefault();
@@ -379,57 +369,42 @@
 
         load: function(query, callback) {
             if (!query.length) return callback();
-
             fetch(`<?= base_url('prestamos/buscar-libros?q=') ?>${encodeURIComponent(query)}`)
                 .then(res => res.json())
                 .then(data => callback(data))
                 .catch(() => callback());
         },
 
-        // ✅ Ahora usa this.options[value] en lugar de hacer un segundo fetch
         onChange: function(value) {
             if (!value) return;
-
             const libro = this.options[value];
             if (!libro) return;
 
-            // Mostrar preview
             document.getElementById('libro-preview').style.display = 'flex';
             document.getElementById('libro-title').textContent = libro.titulo;
             document.getElementById('libro-author').textContent = "Autor: " + (libro.autor || '—');
             document.getElementById('libro-category').textContent = "Categoría: " + (libro.categoria || '—');
 
-            // 🚫 BLOQUEAR si no hay stock
             if (libro.cantidad_disponible <= 0) {
                 document.getElementById('libro-stock').innerHTML = `<span style="color:red;font-weight:600;">Sin stock</span>`;
                 this.clear();
                 alert("Este libro no tiene stock disponible");
                 return;
             } else {
-                document.getElementById('libro-stock').textContent =
-                    `${libro.cantidad_disponible} disponibles`;
+                document.getElementById('libro-stock').textContent = `${libro.cantidad_disponible} disponibles`;
             }
 
-            // 📦 Imagen con fallback + preload
             const img = new Image();
             const imageUrl = libro.foto_url || defaultImg;
-
             img.src = imageUrl;
-
-            img.onload = () => {
-                document.getElementById('libro-img').src = img.src;
-            };
-
-            img.onerror = () => {
-                document.getElementById('libro-img').src = defaultImg;
-            };
+            img.onload = () => document.getElementById('libro-img').src = img.src;
+            img.onerror = () => document.getElementById('libro-img').src = defaultImg;
         },
 
         render: {
             no_results: function(data, escape) {
                 return '<div class="no-results">No se encontró el libro</div>';
             },
-
             option: function(data, escape) {
                 return `
                 <div>
@@ -439,13 +414,11 @@
                         ${escape(data.categoria || '')} |
                         ${data.cantidad_disponible} disponibles
                     </small>
-                </div>
-            `;
+                </div>`;
             }
         }
     });
 
-    // Auto ocultar alertas
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(a => a.remove());
     }, 5000);

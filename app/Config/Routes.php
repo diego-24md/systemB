@@ -46,9 +46,17 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->post('perfil/actualizar', 'PerfilController::actualizar');
     $routes->post('perfil/actualizar-foto', 'PerfilController::actualizarFoto');
 
-    //Guardar préstamos
+    // Préstamos
+    $routes->get('prestamos', 'Prestamos::index');
+    $routes->get('prestamos/buscar-libros', 'Prestamos::buscarLibros');
     $routes->post('prestamos/guardar', 'Prestamos::guardar');
     $routes->get('prestamos/buscar-alumna', 'Prestamos::buscarAlumna');
+    $routes->get('prestamos/devolver/(:num)', 'Prestamos::devolver/$1');
+    $routes->get('prestamos/historial', 'Prestamos::historial');
+    $routes->get('prestamos/ranking', 'Prestamos::ranking');
+
+    //Devoluciones
+    $routes->get('prestamos/devoluciones', 'Prestamos::devoluciones');
 
     //Notificaciones
     $routes->get('notificaciones/marcar/(:num)', 'Notificaciones::marcar/$1');
