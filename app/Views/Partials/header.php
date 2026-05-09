@@ -172,7 +172,7 @@
                         <h6 class="collapse-header">Préstamos</h6>
                         <a class="collapse-item" href="<?= base_url('prestamos') ?>">Registrar préstamo</a>
                         <a class="collapse-item" href="<?= base_url('prestamos/devoluciones') ?>">Devoluciones</a>
-                        <a class="collapse-item" href="<?= base_url('') ?>">Ver Historial</a>
+                        <a class="collapse-item" href="<?= base_url('prestamos/historial') ?>">Ver Historial</a>
                     </div>
                 </div>
             </li>

@@ -52,8 +52,10 @@ class PrestamosModel extends Model
         $db = \Config\Database::connect();
 
         return $db->table('prestamos p')
-            ->select('p.idprestamo, p.entrega, p.hora_entrega, p.devolucion, p.hora_devolucion, p.minutos, p.condicionentrega, a.nombre, a.dni, a.grado, a.seccion, ac.titulo')
+            ->select('p.idprestamo, p.entrega, p.hora_entrega, p.devolucion, p.hora_devolucion, p.minutos, p.condicionentrega, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, ac.titulo')
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
+            ->join('grados g', 'g.id = a.grado_id', 'left')
+            ->join('secciones s', 's.id = a.seccion_id', 'left')
             ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
             ->where('p.estado', 'devuelto')
             ->orderBy('p.idprestamo', 'DESC')
@@ -66,10 +68,12 @@ class PrestamosModel extends Model
         $db = \Config\Database::connect();
 
         return $db->table('prestamos p')
-            ->select('a.grado, a.seccion, SUM(p.minutos) AS total_minutos, COUNT(p.idprestamo) AS total_prestamos')
+            ->select('g.nombre AS grado, s.nombre AS seccion, SUM(p.minutos) AS total_minutos, COUNT(p.idprestamo) AS total_prestamos')
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
+            ->join('grados g', 'g.id = a.grado_id', 'left')
+            ->join('secciones s', 's.id = a.seccion_id', 'left')
             ->where('p.estado', 'devuelto')
-            ->groupBy('a.grado, a.seccion')
+            ->groupBy('g.id, s.id')
             ->orderBy('total_minutos', 'DESC')
             ->get()
             ->getResultArray();
@@ -80,8 +84,10 @@ class PrestamosModel extends Model
         $db = \Config\Database::connect();
 
         return $db->table('prestamos p')
-            ->select('a.nombre, a.dni, a.grado, a.seccion, SUM(p.minutos) AS total_minutos, COUNT(p.idprestamo) AS total_prestamos')
+            ->select('a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, SUM(p.minutos) AS total_minutos, COUNT(p.idprestamo) AS total_prestamos')
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
+            ->join('grados g', 'g.id = a.grado_id', 'left')
+            ->join('secciones s', 's.id = a.seccion_id', 'left')
             ->where('p.estado', 'devuelto')
             ->groupBy('a.id')
             ->orderBy('total_minutos', 'DESC')

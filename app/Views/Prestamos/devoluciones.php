@@ -6,6 +6,9 @@
 ?>
 <?= $header ?>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
     body {
         background-color: #f4f6f9;
@@ -209,7 +212,8 @@
                             <td>
                                 <a href="<?= base_url('prestamos/devolver/' . $p['idprestamo']) ?>"
                                     class="btn-devolver"
-                                    onclick="return confirm('¿Confirmar devolución de <?= esc((string)$p['titulo']) ?>?')">
+                                    data-titulo="<?= esc((string)$p['titulo']) ?>"
+                                    onclick="confirmarDevolucion(event, this)">
                                     <i class="fas fa-undo"></i> Devolver
                                 </a>
                             </td>
@@ -234,6 +238,28 @@
 <?= $footer ?>
 
 <script>
+    function confirmarDevolucion(e, el) {
+        e.preventDefault();
+        const titulo = el.dataset.titulo;
+        const url = el.href;
+
+        Swal.fire({
+            title: '¿Confirmar devolución?',
+            text: `"${titulo}" será marcado como devuelto.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#16a34a',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'Sí, devolver',
+            cancelButtonText: 'Cancelar',
+            borderRadius: '12px',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
     setTimeout(() => {
         document.querySelectorAll('.alert').forEach(a => {
             a.style.transition = 'opacity 0.5s';

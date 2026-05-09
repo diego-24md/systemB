@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var string $header
  * @var string $footer
@@ -13,6 +14,9 @@
  */
 ?>
 <?= $header ?>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     body {
@@ -48,7 +52,6 @@
         margin-bottom: 20px;
     }
 
-    /* Tarjeta libro */
     .book-card {
         background: #fff;
         border: 1px solid #e2e8f0;
@@ -194,7 +197,6 @@
 
 <div class="container-fluid px-4 py-4">
 
-    <!-- Encabezado -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="page-title">Gestión de Libros</div>
@@ -205,7 +207,6 @@
         </a>
     </div>
 
-    <!-- Grid de libros -->
     <div class="panel">
         <div class="panel-label">Catálogo</div>
 
@@ -215,7 +216,6 @@
                     <div class="col-md-6 col-lg-4 col-xl-3">
                         <div class="book-card">
 
-                            <!-- Portada -->
                             <div class="cover-area">
                                 <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
                                     <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
@@ -232,28 +232,29 @@
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Info -->
                             <div class="book-info">
                                 <div class="book-title"><?= esc((string)$libro['titulo']) ?></div>
                                 <div class="book-author">
-                                    <i class="fas fa-user-edit me-1"></i><?= esc((string)$libro['autores'] ?? '—') ?>
+                                    <i class="fas fa-user-edit me-1"></i><?= esc((string)($libro['autores'] ?? '—')) ?>
                                 </div>
                                 <div class="book-meta">
-                                    <div class="mb-1"><span class="label">ISBN</span>: <?= esc((string)$libro['isbn'] ?? '—') ?></div>
-                                    <div class="mb-1"><span class="label">Año</span>: <?= esc((string)$libro['anio'] ?? '—') ?></div>
-                                    <div><span class="label">Págs.</span>: <?= esc((string)$libro['numpaginas'] ?? '—') ?></div>
+                                    <div class="mb-1"><span class="label">ISBN</span>: <?= esc((string)($libro['isbn'] ?? '—')) ?></div>
+                                    <div class="mb-1"><span class="label">Año</span>: <?= esc((string)($libro['anio'] ?? '—')) ?></div>
+                                    <div><span class="label">Págs.</span>: <?= esc((string)($libro['numpaginas'] ?? '—')) ?></div>
                                 </div>
                             </div>
 
-                            <!-- Botones -->
                             <div class="book-footer">
                                 <a href="<?= base_url('libros/editar/' . $libro['idrecurso']) ?>" class="btn-accion editar">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <form action="<?= base_url('libros/eliminar/' . $libro['idrecurso']) ?>" method="POST"
-                                    onsubmit="return confirm('¿Estás seguro de eliminar este libro?')">
+                                <form id="form-eliminar-<?= $libro['idrecurso'] ?>"
+                                    action="<?= base_url('libros/eliminar/' . $libro['idrecurso']) ?>"
+                                    method="POST">
                                     <?= csrf_field() ?>
-                                    <button type="submit" class="btn-accion eliminar">
+                                    <button type="button"
+                                        class="btn-accion eliminar"
+                                        onclick="confirmarEliminar(<?= $libro['idrecurso'] ?>, '<?= esc((string)$libro['titulo']) ?>')">
                                         <i class="fas fa-trash-alt"></i> Eliminar
                                     </button>
                                 </form>
@@ -275,3 +276,22 @@
 </div>
 
 <?= $footer ?>
+
+<script>
+    function confirmarEliminar(id, titulo) {
+        Swal.fire({
+            title: '¿Eliminar libro?',
+            text: `"${titulo}" será eliminado permanentemente.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`form-eliminar-${id}`).submit();
+            }
+        });
+    }
+</script>

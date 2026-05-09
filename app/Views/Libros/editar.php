@@ -2,35 +2,81 @@
 
 /** @var string $header */
 /** @var string $footer */
-/** @var array{
- *   idrecurso: int|string,
- *   titulo: string,
- *   portada: string|null,
- *   isbn: string|null,
- *   anio: string|null,
- *   numpaginas: string|null,
- *   descripcion: string|null,
- *   idtiporecurso: int|string,
- *   idcategoria: int|string
- * } $libro
- *
- * @var array<int, array{nombre: string}> $autores
- * @var array<int, array{idtiporecurso: int|string, tipo: string}> $tipos_recurso
- * @var array<int, array{idcategoria: int|string, categoria: string}> $categorias
- * @var array<string, mixed>|null $activo
- */
+/** @var array $libro */
+/** @var array $autores */
+/** @var array $tipos_recurso */
+/** @var array $categorias */
+/** @var array|null $activo */
 ?>
 <?= $header ?>
 
 <style>
+    body {
+        background-color: #f4f6f9;
+    }
+
+    .page-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 2px;
+    }
+
+    .page-subtitle {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .panel {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
+
+    .panel-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #94a3b8;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        font-size: 0.82rem;
+        color: #64748b;
+        margin-bottom: 5px;
+        display: block;
+        font-weight: 600;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        padding: 10px 14px;
+        color: #475569;
+        width: 100%;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #1e3a5f;
+        box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
+        outline: none;
+    }
+
     .autor-item {
         display: flex;
         align-items: center;
         gap: 10px;
-        background: #f4f6f9;
-        padding: 8px;
+        background: #f8fafc;
+        padding: 8px 12px;
         border-radius: 8px;
-        border: 1px solid #dce3ea;
+        border: 1px solid #e2e8f0;
         margin-bottom: 8px;
     }
 
@@ -39,36 +85,70 @@
         outline: none;
         flex: 1;
         background: transparent;
-        font-size: 14px;
+        font-size: 0.88rem;
+        color: #475569;
     }
 
     .btn-remove {
-        background: #dc3545;
-        color: #fff;
+        background: #fee2e2;
+        color: #dc2626;
         border: none;
         border-radius: 6px;
         padding: 5px 10px;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 0.8rem;
     }
 
     .btn-remove:hover {
-        background: #c82333;
+        background: #fecaca;
     }
 
     .btn-add {
-        margin-top: 10px;
-        background: #1a3c6e;
-        color: #fff;
+        background: #eff6ff;
+        color: #2563eb;
         border: none;
-        padding: 8px 12px;
+        padding: 8px 14px;
         border-radius: 6px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-top: 6px;
     }
 
     .btn-add:hover {
-        background: #2457a6;
+        background: #dbeafe;
+    }
+
+    .btn-guardar {
+        background-color: #1e3a5f;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-guardar:hover {
+        background-color: #16304f;
+    }
+
+    .btn-cancelar {
+        background-color: #f1f5f9;
+        color: #64748b;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancelar:hover {
+        background-color: #e2e8f0;
+        color: #475569;
     }
 
     .ejemplares-info {
@@ -76,50 +156,63 @@
         border: 1px solid #bae6fd;
         border-radius: 8px;
         padding: 10px 14px;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         color: #0369a1;
         margin-top: 8px;
     }
+
+    select.form-control {
+        appearance: auto;
+        -webkit-appearance: auto;
+        background-color: #fff;
+        color: #475569;
+    }
+
+    select.form-control option {
+        color: #475569;
+        background-color: #fff;
+    }
 </style>
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-xl-6">
+<div class="container-fluid px-4 py-4">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0">Editar Libro</h4>
-                <a href="<?= base_url('libros') ?>" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Volver a la lista
-                </a>
-            </div>
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <div class="page-title">Editar Libro</div>
+            <div class="page-subtitle">Modifica los datos del recurso bibliográfico</div>
+        </div>
+        <a href="<?= base_url('libros') ?>" class="btn-cancelar">
+            <i class="fas fa-arrow-left me-2"></i> Volver
+        </a>
+    </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
+    <form action="<?= base_url('libros/actualizar/' . $libro['idrecurso']) ?>" method="POST" enctype="multipart/form-data">
+        <?= csrf_field() ?>
+        <input type="hidden" name="portada_actual" value="<?= esc((string)$libro['portada'] ?? '') ?>">
 
-                    <form action="<?= base_url('libros/actualizar/' . $libro['idrecurso']) ?>" method="POST"
-                        enctype="multipart/form-data">
+        <div class="row g-4">
 
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="portada_actual" value="<?= esc($libro['portada'] ?? '') ?>">
+            <!-- Columna izquierda -->
+            <div class="col-lg-8">
 
-                        <!-- Título -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
-                            <input type="text" name="titulo"
-                                class="form-control <?= session('errors.titulo') ? 'is-invalid' : '' ?>"
-                                value="<?= old('titulo', esc($libro['titulo'])) ?>" required>
-                            <?= session('errors.titulo') ? '<div class="invalid-feedback">' . session('errors.titulo') . '</div>' : '' ?>
+                <div class="panel">
+                    <div class="panel-label">Información General</div>
+                    <div class="row g-3">
+
+                        <div class="col-12 form-group">
+                            <label>Título <span class="text-danger">*</span></label>
+                            <input type="text" name="titulo" class="form-control"
+                                value="<?= esc((string)$libro['titulo']) ?>" required>
                         </div>
 
-                        <!-- Autores -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Autores <span class="text-danger">*</span></label>
+                        <div class="col-12 form-group">
+                            <label>Autores <span class="text-danger">*</span></label>
                             <div id="autores-container">
                                 <?php if (!empty($autores)): ?>
                                     <?php foreach ($autores as $autor): ?>
                                         <div class="autor-item">
                                             <input type="text" name="autores[]"
-                                                value="<?= esc($autor['nombre']) ?>"
+                                                value="<?= esc((string)$autor['nombre']) ?>"
                                                 placeholder="Escribe el autor">
                                             <button type="button" class="btn-remove"
                                                 onclick="this.parentElement.remove()">✕</button>
@@ -133,129 +226,121 @@
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <button type="button" class="btn-add" onclick="agregarAutor()">+ Agregar autor</button>
+                            <button type="button" class="btn-add" onclick="agregarAutor()">
+                                <i class="fas fa-plus me-1"></i> Agregar autor
+                            </button>
                         </div>
 
-                        <!-- ISBN -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">ISBN</label>
-                            <input type="text" name="isbn"
-                                class="form-control <?= session('errors.isbn') ? 'is-invalid' : '' ?>"
-                                value="<?= old('isbn', esc($libro['isbn'] ?? '')) ?>"
+                        <div class="col-md-6 form-group">
+                            <label>ISBN</label>
+                            <input type="text" name="isbn" class="form-control"
+                                value="<?= esc((string)$libro['isbn'] ?? '') ?>"
                                 maxlength="13"
                                 oninput="this.value = this.value.replace(/\D/g, '').slice(0, 13)">
-                            <?= session('errors.isbn') ? '<div class="invalid-feedback">' . session('errors.isbn') . '</div>' : '' ?>
                         </div>
 
-                        <div class="row">
-                            <!-- Año -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Año de publicación</label>
-                                <input type="number" name="anio"
-                                    class="form-control <?= session('errors.anio') ? 'is-invalid' : '' ?>"
-                                    value="<?= old('anio', esc($libro['anio'] ?? '')) ?>"
-                                    min="1900" max="2026">
-                                <?= session('errors.anio') ? '<div class="invalid-feedback">' . session('errors.anio') . '</div>' : '' ?>
-                            </div>
-
-                            <!-- Número de páginas -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Número de páginas</label>
-                                <input type="number" name="numpaginas"
-                                    class="form-control <?= session('errors.numpaginas') ? 'is-invalid' : '' ?>"
-                                    value="<?= old('numpaginas', esc($libro['numpaginas'] ?? '')) ?>"
-                                    min="1">
-                                <?= session('errors.numpaginas') ? '<div class="invalid-feedback">' . session('errors.numpaginas') . '</div>' : '' ?>
-                            </div>
+                        <div class="col-md-3 form-group">
+                            <label>Año</label>
+                            <input type="number" name="anio" class="form-control"
+                                value="<?= esc((string)$libro['anio'] ?? '') ?>" min="1900" max="2026">
                         </div>
 
-                        <!-- Tipo de Recurso -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tipo de Recurso <span class="text-danger">*</span></label>
-                            <select name="id_tipo_recurso" class="form-control" required>
+                        <div class="col-md-3 form-group">
+                            <label>N° Páginas</label>
+                            <input type="number" name="numpaginas" class="form-control"
+                                value="<?= esc((string)$libro['numpaginas'] ?? '') ?>" min="1">
+                        </div>
+
+                        <div class="col-md-6 form-group">
+                            <label>Tipo de Recurso <span class="text-danger">*</span></label>
+                            <select name="id_tipo_recurso" class="form-select" required>
                                 <option value="">Seleccione...</option>
                                 <?php foreach ($tipos_recurso as $tipo): ?>
                                     <option value="<?= $tipo['idtiporecurso'] ?>"
                                         <?= $libro['idtiporecurso'] == $tipo['idtiporecurso'] ? 'selected' : '' ?>>
-                                        <?= esc($tipo['tipo']) ?>
+                                        <?= esc((string)$tipo['tipo']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
 
-                        <!-- Categoría -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
-                            <select name="categoria_id" class="form-control" required>
+                        <div class="col-md-6 form-group">
+                            <label>Categoría <span class="text-danger">*</span></label>
+                            <select name="categoria_id" class="form-select" required>
                                 <option value="">Seleccione...</option>
                                 <?php foreach ($categorias as $cat): ?>
                                     <option value="<?= $cat['idcategoria'] ?>"
                                         <?= $libro['idcategoria'] == $cat['idcategoria'] ? 'selected' : '' ?>>
-                                        <?= esc($cat['categoria']) ?>
+                                        <?= esc((string)$cat['categoria']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
 
-                        <!-- Cantidad de Ejemplares -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Cantidad de Ejemplares <span class="text-danger">*</span></label>
+                        <div class="col-md-4 form-group">
+                            <label>Cantidad de Ejemplares <span class="text-danger">*</span></label>
                             <input type="number" name="cantidad" class="form-control" min="1"
                                 value="<?= (int)($activo['cantidad_total'] ?? 1) ?>" required>
                             <?php if (!empty($activo)): ?>
                                 <div class="ejemplares-info">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Actualmente: <strong><?= (int)$activo['cantidad_total'] ?></strong> totales,
+                                    <strong><?= (int)$activo['cantidad_total'] ?></strong> totales,
                                     <strong><?= (int)$activo['cantidad_disponible'] ?></strong> disponibles.
-                                    Al cambiar la cantidad se ajustará proporcionalmente.
                                 </div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Descripción -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Descripción</label>
-                            <textarea name="descripcion" class="form-control" rows="4"><?= old('descripcion', esc($libro['descripcion'] ?? '')) ?></textarea>
+                        <div class="col-12 form-group">
+                            <label>Descripción</label>
+                            <textarea name="descripcion" class="form-control" rows="4"><?= esc((string)$libro['descripcion'] ?? '') ?></textarea>
                         </div>
 
-                        <!-- Portada -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Portada del libro</label>
-
-                            <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
-                                <div class="mb-3">
-                                    <p class="small text-muted mb-1">Portada actual:</p>
-                                    <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
-                                        class="img-thumbnail shadow-sm"
-                                        style="max-height: 200px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="document.getElementById('portada').click()">
-                                    <i class="fas fa-upload"></i> Seleccionar archivo
-                                </button>
-                                <input type="text" id="file-name" class="form-control"
-                                    placeholder="Ningún archivo seleccionado" readonly>
-                                <input type="file" name="portada" id="portada"
-                                    class="d-none" accept="image/*"
-                                    onchange="updateFileName(this)">
-                            </div>
-                            <small class="text-muted d-block mt-1">Dejar vacío si no se quiere cambiar la portada.</small>
-                        </div>
-
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-save"></i> Guardar Cambios
-                            </button>
-                        </div>
-
-                    </form>
+                    </div>
                 </div>
+
             </div>
+
+            <!-- Columna derecha -->
+            <div class="col-lg-4">
+
+                <div class="panel">
+                    <div class="panel-label">Portada</div>
+
+                    <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
+                        <div class="text-center mb-3">
+                            <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
+                                style="max-height:200px; max-width:100%; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1);"
+                                alt="Portada actual">
+                            <p class="text-muted small mt-2">Portada actual</p>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary" type="button"
+                                onclick="document.getElementById('portada').click()">
+                                <i class="fas fa-upload"></i> Seleccionar
+                            </button>
+                            <input type="text" id="file-name" class="form-control"
+                                placeholder="Ningún archivo" readonly>
+                            <input type="file" name="portada" id="portada"
+                                class="d-none" accept="image/*"
+                                onchange="updateFileName(this)">
+                        </div>
+                        <small class="text-muted">Dejar vacío para mantener la portada actual.</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-guardar w-100">
+                    <i class="fas fa-save me-2"></i> Guardar
+                </button>
+
+            </div>
+
         </div>
-    </div>
+
+    </form>
+
 </div>
 
 <script>
@@ -264,7 +349,7 @@
         if (input.files.length > 0) {
             fileNameField.value = input.files[0].name;
         } else {
-            fileNameField.value = "Ningún archivo seleccionado";
+            fileNameField.value = 'Ningún archivo';
         }
     }
 

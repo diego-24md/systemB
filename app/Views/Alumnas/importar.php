@@ -227,6 +227,10 @@
                         class="d-none" required onchange="mostrarNombre(this)">
                 </div>
 
+                <button type="submit" class="btn btn-guardar w-100">
+                    <i class="fas fa-upload me-2"></i> Importar alumnas
+                </button>
+
             </div>
 
             <!-- Columna derecha -->
@@ -268,14 +272,6 @@
                 </div>
 
             </div>
-        </div>
-
-        <!-- Botones -->
-        <div class="d-flex gap-2 mt-2">
-            <button type="submit" class="btn btn-guardar">
-                <i class="fas fa-upload me-2"></i> Importar alumnas
-            </button>
-            <a href="<?= base_url('alumnas') ?>" class="btn btn-cancelar">Cancelar</a>
         </div>
     </form>
 </div>
