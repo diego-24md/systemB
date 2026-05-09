@@ -11,22 +11,23 @@ class Home extends BaseController
         $librosModel = new LibrosModel();
         $db = \Config\Database::connect();
 
-        // 📚 Total libros
+        // Total libros
         $totalLibros = $librosModel->countAll();
 
-        // 📦 Libros prestados (no devueltos)
+        // Libros prestados (no devueltos)
         $prestados = $db->table('prestamos')
             ->where('devolucion IS NULL', null, false)
             ->countAllResults();
 
-        // 📖 Disponibles (aprox: activos - prestados)
-        $disponibles = $db->table('activos')
-            ->selectSum('cantidad_disponible')
+        // Disponibles — solo activos que tienen un recurso existente
+        $disponibles = $db->table('activos a')
+            ->selectSum('a.cantidad_disponible')
+            ->join('recursos r', 'r.titulo = a.titulo', 'inner')
             ->get()
             ->getRow()
-            ->cantidad_disponible;
+            ->cantidad_disponible ?? 0;
 
-        // 👥 Alumnas
+        // Alumnas
         $usuarios = $db->table('alumnas')->countAllResults();
 
         return view('dashboard', [

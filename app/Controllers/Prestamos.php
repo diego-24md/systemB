@@ -111,24 +111,26 @@ class Prestamos extends BaseController
 
     public function buscarLibros()
     {
-        $q = $this->request->getGet('q');
+        $q  = $this->request->getGet('q');
+        $db = \Config\Database::connect();
 
-        $data = $this->activosModel
-            ->select('idactivo, titulo, autor, cantidad_disponible, foto')
+        $data = $db->table('activos a')
+            ->select('a.idactivo, a.titulo, a.autor, a.cantidad_disponible, a.foto, c.categoria')
+            ->join('categorias c', 'c.idcategoria = a.idcategoria', 'left')
             ->groupStart()
-            ->like('titulo', $q)
-            ->orLike('autor', $q)
+            ->like('a.titulo', $q)
+            ->orLike('a.autor', $q)
             ->groupEnd()
-            ->where('estado', 'disponible')
-            ->where('cantidad_disponible >', 0)
-            ->findAll(10);
+            ->where('a.estado', 'disponible')
+            ->where('a.cantidad_disponible >', 0)
+            ->limit(10)
+            ->get()
+            ->getResultArray();
 
         foreach ($data as &$row) {
-            if (!empty($row['foto'])) {
-                $row['foto_url'] = base_url('public/uploads/portadas/' . $row['foto']);
-            } else {
-                $row['foto_url'] = base_url('assets/img/default-book.png');
-            }
+            $row['foto_url'] = !empty($row['foto'])
+                ? base_url('uploads/portadas/' . $row['foto'])
+                : base_url('img/default-book.jpg');
         }
 
         return $this->response->setJSON($data);

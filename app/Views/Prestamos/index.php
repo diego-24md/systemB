@@ -218,21 +218,20 @@
 
                     <select id="libro-select" name="idactivo" placeholder="Buscar libro..." required></select>
 
-                    <!-- 👇 AQUÍ VA EL PREVIEW -->
-                    <div id="libro-preview" style="display:none; margin-top:10px; padding:12px; border:1px solid #e2e8f0; border-radius:8px; display:flex; gap:10px; align-items:center;">
+                    <div id="libro-preview" style="margin-top:10px; padding:12px; border:1px solid #e2e8f0; border-radius:8px; display:flex; gap:10px; align-items:center;">
 
-                        <img id="libro-img"
-                            src=""
-                            style="width:70px; height:90px; object-fit:cover; border-radius:6px;">
+    <img id="libro-img"
+        src="<?= base_url('img/default-book.jpg') ?>"
+        style="width:70px; height:90px; object-fit:cover; border-radius:6px;">
 
-                        <div>
-                            <div id="libro-title" style="font-weight:600;"></div>
-                            <div id="libro-author" style="font-size:12px; color:#64748b;"></div>
-                            <div id="libro-category" style="font-size:12px; color:#94a3b8;"></div>
-                            <div id="libro-stock" style="font-size:12px;"></div>
-                        </div>
+    <div>
+        <div id="libro-title" style="font-weight:600; color:#475569;">Selecciona un libro</div>
+        <div id="libro-author" style="font-size:12px; color:#64748b;">Autor: —</div>
+        <div id="libro-category" style="font-size:12px; color:#64748b;">Categoría: —</div>
+        <div id="libro-stock" style="font-size:12px; color:#64748b;">— disponibles</div>
+    </div>
 
-                    </div>
+</div>
                 </div>
 
                 <!-- Fecha entrega -->
@@ -328,7 +327,7 @@
 <?= $footer ?>
 
 <script>
-    const defaultImg = "<?= base_url('assets/img/default-book.png') ?>";
+    const defaultImg = "<?= base_url('img/default-book.jpg') ?>";
 
     // Buscar alumna por DNI
     let buscarTimeout;
@@ -387,55 +386,50 @@
                 .catch(() => callback());
         },
 
+        // ✅ Ahora usa this.options[value] en lugar de hacer un segundo fetch
         onChange: function(value) {
             if (!value) return;
 
-            fetch(`<?= base_url('prestamos/buscar-libros?q=') ?>` + value)
-                .then(res => res.json())
-                .then(data => {
-                    const libro = data.find(l => l.idactivo == value);
-                    if (!libro) return;
+            const libro = this.options[value];
+            if (!libro) return;
 
-                    // Mostrar preview
-                    document.getElementById('libro-preview').style.display = 'flex';
-                    document.getElementById('libro-title').textContent = libro.titulo;
-                    document.getElementById('libro-author').textContent = "Autor: " + (libro.autor || '—');
-                    document.getElementById('libro-category').textContent = "Categoría: " + (libro.categoria || '—');
+            // Mostrar preview
+            document.getElementById('libro-preview').style.display = 'flex';
+            document.getElementById('libro-title').textContent = libro.titulo;
+            document.getElementById('libro-author').textContent = "Autor: " + (libro.autor || '—');
+            document.getElementById('libro-category').textContent = "Categoría: " + (libro.categoria || '—');
 
-                    // 🚫 BLOQUEAR si no hay stock
-                    if (libro.cantidad_disponible <= 0) {
-                        document.getElementById('libro-stock').innerHTML = `<span style="color:red;font-weight:600;">Sin stock</span>`;
-                        this.clear(); // evita selección
-                        alert("Este libro no tiene stock disponible");
-                        return;
-                    } else {
-                        document.getElementById('libro-stock').textContent =
-                            `${libro.cantidad_disponible} disponibles`;
-                    }
+            // 🚫 BLOQUEAR si no hay stock
+            if (libro.cantidad_disponible <= 0) {
+                document.getElementById('libro-stock').innerHTML = `<span style="color:red;font-weight:600;">Sin stock</span>`;
+                this.clear();
+                alert("Este libro no tiene stock disponible");
+                return;
+            } else {
+                document.getElementById('libro-stock').textContent =
+                    `${libro.cantidad_disponible} disponibles`;
+            }
 
-                    // 📦 Imagen con fallback + preload
-                    const img = new Image();
-                    const imageUrl = libro.foto_url || defaultImg;
+            // 📦 Imagen con fallback + preload
+            const img = new Image();
+            const imageUrl = libro.foto_url || defaultImg;
 
-                    console.log('=== DEBUG IMAGEN ===');
-                    console.log('Nombre en BD:', libro.foto);
-                    console.log('URL completa:', imageUrl);
+            img.src = imageUrl;
 
-                    img.src = imageUrl;
+            img.onload = () => {
+                document.getElementById('libro-img').src = img.src;
+            };
 
-                    img.onload = () => {
-                        document.getElementById('libro-img').src = img.src;
-                        console.log('✅ Imagen cargada correctamente');
-                    };
-
-                    img.onerror = () => {
-                        console.log('❌ Falló la carga de la imagen:', imageUrl);
-                        document.getElementById('libro-img').src = defaultImg;
-                    };
-                });
+            img.onerror = () => {
+                document.getElementById('libro-img').src = defaultImg;
+            };
         },
 
         render: {
+            no_results: function(data, escape) {
+                return '<div class="no-results">No se encontró el libro</div>';
+            },
+
             option: function(data, escape) {
                 return `
                 <div>

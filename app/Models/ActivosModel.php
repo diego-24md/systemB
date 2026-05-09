@@ -16,6 +16,7 @@ class ActivosModel extends Model
         'cantidad_total',
         'cantidad_disponible',
         'estado',
+        'foto',
     ];
     protected $useTimestamps = true;
 

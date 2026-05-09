@@ -136,6 +136,8 @@ class Libros extends BaseController
                 'cantidad_total'      => $cantidad,
                 'cantidad_disponible' => $cantidad,
                 'estado'              => 'disponible',
+                'autor'               => implode(', ', array_filter(array_map('trim', (array)$this->request->getPost('autores')))),
+                'foto'                => $nombreImagen,
             ]);
         }
 
@@ -351,7 +353,15 @@ class Libros extends BaseController
     // ====================== ELIMINAR ======================
     public function eliminar($id)
     {
+        $libro = $this->librosModel->find($id);
+
         $this->db->table('recurso_autor')->where('idrecurso', $id)->delete();
+
+        // Eliminar activo relacionado
+        if ($libro) {
+            $this->db->table('activos')->where('titulo', $libro['titulo'])->delete();
+        }
+
         $this->librosModel->delete($id);
 
         \App\Models\NotificacionesModel::registrar(
@@ -361,7 +371,6 @@ class Libros extends BaseController
             'danger'
         );
 
-        return redirect()->to('/libros')
-            ->with('success', 'Libro eliminado');
+        return redirect()->to('/libros')->with('success', 'Libro eliminado');
     }
 }
