@@ -14,9 +14,11 @@ class NotificacionesModel extends Model
         'icono',
         'color',
         'leida',
+        'created_at',
     ];
     protected $useTimestamps = true;
     protected $updatedField  = '';
+    protected $dateFormat    = 'datetime';
 
     public function getNoLeidas()
     {
@@ -33,13 +35,17 @@ class NotificacionesModel extends Model
 
     public static function registrar(string $tipo, string $mensaje, string $icono = 'fas fa-bell', string $color = 'primary')
     {
+        $lima = new \DateTimeZone('America/Lima');
+        $now  = new \DateTime('now', $lima);
+
         $model = new self();
         $model->insert([
-            'tipo'    => $tipo,
-            'mensaje' => $mensaje,
-            'icono'   => $icono,
-            'color'   => $color,
-            'leida'   => 0,
+            'tipo'       => $tipo,
+            'mensaje'    => $mensaje,
+            'icono'      => $icono,
+            'color'      => $color,
+            'leida'      => 0,
+            'created_at' => $now->format('Y-m-d H:i:s'),
         ]);
     }
 }

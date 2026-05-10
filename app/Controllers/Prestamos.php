@@ -105,7 +105,7 @@ class Prestamos extends BaseController
             'estado'           => 'activo',
         ]);
 
-        // ✅ Notificación
+        // Notificación
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Préstamo registrado: ' . $activo['titulo'] . ' → ' . $alumna['nombre'],
@@ -116,7 +116,7 @@ class Prestamos extends BaseController
         // Descontar stock
         $db->table('activos')
             ->set('cantidad_disponible', 'cantidad_disponible - 1', false)
-            ->set("estado", "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
+            ->set('estado', "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
             ->where('idactivo', $idactivo)
             ->update();
 
@@ -135,7 +135,9 @@ class Prestamos extends BaseController
 
     public function devolver($id)
     {
-        $db = \Config\Database::connect();
+        $db   = \Config\Database::connect();
+        $lima = new \DateTimeZone('America/Lima');
+        $now  = new \DateTime('now', $lima);
 
         $prestamo = $db->table('prestamos')
             ->where('idprestamo', $id)
@@ -147,29 +149,45 @@ class Prestamos extends BaseController
         }
 
         // Calcular minutos
-        $horaEntrega    = new \DateTime($prestamo['entrega'] . ' ' . $prestamo['hora_entrega']);
-        $horaDevolucion = new \DateTime(date('Y-m-d') . ' ' . date('H:i:s'));
-        $diff           = $horaEntrega->diff($horaDevolucion);
+        $horaEntrega = new \DateTime($prestamo['entrega'] . ' ' . $prestamo['hora_entrega'], $lima);
+        $minutos     = (int) round(($now->getTimestamp() - $horaEntrega->getTimestamp()) / 60);
+        $diff           = $horaEntrega->diff($now);
         $minutos        = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+
+        // Obtener datos para la notificación
+        $detalle = $db->table('prestamos p')
+            ->select('ac.titulo, a.nombre')
+            ->join('alumnas a', 'a.id = p.idalumna', 'left')
+            ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
+            ->where('p.idprestamo', $id)
+            ->get()->getRowArray();
+
+        // Notificación
+        \App\Models\NotificacionesModel::registrar(
+            'prestamo',
+            'Devolución: ' . ($detalle['titulo'] ?? '—') . ' → ' . ($detalle['nombre'] ?? '—'),
+            'fas fa-undo',
+            'success'
+        );
 
         // Actualizar préstamo
         $db->table('prestamos')
             ->where('idprestamo', $id)
             ->update([
-                'devolucion'      => date('Y-m-d'),
-                'hora_devolucion' => date('H:i:s'),
+                'devolucion'      => $now->format('Y-m-d'),
+                'hora_devolucion' => $now->format('H:i:s'),
                 'minutos'         => $minutos,
                 'estado'          => 'devuelto',
             ]);
 
-        // Devolver stock
+        // Devolver stock sin false en estado
         $db->table('activos')
             ->set('cantidad_disponible', 'cantidad_disponible + 1', false)
-            ->set('estado', 'disponible', false)
+            ->set('estado', 'disponible')
             ->where('idactivo', $prestamo['idactivo'])
             ->update();
 
-        return redirect()->to(base_url('prestamos'))
+        return redirect()->to(base_url('prestamos/devoluciones'))
             ->with('success', 'Devolución registrada correctamente.');
     }
 

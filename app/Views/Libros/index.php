@@ -49,7 +49,38 @@
         letter-spacing: 0.08em;
         color: #94a3b8;
         text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .buscador-wrapper {
+        position: relative;
+        max-width: 420px;
         margin-bottom: 20px;
+    }
+
+    .buscador-wrapper i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 0.88rem;
+    }
+
+    .buscador-wrapper input {
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        padding: 10px 14px 10px 38px;
+        color: #475569;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .buscador-wrapper input:focus {
+        border-color: #1e3a5f;
+        box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
     }
 
     .book-card {
@@ -193,11 +224,25 @@
         font-size: 0.88rem;
         margin: 0;
     }
+
+    .no-resultados {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+        font-size: 0.88rem;
+    }
+
+    .no-resultados i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+    }
 </style>
 
 <div class="container-fluid px-4 py-4">
 
-    <div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="d-flex justify-content-between align-items-start mb-3">
         <div>
             <div class="page-title">Gestión de Libros</div>
             <div class="page-subtitle">Catálogo de recursos bibliográficos</div>
@@ -207,13 +252,22 @@
         </a>
     </div>
 
+    <!-- Buscador fuera del panel -->
+    <div class="buscador-wrapper mb-4" style="max-width: 600px;">
+        <i class="fas fa-search"></i>
+        <input type="text" id="buscador-libros" placeholder="Buscar por título, autor o ISBN...">
+    </div>
+
     <div class="panel">
         <div class="panel-label">Catálogo</div>
 
         <?php if (!empty($libros)): ?>
-            <div class="row g-3">
+            <div class="row g-3" id="grid-libros">
                 <?php foreach ($libros as $libro): ?>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="col-md-6 col-lg-4 col-xl-3 libro-col"
+                        data-titulo="<?= strtolower(esc((string)$libro['titulo'])) ?>"
+                        data-autor="<?= strtolower(esc((string)($libro['autores'] ?? ''))) ?>"
+                        data-isbn="<?= strtolower(esc((string)($libro['isbn'] ?? ''))) ?>">
                         <div class="book-card">
 
                             <div class="cover-area">
@@ -265,6 +319,11 @@
                 <?php endforeach; ?>
             </div>
 
+            <div class="no-resultados" id="no-resultados">
+                <i class="fas fa-search"></i>
+                No se encontraron libros con ese criterio
+            </div>
+
         <?php else: ?>
             <div class="empty-state">
                 <i class="fas fa-book-open"></i>
@@ -278,6 +337,23 @@
 <?= $footer ?>
 
 <script>
+    document.getElementById('buscador-libros').addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        const cols = document.querySelectorAll('.libro-col');
+        let visibles = 0;
+
+        cols.forEach(col => {
+            const titulo = col.dataset.titulo ?? '';
+            const autor = col.dataset.autor ?? '';
+            const isbn = col.dataset.isbn ?? '';
+            const match = titulo.includes(q) || autor.includes(q) || isbn.includes(q);
+            col.style.display = match ? '' : 'none';
+            if (match) visibles++;
+        });
+
+        document.getElementById('no-resultados').style.display = visibles === 0 ? 'block' : 'none';
+    });
+
     function confirmarEliminar(id, titulo) {
         Swal.fire({
             title: '¿Eliminar libro?',

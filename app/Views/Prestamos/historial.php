@@ -199,7 +199,7 @@
                     <th>Libro</th>
                     <th>Hora Entrega</th>
                     <th>Hora Devolución</th>
-                    <th>Minutos</th>
+                    <th>Duración</th>
                     <th>Condición</th>
                     <th>Estado</th>
                 </tr>
@@ -222,8 +222,18 @@
                             <td><?= esc((string)$p['hora_entrega']) ?></td>
                             <td><?= esc((string)$p['hora_devolucion']) ?></td>
                             <td>
+                                <?php
+                                $min = (int)$p['minutos'];
+                                if ($min >= 60) {
+                                    $horas = floor($min / 60);
+                                    $restoMin = $min % 60;
+                                    $tiempoTexto = $horas . 'h' . ($restoMin > 0 ? ' ' . $restoMin . 'min' : '');
+                                } else {
+                                    $tiempoTexto = $min . ' min';
+                                }
+                                ?>
                                 <span class="minutos-badge">
-                                    <i class="fas fa-clock me-1"></i><?= esc((string)$p['minutos']) ?> min
+                                    <i class="fas fa-clock me-1"></i><?= $tiempoTexto ?>
                                 </span>
                             </td>
                             <td>
