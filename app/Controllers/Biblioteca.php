@@ -17,16 +17,20 @@ class Biblioteca extends BaseController
         $libros = $this->db->table('recursos r')
             ->select('
                 r.*,
-                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores
+                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+                c.categoria,
+                c.idcategoria
             ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
+            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->groupBy('r.idrecurso')
             ->get()
             ->getResultArray();
 
         $data['libros'] = array_map(function ($libro) {
-            $libro['autores'] = (string)($libro['autores'] ?? 'Sin autor');
+            $libro['autores']   = (string)($libro['autores']   ?? 'Sin autor');
+            $libro['categoria'] = (string)($libro['categoria'] ?? '');
             return $libro;
         }, $libros);
 
@@ -45,10 +49,13 @@ class Biblioteca extends BaseController
         $resultados = $this->db->table('recursos r')
             ->select('
                 r.*,
-                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores
+                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+                c.categoria,
+                c.idcategoria
             ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
+            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->groupStart()
             ->like('r.titulo', $q)
             ->orLike('r.isbn', $q)
@@ -60,14 +67,14 @@ class Biblioteca extends BaseController
             ->getResultArray();
 
         $resultados = array_map(function ($r) {
-            $r['autores'] = (string)($r['autores'] ?? 'Sin autor');
+            $r['autores']   = (string)($r['autores']   ?? 'Sin autor');
+            $r['categoria'] = (string)($r['categoria'] ?? '');
             return $r;
         }, $resultados);
 
         return $this->response->setJSON($resultados);
     }
 
-    // ====================== DETALLE ======================
     // ====================== DETALLE ======================
     public function detalle($id)
     {
@@ -100,6 +107,20 @@ class Biblioteca extends BaseController
         $libro['autores']          = (string)($libro['autores'] ?? 'Sin autor');
         $libro['total_ejemplares'] = (int)($activo['cantidad_total'] ?? 0);
         $libro['disponibles']      = (int)($activo['cantidad_disponible'] ?? 0);
+
+        // Otros libros disponibles de la misma categoría
+        $data['relacionados'] = $this->db->table('recursos r')
+            ->select('r.idrecurso, r.titulo, r.portada, GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores, act.cantidad_disponible')
+            ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
+            ->join('autores a', 'a.idautor = ra.idautor', 'left')
+            ->join('activos act', 'act.titulo = r.titulo', 'left')
+            ->where('r.idcategoria', $libro['idcategoria'])
+            ->where('r.idrecurso !=', $id)
+            ->where('act.cantidad_disponible >', 0)
+            ->groupBy('r.idrecurso')
+            ->limit(8)
+            ->get()
+            ->getResultArray();
 
         $data['libro'] = $libro;
 
