@@ -102,7 +102,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="http://localhost:8080/">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-book-open"></i>
                 </div>
@@ -115,8 +115,9 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="http://localhost:8080/">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <i class="fas fa-fw fa-laptop"></i>
+                    <span>Pantalla de Inicio</span>
+                </a>
             </li>
 
             <!-- Divider -->
@@ -311,7 +312,7 @@
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= session()->get('nombre') ?? 'Bibliotecario' ?></span>
                                 <img
                                     class="img-profile rounded-circle"
-                                    src="<?= base_url('uploads/perfiles/' . (session()->get('foto') ?? '1778168204_5dcdf5ba90d9177c6739.png')) ?>">
+                                    src="<?= base_url('uploads/perfiles/' . (session()->get('foto') ?? '1778464600_f7b210370f41367cd830.png')) ?>">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

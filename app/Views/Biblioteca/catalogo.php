@@ -52,9 +52,52 @@
             margin-top: 2px;
         }
 
-        /* ===== MENÚ DE USUARIO (esquina superior derecha) ===== */
-        .user-menu-wrap {
+        .header-actions {
             margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ===== BOTÓN FAVORITOS EN HEADER ===== */
+        .btn-fav-header {
+            position: relative;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 17px;
+            transition: background 0.2s;
+        }
+
+        .btn-fav-header:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        .fav-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: white;
+            color: #b8001e;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== MENÚ DE USUARIO ===== */
+        .user-menu-wrap {
             position: relative;
         }
 
@@ -82,7 +125,6 @@
             font-size: 18px;
         }
 
-        /* Dropdown */
         .user-dropdown {
             display: none;
             position: absolute;
@@ -92,7 +134,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             min-width: 190px;
-            z-index: 100;
+            z-index: 200;
             overflow: hidden;
             animation: fadeDown 0.18s ease;
         }
@@ -145,6 +187,201 @@
             background: #fff5f5;
         }
 
+        /* ==================== DRAWER FAVORITOS ==================== */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 300;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 380px;
+            max-width: 95vw;
+            height: 100%;
+            background: white;
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .drawer-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f1f1f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .drawer-header h2 i {
+            color: #b8001e;
+        }
+
+        .drawer-close {
+            background: #f1f3f5;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #555;
+            transition: background 0.15s;
+        }
+
+        .drawer-close:hover {
+            background: #e2e6ea;
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .drawer-vacio {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #aaa;
+            font-size: 14px;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .drawer-vacio i {
+            font-size: 2.5rem;
+            color: #ddd;
+        }
+
+        /* Tarjeta de favorito en el drawer */
+        .fav-drawer-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: background 0.15s;
+        }
+
+        .fav-drawer-item:hover {
+            background: #f8f9fa;
+        }
+
+        .fav-drawer-cover {
+            width: 52px;
+            height: 68px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #f0f0f0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fav-drawer-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fav-drawer-cover i {
+            font-size: 1.5rem;
+            color: #ccc;
+        }
+
+        .fav-drawer-info {
+            flex: 1;
+        }
+
+        .fav-drawer-titulo {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #1f1f1f;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .fav-drawer-autor {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .fav-drawer-btn {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            background: #b8001e;
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .fav-drawer-btn:hover {
+            background: #8f0017;
+        }
+
+        .fav-drawer-remove {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.15s;
+            flex-shrink: 0;
+        }
+
+        .fav-drawer-remove:hover {
+            color: #b8001e;
+        }
+
         /* ==================== MAIN ==================== */
         .main {
             max-width: 1080px;
@@ -162,14 +399,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .section-label i {
-            font-size: 14px;
-        }
-
-        .section-label i.fa-heart {
-            color: #b8001e;
         }
 
         /* ==================== BUSCADOR ==================== */
@@ -235,7 +464,6 @@
             border-color: #ddd;
         }
 
-        /* Botón corazón sobre la portada */
         .btn-fav {
             position: absolute;
             top: 10px;
@@ -265,12 +493,6 @@
             color: #b8001e;
         }
 
-        .btn-fav.activo i {
-            font-weight: 900;
-            /* fa-solid */
-        }
-
-        /* Portada */
         .book-cover {
             height: 240px;
             background: #f8f9fa;
@@ -278,7 +500,6 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
         }
 
         .book-cover img {
@@ -297,7 +518,6 @@
             color: #ccc;
         }
 
-        /* Info */
         .book-info {
             padding: 16px;
             flex: 1;
@@ -345,21 +565,6 @@
             box-shadow: 0 4px 12px rgba(184, 0, 30, 0.3);
         }
 
-        /* ===== SECCIÓN FAVORITOS ===== */
-        .seccion-favoritos {
-            margin-bottom: 48px;
-        }
-
-        .favoritos-vacio {
-            color: #aaa;
-            font-size: 14px;
-            padding: 24px 0 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* No resultados */
         .no-resultados {
             color: #888;
             font-size: 15px;
@@ -368,7 +573,6 @@
             grid-column: 1 / -1;
         }
 
-        /* ==================== RESPONSIVE ==================== */
         @media (max-width: 640px) {
             .books-grid {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -383,7 +587,10 @@
                 display: none;
             }
 
-            /* Solo ícono en móvil */
+            .drawer {
+                width: 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -391,9 +598,6 @@
 <body>
 
     <?php
-    // ─── PROTECCIÓN: Solo alumnas registradas ───────────────────────────────────
-    // Si no hay sesión activa, redirige al login.
-    // Ajusta 'alumna_id' al nombre que usas al guardar la sesión en tu login.
     if (! session()->get('alumna_id')) {
         return redirect()->to(base_url('login'));
     }
@@ -403,6 +607,22 @@
     $libros       = $libros ?? [];
     ?>
 
+    <!-- ==================== DRAWER FAVORITOS ==================== -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <div class="drawer" id="drawerFav">
+        <div class="drawer-header">
+            <h2><i class="fa-solid fa-heart"></i> Mis favoritos <span id="drawer-count" style="font-size:13px;color:#888;font-weight:400;"></span></h2>
+            <button class="drawer-close" id="drawerClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-body" id="drawerBody">
+            <div class="drawer-vacio" id="drawerVacio">
+                <i class="fa-regular fa-heart"></i>
+                <p>Aún no tienes favoritos.<br>¡Presiona el corazón en cualquier libro!</p>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== HEADER ==================== -->
     <div class="header">
         <img src="<?= base_url('/img/insignia.jpg') ?>" alt="Logo">
@@ -411,23 +631,30 @@
             <p>Biblioteca escolar</p>
         </div>
 
-        <!-- Menú de usuario -->
-        <div class="user-menu-wrap">
-            <button class="user-btn" id="userBtn" aria-expanded="false">
-                <i class="fa-solid fa-circle-user"></i>
-                <span><?= htmlspecialchars($alumnaNombre) ?></span>
-                <i class="fa-solid fa-chevron-down" style="font-size:11px; opacity:0.7;"></i>
+        <div class="header-actions">
+            <!-- Botón favoritos -->
+            <button class="btn-fav-header" id="btnAbrirFav" title="Mis favoritos">
+                <i class="fa-solid fa-heart"></i>
+                <span class="fav-badge" id="favBadge"></span>
             </button>
 
-            <div class="user-dropdown" id="userDropdown">
-                <div class="dropdown-header">
-                    <span>Conectada como</span>
-                    <strong><?= htmlspecialchars($alumnaNombre) ?></strong>
+            <!-- Menú de usuario -->
+            <div class="user-menu-wrap">
+                <button class="user-btn" id="userBtn" aria-expanded="false">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span><?= htmlspecialchars($alumnaNombre) ?></span>
+                    <i class="fa-solid fa-chevron-down" style="font-size:11px;opacity:0.7;"></i>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span>Conectada como</span>
+                        <strong><?= htmlspecialchars($alumnaNombre) ?></strong>
+                    </div>
+                    <a href="<?= base_url('alumnas/logout') ?>" class="dropdown-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Cerrar sesión
+                    </a>
                 </div>
-                <a href="<?= base_url('alumnas/logout') ?>" class="dropdown-logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    Cerrar sesión
-                </a>
             </div>
         </div>
     </div>
@@ -435,41 +662,26 @@
     <!-- ==================== CONTENIDO ==================== -->
     <div class="main">
 
-        <!-- Buscador -->
         <p class="section-label">Buscar libros</p>
         <div class="search-wrap">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="buscador" placeholder="Buscar">
         </div>
 
-        <!-- Resultados de búsqueda -->
         <div id="resultados" class="books-grid" style="margin-bottom: 32px;"></div>
 
-        <!-- ===== SECCIÓN FAVORITOS ===== -->
-        <div class="seccion-favoritos" id="seccionFavoritos">
-            <p class="section-label">
-                <i class="fa-solid fa-heart"></i> Libros Favoritos
-            </p>
-            <div class="books-grid" id="gridFavoritos">
-                <p class="favoritos-vacio" id="msgFavVacio">
-                    <i class="fa-regular fa-heart"></i>
-                    Aún no tienes libros favoritos. ¡Presiona el corazón en cualquier libro!
-                </p>
-            </div>
-        </div>
-
-        <!-- ===== SECCIÓN RECOMENDADOS ===== -->
-        <p class="section-label" id="label-recomendados">Recomendados</p>
+        <p class="section-label" id="label-recomendados">Todos los libros</p>
         <div class="books-grid" id="grid">
-
             <?php if (!empty($libros)): ?>
                 <?php foreach ($libros as $libro): ?>
                     <div class="book-card"
                         data-id="<?= (int)($libro['idrecurso'] ?? 0) ?>"
                         data-titulo="<?= strtolower(esc((string)($libro['titulo'] ?? ''))) ?>"
-                        data-autor="<?= strtolower(esc((string)($libro['autores'] ?? ''))) ?>">
+                        data-autor="<?= strtolower(esc((string)($libro['autores'] ?? ''))) ?>"
+                        data-portada="<?= esc((string)($libro['portada'] ?? '')) ?>"
+                        data-autortxt="<?= esc((string)($libro['autores'] ?? 'Sin autor')) ?>"
+                        data-titulotxt="<?= esc((string)($libro['titulo'] ?? '')) ?>">
 
-                        <!-- Botón favorito -->
                         <button class="btn-fav" data-id="<?= (int)($libro['idrecurso'] ?? 0) ?>" title="Agregar a favoritos">
                             <i class="fa-regular fa-heart"></i>
                         </button>
@@ -491,7 +703,6 @@
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
-
         </div>
 
     </div>
@@ -501,7 +712,7 @@
         const userBtn = document.getElementById('userBtn');
         const userDropdown = document.getElementById('userDropdown');
 
-        userBtn.addEventListener('click', (e) => {
+        userBtn.addEventListener('click', e => {
             e.stopPropagation();
             const open = userDropdown.classList.toggle('open');
             userBtn.setAttribute('aria-expanded', open);
@@ -512,12 +723,33 @@
             userBtn.setAttribute('aria-expanded', false);
         });
 
-        // ─── BUSCADOR ───────────────────────────────────────────────────────
+        // ─── DRAWER FAVORITOS ────────────────────────────────────────────────
+        const drawerFav = document.getElementById('drawerFav');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerBody = document.getElementById('drawerBody');
+        const drawerVacio = document.getElementById('drawerVacio');
+        const drawerCount = document.getElementById('drawer-count');
+        const favBadge = document.getElementById('favBadge');
+
+        document.getElementById('btnAbrirFav').addEventListener('click', e => {
+            e.stopPropagation();
+            drawerFav.classList.add('open');
+            drawerOverlay.classList.add('open');
+        });
+
+        document.getElementById('drawerClose').addEventListener('click', cerrarDrawer);
+        drawerOverlay.addEventListener('click', cerrarDrawer);
+
+        function cerrarDrawer() {
+            drawerFav.classList.remove('open');
+            drawerOverlay.classList.remove('open');
+        }
+
+        // ─── BUSCADOR ────────────────────────────────────────────────────────
         const input = document.getElementById('buscador');
         const resultados = document.getElementById('resultados');
         const grid = document.getElementById('grid');
         const labelRecom = document.getElementById('label-recomendados');
-        const secFav = document.getElementById('seccionFavoritos');
 
         input.addEventListener('input', function() {
             const q = this.value.trim();
@@ -526,13 +758,11 @@
                 resultados.innerHTML = '';
                 grid.style.display = '';
                 labelRecom.style.display = '';
-                secFav.style.display = '';
                 return;
             }
 
             grid.style.display = 'none';
             labelRecom.style.display = 'none';
-            secFav.style.display = 'none';
 
             fetch("<?= base_url('buscar-libros') ?>?q=" + encodeURIComponent(q))
                 .then(res => res.json())
@@ -546,9 +776,12 @@
                         return;
                     }
                     resultados.innerHTML = data.map(libro => `
-                        <div class="book-card" data-id="${libro.idrecurso}">
+                        <div class="book-card" data-id="${libro.idrecurso}"
+                            data-portada="${libro.portada ?? ''}"
+                            data-autortxt="${libro.autores ?? 'Sin autor'}"
+                            data-titulotxt="${libro.titulo}">
                             <button class="btn-fav ${favIds.has(Number(libro.idrecurso)) ? 'activo' : ''}"
-                                    data-id="${libro.idrecurso}" title="Agregar a favoritos">
+                                    data-id="${libro.idrecurso}">
                                 <i class="fa-${favIds.has(Number(libro.idrecurso)) ? 'solid' : 'regular'} fa-heart"></i>
                             </button>
                             <div class="book-cover">
@@ -563,7 +796,6 @@
                             </div>
                         </div>
                     `).join('');
-                    // Activar corazones en los resultados recién pintados
                     bindFavButtons(resultados);
                 })
                 .catch(() => {
@@ -571,22 +803,20 @@
                 });
         });
 
-        // ─── FAVORITOS ──────────────────────────────────────────────────────
-        const gridFavoritos = document.getElementById('gridFavoritos');
-        const msgFavVacio = document.getElementById('msgFavVacio');
-        let favIds = new Set(); // IDs de libros favoritos de esta alumna
+        // ─── FAVORITOS ────────────────────────────────────────────────────────
+        let favIds = new Set();
+        let favDatos = {}; // cache de datos de libros favoritos
 
-        // Cargar IDs favoritos al inicio
         fetch("<?= base_url('favoritos/ids') ?>")
             .then(res => res.json())
             .then(ids => {
                 favIds = new Set(ids.map(Number));
                 marcarCorazones();
-                renderFavoritos();
+                actualizarBadge();
+                renderDrawer();
             })
             .catch(() => {});
 
-        // Marca los corazones de los libros ya en favoritos
         function marcarCorazones() {
             document.querySelectorAll('.btn-fav').forEach(btn => {
                 const id = Number(btn.dataset.id);
@@ -607,36 +837,82 @@
             btn.title = 'Agregar a favoritos';
         }
 
-        // Renderiza la sección de favoritos leyendo las tarjetas del grid principal
-        function renderFavoritos() {
-            // Limpiar (excepto el mensaje vacío)
-            Array.from(gridFavoritos.children).forEach(el => {
-                if (el.id !== 'msgFavVacio') el.remove();
+        function actualizarBadge() {
+            const n = favIds.size;
+            if (n > 0) {
+                favBadge.textContent = n;
+                favBadge.style.display = 'flex';
+            } else {
+                favBadge.style.display = 'none';
+            }
+            drawerCount.textContent = n > 0 ? `(${n})` : '';
+        }
+
+        function renderDrawer() {
+            // Limpiar items anteriores
+            Array.from(drawerBody.children).forEach(el => {
+                if (el.id !== 'drawerVacio') el.remove();
             });
 
             if (favIds.size === 0) {
-                msgFavVacio.style.display = '';
+                drawerVacio.style.display = 'flex';
                 return;
             }
-            msgFavVacio.style.display = 'none';
+
+            drawerVacio.style.display = 'none';
 
             favIds.forEach(id => {
-                // Clonar la tarjeta del grid principal
-                const original = grid.querySelector(`.book-card[data-id="${id}"]`);
-                if (!original) return;
-                const clone = original.cloneNode(true);
-                bindFavButtons(clone); // re-bindear eventos en el clon
-                gridFavoritos.appendChild(clone);
+                // Buscar datos del libro en el grid o en el cache
+                let datos = favDatos[id];
+                if (!datos) {
+                    const card = document.querySelector(`.book-card[data-id="${id}"]`);
+                    if (card) {
+                        datos = {
+                            titulo: card.dataset.titulotxt || '—',
+                            autor: card.dataset.autortxt || 'Sin autor',
+                            portada: card.dataset.portada || '',
+                            id: id
+                        };
+                        favDatos[id] = datos;
+                    }
+                }
+
+                if (!datos) return;
+
+                const portadaHtml = datos.portada ?
+                    `<img src="/uploads/portadas/${datos.portada}" alt="${datos.titulo}">` :
+                    `<i class="fas fa-book"></i>`;
+
+                const item = document.createElement('div');
+                item.className = 'fav-drawer-item';
+                item.dataset.id = id;
+                item.innerHTML = `
+                    <div class="fav-drawer-cover">${portadaHtml}</div>
+                    <div class="fav-drawer-info">
+                        <div class="fav-drawer-titulo">${datos.titulo}</div>
+                        <div class="fav-drawer-autor">${datos.autor}</div>
+                        <a href="/biblioteca/detalle/${id}" class="fav-drawer-btn">Ver detalle</a>
+                    </div>
+                    <button class="fav-drawer-remove" data-id="${id}" title="Quitar de favoritos">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+
+                item.querySelector('.fav-drawer-remove').addEventListener('click', () => {
+                    toggleFavorito(id);
+                });
+
+                drawerBody.appendChild(item);
             });
         }
 
-        // Asigna eventos a los botones de corazón dentro de un contenedor
         function bindFavButtons(container) {
-            const btns = container.classList?.contains('btn-fav') ? [container] :
+            const btns = container.classList?.contains('btn-fav') ?
+                [container] :
                 container.querySelectorAll('.btn-fav');
 
             btns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
+                btn.addEventListener('click', e => {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleFavorito(Number(btn.dataset.id));
@@ -660,14 +936,15 @@
                         favIds.add(idrecurso);
                     } else {
                         favIds.delete(idrecurso);
+                        delete favDatos[idrecurso];
                     }
                     marcarCorazones();
-                    renderFavoritos();
+                    actualizarBadge();
+                    renderDrawer();
                 })
                 .catch(() => alert('Error al actualizar favoritos.'));
         }
 
-        // Bindear corazones del grid inicial al cargar
         bindFavButtons(grid);
     </script>
 

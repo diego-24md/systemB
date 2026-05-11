@@ -60,6 +60,8 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
 
     //Notificaciones
     $routes->get('notificaciones/marcar/(:num)', 'Notificaciones::marcar/$1');
+    $routes->get('notificaciones', 'Notificaciones::index');
+    $routes->get('notificaciones/cargar-mas', 'Notificaciones::cargarMas');
 });
 
 // ====================== BIBLIOTECA (protegida para alumnas) ======================
