@@ -10,7 +10,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call('TipoRecursoSeeder');
         $this->call('CategoriasSeeder');
-        $this->call('RolesSeeder');
-        $this->call('GruposSeeder');
+        $this->call('GradosSeeder');
+        $this->call('RecursosSeeder');
+        $this->call('UsuarioSeeder');
+        $this->call('ActivosSeeder');
     }
 }
