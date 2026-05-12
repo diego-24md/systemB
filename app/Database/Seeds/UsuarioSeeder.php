@@ -13,7 +13,7 @@ class UsuarioSeeder extends Seeder
             'usuario'    => 'bibliotecario',
             'password'   => password_hash('bibliotecario123', PASSWORD_DEFAULT),
             'rol'        => 'bibliotecario',
-            'foto'       => '1778168204_5dcdf5ba90d9177c6739.png',
+            'foto'       => 'perfil.png',
             'activo'     => 1,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),

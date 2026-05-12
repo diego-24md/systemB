@@ -312,7 +312,7 @@
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= session()->get('nombre') ?? 'Bibliotecario' ?></span>
                                 <img
                                     class="img-profile rounded-circle"
-                                    src="<?= base_url('uploads/perfiles/' . (session()->get('foto') ?? '1778464600_f7b210370f41367cd830.png')) ?>">
+                                    src="<?= base_url('uploads/perfiles/' . (session()->get('foto') ?? 'perfil.png')) ?>">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
