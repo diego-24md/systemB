@@ -62,6 +62,10 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('notificaciones/marcar/(:num)', 'Notificaciones::marcar/$1');
     $routes->get('notificaciones', 'Notificaciones::index');
     $routes->get('notificaciones/cargar-mas', 'Notificaciones::cargarMas');
+
+    // Reservas de libros
+    $routes->get('biblioteca/reservar/(:num)',  'Biblioteca::reservar/$1');
+    $routes->post('biblioteca/procesarReserva', 'Biblioteca::procesarReserva');
 });
 
 // ====================== BIBLIOTECA (protegida para alumnas) ======================

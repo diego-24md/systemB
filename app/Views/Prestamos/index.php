@@ -249,7 +249,7 @@
 
                 <div class="col-md-12 d-flex align-items-end justify-content-end">
                     <button type="submit" class="btn-guardar">
-                        <i class="fas fa-save me-2"></i> Guardar Préstamo
+                        <i class="fas fa-save me-2"></i> Registrar Préstamo
                     </button>
                 </div>
 

@@ -55,8 +55,8 @@ class CreatePrestamos extends Migration
             ],
             'estado' => [
                 'type'       => 'ENUM',
-                'constraint' => ['activo', 'devuelto'],
-                'default'    => 'activo',
+                'constraint' => ['pendiente', 'activo', 'devuelto', 'rechazado'],
+                'default'    => 'pendiente',
             ],
         ]);
 
