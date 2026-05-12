@@ -1,28 +1,35 @@
+<?php
+if (! session()->get('alumna_id')) {
+    return redirect()->to(base_url('login'));
+}
+$alumnaId     = session()->get('alumna_id');
+$alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
+$libros       = $libros ?? [];
+?>
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <title>Catálogo de Libros</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo — Biblioteca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --rojo: #b8001e;
-            --rojo-dark: #8f0017;
-            --rojo-light: #fff0f2;
-            --dorado: #d4a017;
-            --dorado-light: #fdf6e3;
-            --gris-fondo: #f4f3f0;
-            --gris-borde: #e4e2dc;
-            --gris-texto: #6b6860;
-            --texto: #1c1b19;
-            --blanco: #ffffff;
-            --radio: 12px;
-            --radio-lg: 18px;
-            --sombra: 0 2px 12px rgba(0, 0, 0, 0.07);
-            --sombra-hover: 0 8px 28px rgba(0, 0, 0, 0.13);
+            --ink: #1b2436;
+            --ink-light: #4a5568;
+            --teal: #0f6e56;
+            --teal-mid: #1d9e75;
+            --teal-pale: #e1f5ee;
+            --amber: #ba7517;
+            --amber-pale: #faeeda;
+            --sand: #f7f4ef;
+            --white: #ffffff;
+            --border: rgba(27, 36, 54, .1);
+            --shadow: 0 2px 12px rgba(27, 36, 54, .07);
+            --shadow-lg: 0 8px 28px rgba(27, 36, 54, .13);
         }
 
         * {
@@ -33,87 +40,83 @@
 
         body {
             font-family: 'DM Sans', system-ui, sans-serif;
-            background: var(--gris-fondo);
-            color: var(--texto);
+            background: var(--sand);
+            color: var(--ink);
             line-height: 1.5;
         }
 
-        /* ==================== HEADER ==================== */
-        .header {
-            background: var(--rojo);
-            padding: 0 28px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            height: 64px;
+        /* ── TOPBAR ─────────────────────────────── */
+        .topbar {
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 3px solid var(--dorado);
+            background: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 24px;
+            height: 60px;
         }
 
-        .header-divider {
-            width: 1px;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 0 4px;
+        .topbar-logo {
+            height: 36px;
+            width: 31px;
+            object-fit: cover;
+            border-radius: 4px;
         }
 
-        .header img {
-            height: 50px;
-            width: 50px;
-            object-fit: contain;
-            border-radius: 6px;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .header-text h1 {
-            color: white;
+        .topbar-brand {
+            color: #fff;
             font-size: 14px;
             font-weight: 600;
-            letter-spacing: -0.01em;
+            letter-spacing: -.01em;
+            line-height: 1.25;
         }
 
-        .header-text p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 11.5px;
-            font-weight: 400;
+        .topbar-brand small {
+            display: block;
+            font-size: 11px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, .5);
         }
 
-        .header-actions {
-            margin-left: auto;
+        .topbar-sep {
+            flex: 1;
+        }
+
+        .topbar-actions {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* ===== BOTÓN FAVORITOS EN HEADER ===== */
-        .btn-fav-header {
+        /* botón corazón en topbar */
+        .btn-fav-top {
             position: relative;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
             width: 38px;
             height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .18);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: white;
+            color: #fff;
             font-size: 16px;
-            transition: background 0.18s;
+            transition: background .18s;
         }
 
-        .btn-fav-header:hover {
-            background: rgba(255, 255, 255, 0.22);
+        .btn-fav-top:hover {
+            background: rgba(255, 255, 255, .2);
         }
 
         .fav-badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--dorado);
-            color: #5a3a00;
+            top: -4px;
+            right: -4px;
+            background: var(--amber);
+            color: #3b2500;
             font-size: 10px;
             font-weight: 700;
             width: 18px;
@@ -122,115 +125,99 @@
             display: none;
             align-items: center;
             justify-content: center;
-            border: 1.5px solid var(--rojo);
+            border: 1.5px solid var(--ink);
         }
 
-        /* ===== MENÚ DE USUARIO ===== */
-        .user-menu-wrap {
+        /* menú usuario */
+        .topbar-user {
             position: relative;
         }
 
-        .user-btn {
+        .btn-user {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .14);
             border-radius: 30px;
-            padding: 6px 13px 6px 8px;
+            padding: 6px 14px 6px 8px;
             cursor: pointer;
-            color: white;
+            color: #fff;
             font-size: 13px;
             font-weight: 500;
-            font-family: 'DM Sans', sans-serif;
-            transition: background 0.18s;
+            font-family: inherit;
             white-space: nowrap;
+            transition: background .2s;
         }
 
-        .user-btn:hover {
-            background: rgba(255, 255, 255, 0.22);
+        .btn-user:hover {
+            background: rgba(255, 255, 255, .16);
         }
 
-        .user-btn i {
-            font-size: 17px;
+        .btn-user i {
+            font-size: 20px;
         }
 
-        .user-dropdown {
+        .user-dd {
             display: none;
             position: absolute;
             top: calc(100% + 10px);
             right: 0;
-            background: var(--blanco);
-            border-radius: var(--radio-lg);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14);
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .16);
             min-width: 200px;
-            z-index: 200;
             overflow: hidden;
-            border: 1px solid var(--gris-borde);
-            animation: fadeDown 0.16s ease;
+            z-index: 200;
+            border: 1px solid var(--border);
         }
 
-        @keyframes fadeDown {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .user-dropdown.open {
+        .user-dd.open {
             display: block;
         }
 
-        .dropdown-header {
-            padding: 14px 16px 10px;
-            border-bottom: 1px solid var(--gris-borde);
-            background: var(--gris-fondo);
+        .dd-head {
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid var(--border);
+            background: var(--sand);
         }
 
-        .dropdown-header span {
+        .dd-head small {
             display: block;
             font-size: 11px;
-            color: var(--gris-texto);
+            color: var(--ink-light);
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: .04em;
             margin-bottom: 2px;
         }
 
-        .dropdown-header strong {
+        .dd-head strong {
             font-size: 14px;
-            color: var(--texto);
-            font-weight: 600;
         }
 
-        .dropdown-logout {
+        .dd-logout {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 16px;
-            color: var(--rojo);
-            font-size: 13.5px;
-            font-weight: 500;
+            padding: 12px 18px;
+            color: var(--teal);
+            font-size: 13px;
+            font-weight: 600;
             text-decoration: none;
-            transition: background 0.15s;
+            transition: background .15s;
         }
 
-        .dropdown-logout:hover {
-            background: var(--rojo-light);
+        .dd-logout:hover {
+            background: var(--teal-pale);
         }
 
-        /* ==================== DRAWER FAVORITOS ==================== */
+        /* ── DRAWER FAVORITOS ───────────────────── */
         .drawer-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(27, 36, 54, .4);
             z-index: 300;
-            animation: fadeIn 0.2s ease;
             backdrop-filter: blur(2px);
         }
 
@@ -238,29 +225,19 @@
             display: block;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
         .drawer {
             position: fixed;
             top: 0;
             right: -420px;
             width: 380px;
-            max-width: 95vw;
+            max-width: 96vw;
             height: 100%;
-            background: var(--blanco);
+            background: var(--white);
             z-index: 400;
             display: flex;
             flex-direction: column;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 1px solid var(--gris-borde);
+            transition: right .3s cubic-bezier(.4, 0, .2, 1);
+            border-left: 1px solid var(--border);
         }
 
         .drawer.open {
@@ -268,47 +245,46 @@
         }
 
         .drawer-header {
-            padding: 20px 20px 16px;
-            border-bottom: 1px solid var(--gris-borde);
+            padding: 18px 20px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--sand);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            background: var(--gris-fondo);
         }
 
         .drawer-header h2 {
             font-size: 15px;
             font-weight: 600;
-            color: var(--texto);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .drawer-header h2 i {
-            color: var(--rojo);
+            color: var(--teal);
         }
 
         .drawer-close {
-            background: var(--blanco);
-            border: 1px solid var(--gris-borde);
-            border-radius: 50%;
             width: 30px;
             height: 30px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 13px;
-            color: var(--gris-texto);
-            transition: all 0.15s;
+            color: var(--ink-light);
+            transition: all .15s;
         }
 
         .drawer-close:hover {
-            background: var(--rojo-light);
-            color: var(--rojo);
-            border-color: #f5c0c8;
+            background: var(--teal-pale);
+            color: var(--teal);
+            border-color: var(--teal-mid);
         }
 
         .drawer-body {
@@ -323,7 +299,7 @@
             align-items: center;
             justify-content: center;
             height: 220px;
-            color: #bbb;
+            color: var(--ink-light);
             font-size: 13.5px;
             gap: 12px;
             text-align: center;
@@ -332,130 +308,126 @@
 
         .drawer-vacio i {
             font-size: 2.2rem;
-            color: #ddd;
+            color: #ccc;
         }
 
-        .fav-drawer-item {
+        .fav-item {
             display: flex;
             gap: 12px;
             align-items: center;
             padding: 12px;
-            border: 1px solid var(--gris-borde);
-            border-radius: var(--radio);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             margin-bottom: 10px;
-            transition: background 0.15s, border-color 0.15s;
-            background: var(--blanco);
+            background: var(--white);
+            transition: border-color .15s, background .15s;
         }
 
-        .fav-drawer-item:hover {
-            background: var(--gris-fondo);
-            border-color: #d0cec8;
+        .fav-item:hover {
+            background: var(--sand);
+            border-color: rgba(27, 36, 54, .18);
         }
 
-        .fav-drawer-cover {
-            width: 50px;
-            height: 66px;
+        .fav-thumb {
+            width: 48px;
+            height: 64px;
             border-radius: 7px;
-            overflow: hidden;
-            background: var(--gris-fondo);
-            flex-shrink: 0;
+            background: var(--sand);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--gris-borde);
+            overflow: hidden;
+            flex-shrink: 0;
+            color: #ccc;
+            font-size: 1.2rem;
         }
 
-        .fav-drawer-cover img {
+        .fav-thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .fav-drawer-cover i {
-            font-size: 1.3rem;
-            color: #ccc;
-        }
-
-        .fav-drawer-info {
+        .fav-info {
             flex: 1;
+            min-width: 0;
         }
 
-        .fav-drawer-titulo {
+        .fav-titulo {
             font-size: 13px;
             font-weight: 600;
-            color: var(--texto);
+            color: var(--ink);
             line-height: 1.3;
             margin-bottom: 3px;
         }
 
-        .fav-drawer-autor {
+        .fav-autor {
             font-size: 11.5px;
-            color: var(--gris-texto);
+            color: var(--ink-light);
             margin-bottom: 8px;
         }
 
-        .fav-drawer-btn {
+        .fav-ver {
             font-size: 11.5px;
             font-weight: 600;
             padding: 4px 12px;
-            background: var(--rojo);
-            color: white;
+            background: var(--teal);
+            color: #fff;
             border-radius: 20px;
             text-decoration: none;
             display: inline-block;
-            transition: background 0.18s;
-            letter-spacing: 0.01em;
+            transition: background .18s;
         }
 
-        .fav-drawer-btn:hover {
-            background: var(--rojo-dark);
+        .fav-ver:hover {
+            background: var(--teal-mid);
         }
 
-        .fav-drawer-remove {
+        .fav-remove {
             background: none;
             border: none;
             color: #ccc;
             font-size: 14px;
             cursor: pointer;
-            padding: 4px;
-            transition: color 0.15s;
-            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            width: 26px;
-            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            transition: all .15s;
         }
 
-        .fav-drawer-remove:hover {
-            color: var(--rojo);
-            background: var(--rojo-light);
+        .fav-remove:hover {
+            color: var(--teal);
+            background: var(--teal-pale);
         }
 
-        /* ==================== MAIN ==================== */
+        /* ── MAIN ───────────────────────────────── */
         .main {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 36px 24px;
+            padding: 32px 24px 60px;
         }
 
-        /* ==================== HERO BUSCADOR ==================== */
+        /* ── BUSCADOR HERO ──────────────────────── */
         .search-hero {
-            background: var(--blanco);
-            border: 1px solid var(--gris-borde);
-            border-radius: var(--radio-lg);
-            padding: 28px 28px 24px;
-            margin-bottom: 32px;
-            box-shadow: var(--sombra);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 26px 22px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow);
         }
 
-        .search-hero-label {
-            font-size: 11px;
+        .search-label {
+            font-size: 10.5px;
             font-weight: 600;
-            letter-spacing: 0.07em;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            color: var(--gris-texto);
+            color: var(--ink-light);
             margin-bottom: 10px;
         }
 
@@ -463,46 +435,90 @@
             position: relative;
         }
 
-        .search-wrap i.fa-magnifying-glass {
+        .search-wrap i {
             position: absolute;
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
             font-size: 15px;
-            color: var(--gris-texto);
+            color: var(--ink-light);
             pointer-events: none;
         }
 
         .search-wrap input {
             width: 100%;
             padding: 12px 44px 12px 16px;
-            border: 1.5px solid var(--gris-borde);
-            border-radius: var(--radio);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
             font-size: 14px;
-            font-family: 'DM Sans', sans-serif;
+            font-family: inherit;
             outline: none;
-            background: var(--gris-fondo);
-            color: var(--texto);
-            transition: all 0.2s ease;
+            background: var(--sand);
+            color: var(--ink);
+            transition: all .2s;
         }
 
         .search-wrap input:focus {
-            border-color: var(--rojo);
-            background: var(--blanco);
-            box-shadow: 0 0 0 3px rgba(184, 0, 30, 0.08);
+            border-color: var(--teal-mid);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(29, 158, 117, .1);
         }
 
         .search-wrap input::placeholder {
             color: #aaa;
         }
 
-        /* ==================== SECTION LABEL ==================== */
+        /* filtros */
+        .filtros-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .filtro-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 500;
+            font-family: inherit;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            color: var(--ink-light);
+            cursor: pointer;
+            transition: all .18s;
+            white-space: nowrap;
+        }
+
+        .filtro-btn:hover {
+            border-color: var(--teal-mid);
+            color: var(--teal);
+        }
+
+        .filtro-btn.activo {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: #fff;
+        }
+
+        .filtro-btn .count {
+            font-size: 11px;
+            opacity: .7;
+            font-weight: 400;
+        }
+
+        /* ── SECTION LABEL ──────────────────────── */
         .section-label {
-            font-size: 11.5px;
+            font-size: 10.5px;
             font-weight: 600;
-            letter-spacing: 0.07em;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            color: var(--gris-texto);
+            color: var(--ink-light);
             margin-bottom: 18px;
             display: flex;
             align-items: center;
@@ -513,86 +529,89 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: var(--gris-borde);
+            background: var(--border);
         }
 
-        /* ==================== GRID DE LIBROS ==================== */
+        /* ── GRID ───────────────────────────────── */
         .books-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
             gap: 20px;
+            margin-bottom: 32px;
         }
 
+        /* ── BOOK CARD ──────────────────────────── */
         .book-card {
-            background: var(--blanco);
-            border: 1px solid var(--gris-borde);
-            border-radius: var(--radio-lg);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-            box-shadow: var(--sombra);
             position: relative;
+            box-shadow: var(--shadow);
+            transition: transform .25s, box-shadow .25s, border-color .25s;
         }
 
         .book-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--sombra-hover);
-            border-color: #d0cec8;
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(27, 36, 54, .18);
         }
 
-        .btn-fav {
+        /* corazón flotante */
+        .btn-fav-card {
             position: absolute;
             top: 10px;
             right: 10px;
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(0, 0, 0, .06);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             color: #ccc;
-            transition: all 0.2s ease;
             z-index: 5;
+            transition: all .2s;
         }
 
-        .btn-fav:hover {
-            background: white;
-            color: var(--rojo);
+        .btn-fav-card:hover {
+            background: #fff;
+            color: var(--teal);
             transform: scale(1.12);
-            border-color: #f5c0c8;
+            border-color: var(--teal-pale);
         }
 
-        .btn-fav.activo {
-            color: var(--rojo);
+        .btn-fav-card.activo {
+            color: var(--teal);
         }
 
         .book-cover {
-            height: 230px;
-            background: var(--gris-fondo);
+            height: 228px;
+            background: var(--sand);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border-bottom: 1px solid var(--gris-borde);
+            border-bottom: 1px solid var(--border);
         }
 
         .book-cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.4s ease;
+            transition: transform .4s;
         }
 
         .book-card:hover .book-cover img {
             transform: scale(1.05);
         }
 
-        .book-cover i.fas {
+        .book-cover i {
             font-size: 3rem;
             color: #d0cdc7;
         }
@@ -607,7 +626,7 @@
         .book-title {
             font-size: 13.5px;
             font-weight: 600;
-            color: var(--texto);
+            color: var(--ink);
             line-height: 1.35;
             margin-bottom: 5px;
             display: -webkit-box;
@@ -618,115 +637,123 @@
 
         .book-author {
             font-size: 12px;
-            color: var(--gris-texto);
+            color: var(--ink-light);
             margin-bottom: 14px;
             flex: 1;
         }
 
         .book-btn {
             display: block;
-            margin-top: auto;
             font-size: 12.5px;
             font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
+            font-family: inherit;
             padding: 9px 16px;
-            background: var(--rojo);
-            color: white;
+            background: var(--teal);
+            color: #fff;
             border-radius: 8px;
             text-decoration: none;
             text-align: center;
-            transition: background 0.2s ease, transform 0.15s ease;
-            letter-spacing: 0.01em;
+            letter-spacing: .01em;
+            transition: background .2s, transform .15s;
         }
 
         .book-btn:hover {
-            background: var(--rojo-dark);
+            background: var(--teal-mid);
             transform: translateY(-1px);
         }
 
         .no-resultados {
-            color: var(--gris-texto);
+            color: var(--ink-light);
             font-size: 14px;
             padding: 24px 0;
             text-align: center;
             grid-column: 1 / -1;
         }
 
-        /* ==================== FILTROS ==================== */
-        .filtros-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid var(--gris-borde);
-        }
-
-        .filtro-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 12.5px;
-            font-weight: 500;
-            font-family: 'DM Sans', sans-serif;
-            border: 1.5px solid var(--gris-borde);
-            background: var(--blanco);
-            color: var(--gris-texto);
-            cursor: pointer;
-            transition: all 0.18s ease;
-            white-space: nowrap;
-        }
-
-        .filtro-btn:hover {
-            border-color: var(--rojo);
-            color: var(--rojo);
-        }
-
-        .filtro-btn.activo {
-            background: var(--rojo);
-            border-color: var(--rojo);
-            color: white;
-        }
-
-        .filtro-btn .count {
-            font-size: 11px;
-            opacity: 0.75;
-            font-weight: 400;
-        }
-
-        /* ==================== RESPONSIVE ==================== */
-        @media (max-width: 640px) {
-            .header {
-                padding: 0 16px;
-                height: 58px;
+        /* ── RESPONSIVE ─────────────────────────── */
+        @media (max-width: 780px) {
+            .main {
+                padding: 24px 20px 48px;
             }
 
             .books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-                gap: 14px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .topbar {
+                padding: 0 16px;
+                gap: 10px;
+            }
+
+            .topbar-brand {
+                font-size: 12.5px;
+            }
+
+            .topbar-brand small {
+                display: none;
+            }
+
+            .btn-user span {
+                display: none;
+            }
+
+            .btn-user {
+                padding: 6px 10px;
+                gap: 4px;
+            }
+
+            .main {
+                padding: 20px 16px 48px;
+            }
+
+            .search-hero {
+                padding: 18px 16px;
+                border-radius: 14px;
+            }
+
+            .filtros-wrap {
+                gap: 6px;
+            }
+
+            .filtro-btn {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
 
             .book-cover {
-                height: 200px;
+                height: 190px;
             }
 
-            .user-btn span {
-                display: none;
+            .book-info {
+                padding: 12px 12px 14px;
             }
 
             .drawer {
                 width: 100%;
                 max-width: 100%;
             }
+        }
 
-            .main {
-                padding: 24px 16px;
+        @media (max-width: 360px) {
+            .books-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
 
-            .search-hero {
-                padding: 20px;
+            .book-cover {
+                height: 160px;
+            }
+
+            .book-title {
+                font-size: 12.5px;
             }
         }
     </style>
@@ -734,23 +761,12 @@
 
 <body>
 
-    <?php
-    if (! session()->get('alumna_id')) {
-        return redirect()->to(base_url('login'));
-    }
-
-    $alumnaId     = session()->get('alumna_id');
-    $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
-    $libros       = $libros ?? [];
-    ?>
-
-    <!-- ==================== DRAWER FAVORITOS ==================== -->
+    <!-- ── DRAWER FAVORITOS ──────────────────── -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
-
-    <div class="drawer" id="drawerFav">
+    <div class="drawer" id="drawer">
         <div class="drawer-header">
-            <h2><i class="fa-solid fa-heart"></i> Mis favoritos <span id="drawer-count" style="font-size:12px;color:#999;font-weight:400;"></span></h2>
-            <button class="drawer-close" id="drawerClose"><i class="fa-solid fa-xmark"></i></button>
+            <h2><i class="fas fa-heart"></i> Mis favoritos <span id="drawer-count" style="font-size:12px;color:var(--ink-light);font-weight:400;"></span></h2>
+            <button class="drawer-close" id="drawerClose"><i class="fas fa-xmark"></i></button>
         </div>
         <div class="drawer-body" id="drawerBody">
             <div class="drawer-vacio" id="drawerVacio">
@@ -760,54 +776,49 @@
         </div>
     </div>
 
-    <!-- ==================== HEADER ==================== -->
-    <div class="header">
-        <img src="<?= base_url('/img/insignia.jpg') ?>" alt="Logo">
-        <div class="header-divider"></div>
-        <div class="header-text">
-            <h1>Institución Educativa Chinchaysuyo</h1>
-            <p>Biblioteca escolar</p>
+    <!-- ── TOPBAR ────────────────────────────── -->
+    <header class="topbar">
+        <img src="<?= base_url('/img/insignia.jpg') ?>" alt="Logo" class="topbar-logo">
+        <div class="topbar-brand">
+            Institución Educativa Chinchaysuyo
+            <small>Biblioteca escolar</small>
         </div>
-
-        <div class="header-actions">
-            <!-- Botón favoritos -->
-            <button class="btn-fav-header" id="btnAbrirFav" title="Mis favoritos">
-                <i class="fa-solid fa-heart"></i>
+        <div class="topbar-sep"></div>
+        <div class="topbar-actions">
+            <button class="btn-fav-top" id="btnAbrirFav" title="Mis favoritos">
+                <i class="fas fa-heart"></i>
                 <span class="fav-badge" id="favBadge"></span>
             </button>
-
-            <!-- Menú de usuario -->
-            <div class="user-menu-wrap">
-                <button class="user-btn" id="userBtn" aria-expanded="false">
+            <div class="topbar-user">
+                <button class="btn-user" id="userBtn" aria-expanded="false">
                     <i class="fa-solid fa-circle-user"></i>
                     <span><?= htmlspecialchars($alumnaNombre) ?></span>
-                    <i class="fa-solid fa-chevron-down" style="font-size:10px;opacity:0.6;"></i>
+                    <i class="fa-solid fa-chevron-down" style="font-size:10px;opacity:.6;margin-left:2px;"></i>
                 </button>
-                <div class="user-dropdown" id="userDropdown">
-                    <div class="dropdown-header">
-                        <span>Conectada como</span>
+                <div class="user-dd" id="userDd">
+                    <div class="dd-head">
+                        <small>Conectada como</small>
                         <strong><?= htmlspecialchars($alumnaNombre) ?></strong>
                     </div>
-                    <a href="<?= base_url('alumnas/logout') ?>" class="dropdown-logout">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Cerrar sesión
+                    <a href="<?= base_url('alumnas/logout') ?>" class="dd-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
                     </a>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- ==================== CONTENIDO ==================== -->
+    <!-- ── CONTENIDO ─────────────────────────── -->
     <div class="main">
 
+        <!-- Buscador + filtros -->
         <div class="search-hero">
-            <p class="search-hero-label">Buscar libros</p>
+            <p class="search-label">Buscar libros</p>
             <div class="search-wrap">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fas fa-magnifying-glass"></i>
                 <input type="text" id="buscador" placeholder="Buscar por título o autor…">
             </div>
 
-            <!-- Filtros dinámicos generados desde PHP -->
             <?php
             $categorias = [];
             foreach ($libros as $l) {
@@ -833,9 +844,11 @@
             <?php endif; ?>
         </div>
 
-        <div id="resultados" class="books-grid" style="margin-bottom: 32px;"></div>
+        <!-- Resultados de búsqueda (se llena dinámicamente) -->
+        <div id="resultados" class="books-grid"></div>
 
-        <p class="section-label" id="label-recomendados">Todos los libros</p>
+        <!-- Grid principal -->
+        <p class="section-label" id="label-todos">Todos los libros</p>
         <div class="books-grid" id="grid">
             <?php if (!empty($libros)): ?>
                 <?php foreach ($libros as $libro): ?>
@@ -848,7 +861,7 @@
                         data-titulotxt="<?= esc((string)($libro['titulo'] ?? '')) ?>"
                         data-categoria="<?= (int)($libro['idcategoria'] ?? 0) ?>">
 
-                        <button class="btn-fav" data-id="<?= (int)($libro['idrecurso'] ?? 0) ?>" title="Agregar a favoritos">
+                        <button class="btn-fav-card" data-id="<?= (int)($libro['idrecurso'] ?? 0) ?>" title="Agregar a favoritos">
                             <i class="fa-regular fa-heart"></i>
                         </button>
 
@@ -871,26 +884,24 @@
             <?php endif; ?>
         </div>
 
-    </div>
+    </div><!-- /main -->
 
     <script>
-        // ─── MENÚ DE USUARIO ────────────────────────────────────────────────
+        /* ── menú usuario ──────────────────────── */
         const userBtn = document.getElementById('userBtn');
-        const userDropdown = document.getElementById('userDropdown');
-
+        const userDd = document.getElementById('userDd');
         userBtn.addEventListener('click', e => {
             e.stopPropagation();
-            const open = userDropdown.classList.toggle('open');
+            const open = userDd.classList.toggle('open');
             userBtn.setAttribute('aria-expanded', open);
         });
-
         document.addEventListener('click', () => {
-            userDropdown.classList.remove('open');
+            userDd.classList.remove('open');
             userBtn.setAttribute('aria-expanded', false);
         });
 
-        // ─── DRAWER FAVORITOS ────────────────────────────────────────────────
-        const drawerFav = document.getElementById('drawerFav');
+        /* ── drawer ─────────────────────────────── */
+        const drawer = document.getElementById('drawer');
         const drawerOverlay = document.getElementById('drawerOverlay');
         const drawerBody = document.getElementById('drawerBody');
         const drawerVacio = document.getElementById('drawerVacio');
@@ -899,95 +910,86 @@
 
         document.getElementById('btnAbrirFav').addEventListener('click', e => {
             e.stopPropagation();
-            drawerFav.classList.add('open');
+            drawer.classList.add('open');
             drawerOverlay.classList.add('open');
         });
-
         document.getElementById('drawerClose').addEventListener('click', cerrarDrawer);
         drawerOverlay.addEventListener('click', cerrarDrawer);
 
         function cerrarDrawer() {
-            drawerFav.classList.remove('open');
+            drawer.classList.remove('open');
             drawerOverlay.classList.remove('open');
         }
 
-        // ─── BUSCADOR ────────────────────────────────────────────────────────
+        /* ── buscador ───────────────────────────── */
         const input = document.getElementById('buscador');
         const resultados = document.getElementById('resultados');
         const grid = document.getElementById('grid');
-        const labelRecom = document.getElementById('label-recomendados');
+        const labelTodos = document.getElementById('label-todos');
 
         input.addEventListener('input', function() {
             const q = this.value.trim();
-
-            if (q.length === 0) {
+            if (!q) {
                 resultados.innerHTML = '';
                 grid.style.display = '';
-                labelRecom.style.display = '';
+                labelTodos.style.display = '';
                 return;
             }
-
             grid.style.display = 'none';
-            labelRecom.style.display = 'none';
+            labelTodos.style.display = 'none';
 
             fetch("<?= base_url('buscar-libros') ?>?q=" + encodeURIComponent(q))
-                .then(res => res.json())
+                .then(r => r.json())
                 .then(data => {
                     if (!Array.isArray(data)) {
                         resultados.innerHTML = '<p class="no-resultados">Error en el servidor.</p>';
                         return;
                     }
-                    if (data.length === 0) {
-                        resultados.innerHTML = `<p class="no-resultados">No se encontraron resultados para "<strong>${q}</strong>".</p>`;
+                    if (!data.length) {
+                        resultados.innerHTML = `<p class="no-resultados">Sin resultados para "<strong>${q}</strong>".</p>`;
                         return;
                     }
-                    resultados.innerHTML = data.map(libro => `
-                        <div class="book-card" data-id="${libro.idrecurso}"
-                            data-portada="${libro.portada ?? ''}"
-                            data-autortxt="${libro.autores ?? 'Sin autor'}"
-                            data-titulotxt="${libro.titulo}">
-                            <button class="btn-fav ${favIds.has(Number(libro.idrecurso)) ? 'activo' : ''}"
-                                    data-id="${libro.idrecurso}">
-                                <i class="fa-${favIds.has(Number(libro.idrecurso)) ? 'solid' : 'regular'} fa-heart"></i>
+                    resultados.innerHTML = data.map(l => `
+                        <div class="book-card" data-id="${l.idrecurso}"
+                             data-portada="${l.portada ?? ''}"
+                             data-autortxt="${l.autores ?? 'Sin autor'}"
+                             data-titulotxt="${l.titulo}">
+                            <button class="btn-fav-card ${favIds.has(Number(l.idrecurso)) ? 'activo' : ''}" data-id="${l.idrecurso}">
+                                <i class="fa-${favIds.has(Number(l.idrecurso)) ? 'solid' : 'regular'} fa-heart"></i>
                             </button>
                             <div class="book-cover">
-                                ${libro.portada
-                                    ? `<img src="/uploads/portadas/${libro.portada}" alt="${libro.titulo}">`
-                                    : `<i class="fas fa-book fa-3x"></i>`}
+                                ${l.portada ? `<img src="/uploads/portadas/${l.portada}" alt="${l.titulo}">` : `<i class="fas fa-book fa-3x"></i>`}
                             </div>
                             <div class="book-info">
-                                <p class="book-title">${libro.titulo}</p>
-                                <p class="book-author">${libro.autores ?? 'Sin autor'}</p>
-                                <a href="/biblioteca/detalle/${libro.idrecurso}" class="book-btn">Ver detalle</a>
+                                <p class="book-title">${l.titulo}</p>
+                                <p class="book-author">${l.autores ?? 'Sin autor'}</p>
+                                <a href="/biblioteca/detalle/${l.idrecurso}" class="book-btn">Ver detalle</a>
                             </div>
                         </div>
                     `).join('');
-                    bindFavButtons(resultados);
+                    bindFavCards(resultados);
                 })
                 .catch(() => {
                     resultados.innerHTML = '<p class="no-resultados">Error de conexión.</p>';
                 });
-        });
+        }, true);
 
-        // ─── FAVORITOS ────────────────────────────────────────────────────────
+        /* ── favoritos ──────────────────────────── */
         let favIds = new Set();
-        let favDatos = {}; // cache de datos de libros favoritos
+        let favData = {};
 
         fetch("<?= base_url('favoritos/ids') ?>")
-            .then(res => res.json())
+            .then(r => r.json())
             .then(ids => {
                 favIds = new Set(ids.map(Number));
                 marcarCorazones();
                 actualizarBadge();
                 renderDrawer();
-            })
-            .catch(() => {});
+            }).catch(() => {});
 
         function marcarCorazones() {
-            document.querySelectorAll('.btn-fav').forEach(btn => {
-                const id = Number(btn.dataset.id);
-                if (favIds.has(id)) activarBtn(btn);
-                else desactivarBtn(btn);
+            document.querySelectorAll('.btn-fav-card').forEach(btn => {
+                favIds.has(Number(btn.dataset.id)) ? activarBtn(btn) : desactivarBtn(btn);
             });
         }
 
@@ -1015,77 +1017,61 @@
         }
 
         function renderDrawer() {
-            // Limpiar items anteriores
             Array.from(drawerBody.children).forEach(el => {
                 if (el.id !== 'drawerVacio') el.remove();
             });
-
-            if (favIds.size === 0) {
+            if (!favIds.size) {
                 drawerVacio.style.display = 'flex';
                 return;
             }
-
             drawerVacio.style.display = 'none';
 
             favIds.forEach(id => {
-                // Buscar datos del libro en el grid o en el cache
-                let datos = favDatos[id];
-                if (!datos) {
+                let d = favData[id];
+                if (!d) {
                     const card = document.querySelector(`.book-card[data-id="${id}"]`);
                     if (card) {
-                        datos = {
+                        d = {
                             titulo: card.dataset.titulotxt || '—',
                             autor: card.dataset.autortxt || 'Sin autor',
                             portada: card.dataset.portada || '',
-                            id: id
+                            id
                         };
-                        favDatos[id] = datos;
+                        favData[id] = d;
                     }
                 }
-
-                if (!datos) return;
-
-                const portadaHtml = datos.portada ?
-                    `<img src="/uploads/portadas/${datos.portada}" alt="${datos.titulo}">` :
-                    `<i class="fas fa-book"></i>`;
+                if (!d) return;
 
                 const item = document.createElement('div');
-                item.className = 'fav-drawer-item';
+                item.className = 'fav-item';
                 item.dataset.id = id;
                 item.innerHTML = `
-                    <div class="fav-drawer-cover">${portadaHtml}</div>
-                    <div class="fav-drawer-info">
-                        <div class="fav-drawer-titulo">${datos.titulo}</div>
-                        <div class="fav-drawer-autor">${datos.autor}</div>
-                        <a href="/biblioteca/detalle/${id}" class="fav-drawer-btn">Ver detalle</a>
+                    <div class="fav-thumb">
+                        ${d.portada ? `<img src="/uploads/portadas/${d.portada}" alt="${d.titulo}">` : `<i class="fas fa-book"></i>`}
                     </div>
-                    <button class="fav-drawer-remove" data-id="${id}" title="Quitar de favoritos">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                    <div class="fav-info">
+                        <div class="fav-titulo">${d.titulo}</div>
+                        <div class="fav-autor">${d.autor}</div>
+                        <a href="/biblioteca/detalle/${id}" class="fav-ver">Ver detalle</a>
+                    </div>
+                    <button class="fav-remove" data-id="${id}" title="Quitar"><i class="fas fa-xmark"></i></button>
                 `;
-
-                item.querySelector('.fav-drawer-remove').addEventListener('click', () => {
-                    toggleFavorito(id);
-                });
-
+                item.querySelector('.fav-remove').addEventListener('click', () => toggleFav(id));
                 drawerBody.appendChild(item);
             });
         }
 
-        function bindFavButtons(container) {
-            const btns = container.classList?.contains('btn-fav') ? [container] :
-                container.querySelectorAll('.btn-fav');
-
-            btns.forEach(btn => {
+        function bindFavCards(container) {
+            container.querySelectorAll('.btn-fav-card').forEach(btn => {
                 btn.addEventListener('click', e => {
                     e.preventDefault();
                     e.stopPropagation();
-                    toggleFavorito(Number(btn.dataset.id));
+                    toggleFav(Number(btn.dataset.id));
                 });
             });
         }
 
-        function toggleFavorito(idrecurso) {
+        function toggleFav(idrecurso) {
             fetch("<?= base_url('favoritos/toggle') ?>", {
                     method: 'POST',
                     headers: {
@@ -1095,13 +1081,12 @@
                         idrecurso
                     })
                 })
-                .then(res => res.json())
+                .then(r => r.json())
                 .then(data => {
-                    if (data.favorito) {
-                        favIds.add(idrecurso);
-                    } else {
+                    if (data.favorito) favIds.add(idrecurso);
+                    else {
                         favIds.delete(idrecurso);
-                        delete favDatos[idrecurso];
+                        delete favData[idrecurso];
                     }
                     marcarCorazones();
                     actualizarBadge();
@@ -1110,43 +1095,26 @@
                 .catch(() => alert('Error al actualizar favoritos.'));
         }
 
-        bindFavButtons(grid);
+        bindFavCards(grid);
 
-        // ─── FILTROS POR CATEGORÍA ────────────────────────────────────────────
+        /* ── filtros por categoría ──────────────── */
         let filtroActual = 'todos';
-
         document.querySelectorAll('.filtro-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                // Si hay búsqueda activa, limpiarla primero
-                if (input.value.trim() !== '') {
+                if (input.value.trim()) {
                     input.value = '';
                     resultados.innerHTML = '';
                     grid.style.display = '';
-                    labelRecom.style.display = '';
+                    labelTodos.style.display = '';
                 }
-
                 filtroActual = btn.dataset.cat;
-
                 document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
                 btn.classList.add('activo');
-
-                const cards = grid.querySelectorAll('.book-card');
-                cards.forEach(card => {
-                    const cat = card.dataset.categoria;
-                    const visible = filtroActual === 'todos' || cat === filtroActual;
-                    card.style.display = visible ? '' : 'none';
+                grid.querySelectorAll('.book-card').forEach(card => {
+                    card.style.display = (filtroActual === 'todos' || card.dataset.categoria === filtroActual) ? '' : 'none';
                 });
             });
         });
-
-        // Resetear filtro al escribir en el buscador
-        input.addEventListener('input', function() {
-            if (this.value.trim() !== '') {
-                document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
-                document.querySelector('.filtro-btn[data-cat="todos"]')?.classList.add('activo');
-                filtroActual = 'todos';
-            }
-        }, true); // capture: true para que corra antes del listener existente
     </script>
 
 </body>

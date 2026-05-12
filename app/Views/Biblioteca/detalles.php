@@ -27,9 +27,25 @@ $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
 
 <head>
     <meta charset="UTF-8">
-    <title><?= esc((string)($libro['titulo'] ?? 'Libro')) ?> - Biblioteca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= esc((string)($libro['titulo'] ?? 'Libro')) ?> — Biblioteca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --ink: #1b2436;
+            --ink-light: #4a5568;
+            --teal: #0f6e56;
+            --teal-mid: #1d9e75;
+            --teal-pale: #e1f5ee;
+            --amber: #ba7517;
+            --amber-pale: #faeeda;
+            --sand: #f7f4ef;
+            --white: #ffffff;
+            --border: rgba(27, 36, 54, .1);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -37,286 +53,369 @@ $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #f4f6f9;
-            color: #333;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: var(--sand);
+            color: var(--ink);
+            min-height: 100vh;
         }
 
-        /* ==================== HEADER ==================== */
-        .header {
-            background: linear-gradient(135deg, #ffcc00 30%, #b8001e 35%);
-            padding: 18px 20px;
+        /* ── TOPBAR ─────────────────────────────── */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--ink);
             display: flex;
             align-items: center;
-            gap: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            gap: 14px;
+            padding: 0 24px;
+            height: 60px;
         }
 
-        .header img {
-            height: 52px;
-            width: 45px;
+        .topbar-logo {
+            height: 36px;
+            width: 31px;
             object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
         }
 
-        .header-text h1 {
-            color: white;
-            font-size: 17px;
-            font-weight: 700;
+        .topbar-brand {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+            line-height: 1.25;
         }
 
-        .header-text p {
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 13px;
-            margin-top: 2px;
+        .topbar-brand small {
+            display: block;
+            font-size: 11px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, .5);
+            letter-spacing: .01em;
         }
 
-        .header-actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .topbar-sep {
+            flex: 1;
         }
 
-        .user-menu-wrap {
+        .topbar-user {
             position: relative;
         }
 
-        .user-btn {
+        .btn-user {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .14);
             border-radius: 30px;
-            padding: 7px 14px 7px 10px;
+            padding: 6px 14px 6px 8px;
             cursor: pointer;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: inherit;
             white-space: nowrap;
-            transition: background 0.2s;
+            transition: background .2s;
         }
 
-        .user-btn:hover {
-            background: rgba(255, 255, 255, 0.28);
+        .btn-user:hover {
+            background: rgba(255, 255, 255, .14);
         }
 
-        .user-btn i {
-            font-size: 18px;
+        .btn-user i {
+            font-size: 20px;
         }
 
-        .user-dropdown {
+        .user-dd {
             display: none;
             position: absolute;
             top: calc(100% + 10px);
             right: 0;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            min-width: 190px;
-            z-index: 200;
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .16);
+            min-width: 200px;
             overflow: hidden;
+            z-index: 200;
         }
 
-        .user-dropdown.open {
+        .user-dd.open {
             display: block;
         }
 
-        .dropdown-header {
-            padding: 14px 16px 10px;
-            border-bottom: 1px solid #f0f0f0;
+        .dd-head {
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .dropdown-header span {
+        .dd-head small {
             display: block;
-            font-size: 13px;
-            color: #999;
+            font-size: 11px;
+            color: var(--ink-light);
         }
 
-        .dropdown-header strong {
-            font-size: 15px;
-            color: #222;
+        .dd-head strong {
+            font-size: 14px;
         }
 
-        .dropdown-logout {
+        .dd-logout {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 16px;
-            color: #b8001e;
-            font-size: 14px;
+            padding: 12px 18px;
+            color: var(--teal);
+            font-size: 13px;
             font-weight: 600;
             text-decoration: none;
-            transition: background 0.15s;
+            transition: background .15s;
         }
 
-        .dropdown-logout:hover {
-            background: #fff5f5;
+        .dd-logout:hover {
+            background: var(--teal-pale);
         }
 
-        /* ==================== HERO BANNER ==================== */
-        .hero-banner {
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b3d 50%, #b8001e 100%);
-            padding: 48px 20px 80px;
-            text-align: center;
+        /* ── STAGE (full-width header area) ────── */
+        .stage {
+            background: var(--ink);
+            padding: 0 24px 0;
             position: relative;
             overflow: hidden;
         }
 
-        .hero-banner::before {
+        /* subtle dot-grid texture */
+        .stage::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-image: radial-gradient(circle, rgba(255, 255, 255, .06) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
         }
 
-        .hero-back {
+        /* teal arc */
+        .stage::after {
+            content: '';
             position: absolute;
-            top: 20px;
-            left: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
+            bottom: -80px;
+            left: -80px;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(29, 158, 117, .18) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .hero-back:hover {
-            color: white;
+        .stage-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 780px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 36px;
+            align-items: end;
+            padding: 48px 0 0;
         }
 
-        .hero-cover-wrap {
-            display: inline-block;
-            margin-bottom: 24px;
+        .stage-cover {
+            position: relative;
+            align-self: end;
         }
 
-        .hero-cover {
-            width: 160px;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        .cover-img {
             display: block;
+            width: 160px;
+            height: 224px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 -4px 40px rgba(0, 0, 0, .4), 4px 4px 0 var(--teal-mid);
         }
 
-        .hero-cover-placeholder {
+        .cover-placeholder {
             width: 160px;
-            height: 220px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            height: 224px;
+            background: rgba(255, 255, 255, .07);
+            border-radius: 10px 10px 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 3.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, .2);
+            font-size: 3rem;
         }
 
-        .hero-titulo {
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-            max-width: 600px;
-            margin: 0 auto 8px;
-            line-height: 1.3;
+        .stage-meta {
+            padding-bottom: 36px;
         }
 
-        .hero-autor {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            margin-bottom: 16px;
-        }
-
-        .hero-categoria {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, .5);
             font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            transition: color .2s;
+        }
+
+        .back-link:hover {
+            color: rgba(255, 255, 255, .85);
+        }
+
+        .cat-pill {
+            display: inline-block;
+            background: var(--teal-pale);
+            color: var(--teal);
+            font-size: 11px;
             font-weight: 600;
-            padding: 4px 14px;
+            padding: 3px 12px;
             border-radius: 20px;
-            letter-spacing: 0.05em;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
         }
 
-        /* ==================== MAIN ==================== */
-        .main {
-            max-width: 680px;
-            margin: -40px auto 0;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
+        .stage-title {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(22px, 4vw, 32px);
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 10px;
         }
 
-        /* ==================== CARDS ==================== */
-        .disp-card {
-            background: white;
+        .stage-author {
+            font-size: 15px;
+            color: rgba(255, 255, 255, .5);
+            font-weight: 300;
+        }
+
+        .stage-author span {
+            color: rgba(255, 255, 255, .8);
+            font-weight: 500;
+        }
+
+        /* ── BODY ───────────────────────────────── */
+        .body-wrap {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 32px 24px 60px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .col-main {
+            min-width: 0;
+        }
+
+        .col-side {
+            min-width: 0;
+        }
+
+        /* ── CARD base ──────────────────────────── */
+        .card {
+            background: var(--white);
             border-radius: 16px;
-            padding: 20px 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--ink-light);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── AVAILABILITY ───────────────────────── */
+        .avail-block {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .disp-info {
+        .avail-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .disp-dot {
-            width: 12px;
-            height: 12px;
+        .avail-ring {
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
-        .disp-dot.verde {
-            background: #22c55e;
-            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+        .avail-ring.ok {
+            background: var(--teal-pale);
+            color: var(--teal);
         }
 
-        .disp-dot.rojo {
-            background: #ef4444;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        .avail-ring.out {
+            background: var(--amber-pale);
+            color: var(--amber);
         }
 
-        .disp-texto strong {
-            display: block;
+        .avail-label {
             font-size: 15px;
-            color: #1a1a1a;
+            font-weight: 600;
         }
 
-        .disp-texto span {
-            font-size: 13px;
-            color: #888;
+        .avail-sub {
+            font-size: 12.5px;
+            color: var(--ink-light);
+            margin-top: 2px;
         }
 
         .btn-reservar {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 11px 24px;
-            background: #b8001e;
-            color: white;
+            padding: 12px 26px;
+            background: var(--teal);
+            color: #fff;
             border-radius: 10px;
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
+            letter-spacing: .01em;
+            transition: background .2s, transform .15s;
+            box-shadow: 0 4px 16px rgba(15, 110, 86, .25);
             white-space: nowrap;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(184, 0, 30, 0.3);
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-reservar:hover {
-            background: #8f0017;
-            transform: translateY(-1px);
+            background: var(--teal-mid);
+            transform: translateY(-2px);
         }
 
         .btn-reservar.disabled {
@@ -327,311 +426,459 @@ $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
             box-shadow: none;
         }
 
-        .info-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            margin-bottom: 16px;
+        /* ── META INFO ──────────────────────────── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
         }
 
-        .info-card-title {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
-            margin-bottom: 16px;
-        }
-
-        .info-list {
+        .info-item {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 3px;
         }
 
-        .info-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .info-item-icon {
+            font-size: 13px;
+            color: var(--teal-mid);
+            margin-bottom: 2px;
         }
 
-        .info-row-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: #f4f6f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #b8001e;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .info-row-label {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 1px;
-        }
-
-        .info-row-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .desc-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            margin-bottom: 16px;
-        }
-
-        .desc-card-title {
-            font-size: 12px;
-            font-weight: 700;
+        .info-item-label {
+            font-size: 10.5px;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
-            margin-bottom: 12px;
+            letter-spacing: .06em;
+            color: var(--ink-light);
         }
 
+        .info-item-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        /* ── DESCRIPTION ────────────────────────── */
         .desc-text {
             font-size: 15px;
-            color: #4a5568;
-            line-height: 1.8;
+            line-height: 1.85;
+            color: #3d4a5e;
         }
 
-        .fav-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        /* ── FAVORITE ───────────────────────────── */
+        .fav-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 16px;
+            gap: 12px;
         }
 
-        .fav-card-text strong {
-            display: block;
-            font-size: 15px;
-            color: #1a1a1a;
+        .fav-label {
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        .fav-card-text span {
-            font-size: 13px;
-            color: #888;
+        .fav-sub {
+            font-size: 12px;
+            color: var(--ink-light);
+            margin-top: 2px;
         }
 
-        .btn-fav-toggle {
+        .btn-fav {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: white;
-            color: #b8001e;
-            border: 1.5px solid #b8001e;
+            gap: 7px;
+            padding: 9px 18px;
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--border);
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
+            font-family: inherit;
             white-space: nowrap;
-            transition: all 0.2s;
+            transition: all .2s;
         }
 
-        .btn-fav-toggle:hover {
-            background: #fff5f5;
+        .btn-fav:hover {
+            border-color: var(--teal-mid);
+            color: var(--teal);
         }
 
-        .btn-fav-toggle.activo {
-            background: #b8001e;
-            color: white;
+        .btn-fav.activo {
+            background: var(--teal-pale);
+            color: var(--teal);
+            border-color: var(--teal-mid);
         }
 
-        .btn-fav-toggle.activo:hover {
-            background: #8f0017;
+        /* ── NOTICE CARD ────────────────────────── */
+        .notice-card {
+            background: var(--amber-pale);
+            border: 1px solid rgba(186, 117, 23, .2);
+            border-left: 4px solid var(--amber);
+            border-radius: 14px;
+            padding: 20px 22px;
+            margin-bottom: 20px;
         }
 
-        /* ==================== AVISO PRÉSTAMO ==================== */
-        .aviso-card {
-            background: linear-gradient(135deg, #1a1a2e, #b8001e);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(184, 0, 30, 0.2);
-            margin-bottom: 16px;
-            color: white;
-        }
-
-        .aviso-header {
+        .notice-head {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--amber);
+            margin-bottom: 14px;
         }
 
-        .aviso-header i {
-            font-size: 20px;
-            color: #ffcc00;
-        }
-
-        .aviso-header strong {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .aviso-reglas {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .aviso-regla {
+        .notice-rule {
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            font-size: 13.5px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
+            font-size: 13px;
+            color: #5a4010;
+            line-height: 1.6;
+            margin-bottom: 10px;
         }
 
-        .aviso-regla i {
-            color: #ffcc00;
+        .notice-rule:last-child {
+            margin-bottom: 0;
+        }
+
+        .notice-rule i {
+            color: var(--amber);
             margin-top: 2px;
-            font-size: 13px;
             flex-shrink: 0;
         }
 
-        /* ==================== LIBROS RELACIONADOS ==================== */
-        .relacionados-section {
-            margin-bottom: 40px;
-        }
-
-        .relacionados-title {
-            font-size: 12px;
-            font-weight: 700;
+        /* ── RELATED ────────────────────────────── */
+        .related-title {
+            font-size: 10.5px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
-            margin-bottom: 14px;
+            letter-spacing: .1em;
+            color: var(--ink-light);
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .scroll-wrap {
-            display: flex;
-            gap: 14px;
-            overflow-x: auto;
-            padding-bottom: 12px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+        .related-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
         }
 
-        .scroll-wrap::-webkit-scrollbar {
-            display: none;
-        }
-
-        .rel-card {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-            overflow: hidden;
-            flex-shrink: 0;
-            width: 140px;
+        .related-list {
             display: flex;
             flex-direction: column;
+            gap: 12px;
+        }
+
+        .rel-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 12px;
             text-decoration: none;
-            transition: transform 0.2s;
+            transition: border-color .2s, transform .15s;
         }
 
-        .rel-card:hover {
-            transform: translateY(-4px);
+        .rel-item:hover {
+            border-color: var(--teal-mid);
+            transform: translateX(4px);
         }
 
-        .rel-cover {
-            width: 100%;
-            height: 160px;
-            background: #f0f2f5;
+        .rel-thumb {
+            width: 40px;
+            height: 54px;
+            border-radius: 6px;
+            background: var(--sand);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            flex-shrink: 0;
+            color: #bbb;
+            font-size: 1.2rem;
         }
 
-        .rel-cover img {
+        .rel-thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .rel-cover i {
-            font-size: 2.5rem;
-            color: #ccc;
-        }
-
-        .rel-info {
-            padding: 10px 12px;
+        .rel-meta {
+            min-width: 0;
         }
 
         .rel-titulo {
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--ink);
             line-height: 1.3;
-            margin-bottom: 4px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .rel-autor {
             font-size: 11px;
-            color: #94a3b8;
-            margin-bottom: 8px;
+            color: var(--ink-light);
+            margin: 2px 0 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .rel-badge {
+        .rel-avail {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: var(--teal);
+            background: var(--teal-pale);
             display: inline-block;
-            font-size: 10px;
-            font-weight: 700;
             padding: 2px 8px;
             border-radius: 20px;
-            background: #e6f9ee;
-            color: #1a7f3c;
         }
 
-        .rel-vacio {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        .rel-empty {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 20px;
             text-align: center;
-            color: #94a3b8;
-            font-size: 14px;
+            color: var(--ink-light);
+            font-size: 13px;
         }
 
-        @media (max-width: 600px) {
-            .hero-titulo {
-                font-size: 20px;
+        /* ── RESPONSIVE ─────────────────────────── */
+
+        /* Tablet: colapsa a 1 columna antes de que se vea apretado */
+        @media (max-width: 780px) {
+            .body-wrap {
+                grid-template-columns: 1fr;
+                padding: 24px 20px 48px;
+                gap: 0;
             }
 
-            .disp-card {
-                flex-direction: column;
-                align-items: flex-start;
+            /* En tablet la columna lateral va DESPUÉS del main */
+            .col-side {
+                order: 2;
+                margin-top: 4px;
             }
 
-            .fav-card {
-                flex-direction: column;
-                align-items: flex-start;
+            .col-main {
+                order: 1;
             }
 
-            .user-btn span {
+            /* Libros relacionados en tablet: scroll horizontal */
+            .related-list {
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 12px;
+                padding-bottom: 8px;
+                scrollbar-width: none;
+            }
+
+            .related-list::-webkit-scrollbar {
                 display: none;
+            }
+
+            .rel-item {
+                flex-direction: column;
+                align-items: flex-start;
+                min-width: 140px;
+                max-width: 140px;
+                padding: 10px;
+            }
+
+            .rel-item:hover {
+                transform: translateY(-3px);
+            }
+
+            .rel-thumb {
+                width: 100%;
+                height: 120px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+            }
+
+            .rel-titulo {
+                white-space: normal;
+                -webkit-line-clamp: 2;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .rel-autor {
+                white-space: normal;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 520px) {
+
+            /* Topbar: oculta el nombre en pantallas muy pequeñas */
+            .topbar {
+                padding: 0 16px;
+                gap: 10px;
+            }
+
+            .topbar-brand {
+                font-size: 12px;
+            }
+
+            .topbar-brand small {
+                display: none;
+            }
+
+            .btn-user span {
+                display: none;
+            }
+
+            .btn-user {
+                padding: 6px 10px;
+                gap: 4px;
+            }
+
+            /* Stage */
+            .stage {
+                padding: 0 16px;
+            }
+
+            .stage-inner {
+                grid-template-columns: 1fr;
+                gap: 0;
+                padding: 28px 0 0;
+            }
+
+            .stage-cover {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+
+            .cover-img {
+                width: 120px;
+                height: 168px;
+                border-radius: 8px 8px 0 0;
+                box-shadow: 0 -4px 30px rgba(0, 0, 0, .35), 3px 3px 0 var(--teal-mid);
+            }
+
+            .cover-placeholder {
+                width: 120px;
+                height: 168px;
+                border-radius: 8px 8px 0 0;
+            }
+
+            .stage-meta {
+                padding-bottom: 28px;
+            }
+
+            .stage-title {
+                font-size: 22px;
+            }
+
+            .stage-author {
+                font-size: 14px;
+            }
+
+            .back-link {
+                font-size: 11px;
+            }
+
+            /* Body */
+            .body-wrap {
+                padding: 16px 16px 48px;
+            }
+
+            .card {
+                padding: 18px 16px;
+                margin-bottom: 14px;
+                border-radius: 14px;
+            }
+
+            /* Disponibilidad: apila verticalmente */
+            .avail-block {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .btn-reservar {
+                width: 100%;
+                justify-content: center;
+                padding: 13px 20px;
+                font-size: 15px;
+            }
+
+            /* Info: 1 columna */
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            /* Favorito: apila verticalmente */
+            .fav-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .btn-fav {
+                width: 100%;
+                justify-content: center;
+                padding: 11px 18px;
+            }
+
+            /* Aviso */
+            .notice-card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .notice-rule {
+                font-size: 12.5px;
+            }
+
+            /* Relacionados: scroll horizontal compacto */
+            .related-list {
+                gap: 10px;
+            }
+
+            .rel-item {
+                min-width: 120px;
+                max-width: 120px;
+            }
+
+            .rel-thumb {
+                height: 100px;
+            }
+        }
+
+        /* Extra pequeño (≤360px) */
+        @media (max-width: 360px) {
+            .stage-title {
+                font-size: 19px;
+            }
+
+            .avail-label {
+                font-size: 14px;
+            }
+
+            .avail-ring {
+                width: 44px;
+                height: 44px;
+                font-size: 15px;
             }
         }
     </style>
@@ -639,234 +886,237 @@ $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
 
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        <img src="<?= base_url('/img/insignia.jpg') ?>" alt="Logo">
-        <div class="header-text">
-            <h1>Institución Educativa Chinchaysuyo</h1>
-            <p>Biblioteca escolar</p>
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <img src="<?= base_url('/img/insignia.jpg') ?>" alt="Logo" class="topbar-logo">
+        <div class="topbar-brand">
+            Institución Educativa Chinchaysuyo
+            <small>Biblioteca escolar</small>
         </div>
-        <div class="header-actions">
-            <div class="user-menu-wrap">
-                <button class="user-btn" id="userBtn" aria-expanded="false">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span><?= htmlspecialchars($alumnaNombre) ?></span>
-                    <i class="fa-solid fa-chevron-down" style="font-size:11px;opacity:0.7;"></i>
-                </button>
-                <div class="user-dropdown" id="userDropdown">
-                    <div class="dropdown-header">
-                        <span>Conectada como</span>
-                        <strong><?= htmlspecialchars($alumnaNombre) ?></strong>
-                    </div>
-                    <a href="<?= base_url('alumnas/logout') ?>" class="dropdown-logout">
-                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
-                    </a>
+        <div class="topbar-sep"></div>
+        <div class="topbar-user">
+            <button class="btn-user" id="userBtn" aria-expanded="false">
+                <i class="fa-solid fa-circle-user"></i>
+                <span><?= htmlspecialchars($alumnaNombre) ?></span>
+                <i class="fa-solid fa-chevron-down" style="font-size:10px;opacity:.6;margin-left:2px;"></i>
+            </button>
+            <div class="user-dd" id="userDd">
+                <div class="dd-head">
+                    <small>Conectada como</small>
+                    <strong><?= htmlspecialchars($alumnaNombre) ?></strong>
                 </div>
+                <a href="<?= base_url('alumnas/logout') ?>" class="dd-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+                </a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- HERO BANNER -->
-    <div class="hero-banner">
-        <a href="<?= base_url('catalogo') ?>" class="hero-back">
-            <i class="fa-solid fa-arrow-left"></i> Volver
-        </a>
-        <div class="hero-cover-wrap">
-            <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
-                <img class="hero-cover"
-                    src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
-                    alt="<?= esc($libro['titulo']) ?>">
-            <?php else: ?>
-                <div class="hero-cover-placeholder"><i class="fas fa-book"></i></div>
-            <?php endif; ?>
+    <!-- STAGE -->
+    <div class="stage">
+        <div class="stage-inner">
+
+            <!-- Cover -->
+            <div class="stage-cover">
+                <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
+                    <img class="cover-img"
+                        src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
+                        alt="<?= esc($libro['titulo']) ?>">
+                <?php else: ?>
+                    <div class="cover-placeholder"><i class="fas fa-book"></i></div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Meta -->
+            <div class="stage-meta">
+                <a href="<?= base_url('catalogo') ?>" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Catálogo
+                </a>
+
+                <?php if (!empty($libro['categoria'])): ?>
+                    <div><span class="cat-pill"><?= esc($libro['categoria']) ?></span></div>
+                <?php endif; ?>
+
+                <h1 class="stage-title"><?= esc($libro['titulo']) ?></h1>
+                <p class="stage-author">por <span><?= esc($libro['autores'] ?? 'Autor desconocido') ?></span></p>
+            </div>
+
         </div>
-        <h1 class="hero-titulo"><?= esc($libro['titulo']) ?></h1>
-        <p class="hero-autor"><?= esc($libro['autores'] ?? 'Sin autor') ?></p>
-        <?php if (!empty($libro['categoria'])): ?>
-            <span class="hero-categoria"><?= esc($libro['categoria']) ?></span>
-        <?php endif; ?>
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
+    <!-- BODY -->
+    <div class="body-wrap">
 
-        <!-- Disponibilidad -->
-        <div class="disp-card">
-            <div class="disp-info">
-                <div class="disp-dot <?= (int)($libro['disponibles'] ?? 0) > 0 ? 'verde' : 'rojo' ?>"></div>
-                <div class="disp-texto">
-                    <?php if ((int)($libro['disponibles'] ?? 0) > 0): ?>
-                        <strong>Disponible para préstamo</strong>
-                        <span><?= (int)$libro['disponibles'] ?> de <?= (int)$libro['total_ejemplares'] ?> ejemplares libres</span>
+        <!-- ═══ COLUMNA PRINCIPAL ═══ -->
+        <div class="col-main">
+
+            <!-- Disponibilidad + botón -->
+            <div class="card">
+                <div class="avail-block">
+                    <div class="avail-left">
+                        <div class="avail-ring <?= (int)($libro['disponibles'] ?? 0) > 0 ? 'ok' : 'out' ?>">
+                            <i class="fas <?= (int)($libro['disponibles'] ?? 0) > 0 ? 'fa-check' : 'fa-clock' ?>"></i>
+                        </div>
+                        <div>
+                            <?php if ((int)($libro['disponibles'] ?? 0) > 0): ?>
+                                <div class="avail-label">Disponible para préstamo</div>
+                                <div class="avail-sub"><?= (int)$libro['disponibles'] ?> de <?= (int)$libro['total_ejemplares'] ?> ejemplares libres</div>
+                            <?php else: ?>
+                                <div class="avail-label">No disponible ahora</div>
+                                <div class="avail-sub">Todos los ejemplares están prestados</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <?php if ((int)($libro['total_ejemplares'] ?? 0) === 0): ?>
+                        <span class="btn-reservar disabled"><i class="fas fa-ban"></i> Sin ejemplares</span>
+                    <?php elseif ((int)($libro['disponibles'] ?? 0) > 0): ?>
+                        <a href="<?= base_url('biblioteca/reservar/' . ($libro['idrecurso'] ?? '')) ?>" class="btn-reservar">
+                            <i class="fas fa-bookmark"></i> Reservar
+                        </a>
                     <?php else: ?>
-                        <strong>No disponible</strong>
-                        <span>Todos los ejemplares están prestados</span>
+                        <span class="btn-reservar disabled"><i class="fas fa-clock"></i> No disponible</span>
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if ((int)($libro['total_ejemplares'] ?? 0) === 0): ?>
-                <a class="btn-reservar disabled"><i class="fas fa-ban"></i> Sin ejemplares</a>
-            <?php elseif ((int)($libro['disponibles'] ?? 0) > 0): ?>
-                <a href="<?= base_url('biblioteca/reservar/' . ($libro['idrecurso'] ?? '')) ?>" class="btn-reservar">
-                    <i class="fas fa-bookmark"></i> Reservar
-                </a>
-            <?php else: ?>
-                <a class="btn-reservar disabled"><i class="fas fa-clock"></i> No disponible</a>
+
+            <!-- Información del libro -->
+            <div class="card">
+                <div class="card-label">Información</div>
+                <div class="info-grid">
+                    <?php if (!empty($libro['autores'])): ?>
+                        <div class="info-item">
+                            <div class="info-item-icon"><i class="fas fa-feather-alt"></i></div>
+                            <div class="info-item-label">Autor(es)</div>
+                            <div class="info-item-value"><?= esc($libro['autores']) ?></div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($libro['anio'])): ?>
+                        <div class="info-item">
+                            <div class="info-item-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="info-item-label">Año de publicación</div>
+                            <div class="info-item-value"><?= esc($libro['anio']) ?></div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($libro['numpaginas'])): ?>
+                        <div class="info-item">
+                            <div class="info-item-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="info-item-label">Páginas</div>
+                            <div class="info-item-value"><?= esc($libro['numpaginas']) ?></div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($libro['isbn'])): ?>
+                        <div class="info-item">
+                            <div class="info-item-icon"><i class="fas fa-barcode"></i></div>
+                            <div class="info-item-label">ISBN</div>
+                            <div class="info-item-value"><?= esc($libro['isbn']) ?></div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($libro['tipo'])): ?>
+                        <div class="info-item">
+                            <div class="info-item-icon"><i class="fas fa-tag"></i></div>
+                            <div class="info-item-label">Tipo de recurso</div>
+                            <div class="info-item-value"><?= esc($libro['tipo']) ?></div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <?php if (!empty($libro['descripcion'])): ?>
+                <div class="card">
+                    <div class="card-label">Descripción</div>
+                    <p class="desc-text"><?= esc($libro['descripcion']) ?></p>
+                </div>
             <?php endif; ?>
-        </div>
 
-        <!-- Info del libro -->
-        <div class="info-card">
-            <div class="info-card-title">Información del libro</div>
-            <div class="info-list">
-                <?php if (!empty($libro['autores'])): ?>
-                    <div class="info-row">
-                        <div class="info-row-icon"><i class="fas fa-user-edit"></i></div>
-                        <div>
-                            <div class="info-row-label">Autor(es)</div>
-                            <div class="info-row-value"><?= esc($libro['autores']) ?></div>
-                        </div>
+            <!-- Favorito -->
+            <div class="card">
+                <div class="fav-row">
+                    <div>
+                        <div class="fav-label">Agregar a favoritos</div>
+                        <div class="fav-sub">Guarda este libro en tu lista personal</div>
                     </div>
-                <?php endif; ?>
-                <?php if (!empty($libro['anio'])): ?>
-                    <div class="info-row">
-                        <div class="info-row-icon"><i class="fas fa-calendar"></i></div>
-                        <div>
-                            <div class="info-row-label">Año de publicación</div>
-                            <div class="info-row-value"><?= esc($libro['anio']) ?></div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-                <?php if (!empty($libro['numpaginas'])): ?>
-                    <div class="info-row">
-                        <div class="info-row-icon"><i class="fas fa-file-alt"></i></div>
-                        <div>
-                            <div class="info-row-label">Páginas</div>
-                            <div class="info-row-value"><?= esc($libro['numpaginas']) ?></div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-                <?php if (!empty($libro['isbn'])): ?>
-                    <div class="info-row">
-                        <div class="info-row-icon"><i class="fas fa-barcode"></i></div>
-                        <div>
-                            <div class="info-row-label">ISBN</div>
-                            <div class="info-row-value"><?= esc($libro['isbn']) ?></div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-                <?php if (!empty($libro['tipo'])): ?>
-                    <div class="info-row">
-                        <div class="info-row-icon"><i class="fas fa-tag"></i></div>
-                        <div>
-                            <div class="info-row-label">Tipo de recurso</div>
-                            <div class="info-row-value"><?= esc($libro['tipo']) ?></div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Descripción -->
-        <?php if (!empty($libro['descripcion'])): ?>
-            <div class="desc-card">
-                <div class="desc-card-title">Descripción</div>
-                <p class="desc-text"><?= esc($libro['descripcion']) ?></p>
-            </div>
-        <?php endif; ?>
-
-        <!-- Favorito -->
-        <div class="fav-card">
-            <div class="fav-card-text">
-                <strong>¿Te gustó este libro?</strong>
-                <span>Agrégalo a tu lista de favoritos</span>
-            </div>
-            <button class="btn-fav-toggle" id="btnFavToggle"
-                data-id="<?= (int)($libro['idrecurso'] ?? 0) ?>">
-                <i class="fa-regular fa-heart"></i> Guardar
-            </button>
-        </div>
-
-        <!-- ==================== AVISO PRÉSTAMO ==================== -->
-        <div class="aviso-card">
-            <div class="aviso-header">
-                <i class="fas fa-exclamation-circle"></i>
-                <strong>Recuerda antes de pedir un préstamo</strong>
-            </div>
-            <div class="aviso-reglas">
-                <div class="aviso-regla">
-                    <i class="fas fa-clock"></i>
-                    El libro debe ser devuelto el <strong>mismo día</strong> antes de que termine el horario escolar.
+                    <button class="btn-fav" id="btnFav" data-id="<?= (int)($libro['idrecurso'] ?? 0) ?>">
+                        <i class="fa-regular fa-heart"></i> Guardar
+                    </button>
                 </div>
-                <div class="aviso-regla">
-                    <i class="fas fa-book"></i>
-                    Devuelve el libro en las <strong>mismas condiciones</strong> en que lo recibiste.
+            </div>
+
+        </div><!-- /col-main -->
+
+        <!-- ═══ COLUMNA LATERAL ═══ -->
+        <div class="col-side">
+
+            <!-- Aviso préstamo -->
+            <div class="notice-card">
+                <div class="notice-head">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    Antes de reservar
                 </div>
-                <div class="aviso-regla">
-                    <i class="fas fa-hand-paper"></i>
+                <div class="notice-rule">
+                    <i class="fas fa-sun"></i>
+                    Devuelve el libro el <strong>mismo día</strong>, antes de que termine el horario escolar.
+                </div>
+                <div class="notice-rule">
+                    <i class="fas fa-star"></i>
+                    Regrésalo en las <strong>mismas condiciones</strong> en que lo recibiste.
+                </div>
+                <div class="notice-rule">
+                    <i class="fas fa-hand"></i>
                     Solo puedes tener <strong>un libro prestado</strong> a la vez.
                 </div>
-                <div class="aviso-regla">
-                    <i class="fas fa-map-marker-alt"></i>
-                    La entrega y devolución se realiza únicamente en la <strong>biblioteca del colegio</strong>.
+                <div class="notice-rule">
+                    <i class="fas fa-location-dot"></i>
+                    Entrega y devolución solo en la <strong>biblioteca del colegio</strong>.
                 </div>
             </div>
-        </div>
 
-        <!-- ==================== LIBROS RELACIONADOS ==================== -->
-        <div class="relacionados-section">
-            <div class="relacionados-title">
-                <i class="fas fa-th-large"></i>
-                Más libros disponibles en esta categoría
-            </div>
+            <!-- Libros relacionados -->
+            <div class="related-title"><i class="fas fa-layer-group"></i> En esta categoría</div>
 
             <?php if (!empty($relacionados)): ?>
-                <div class="scroll-wrap">
+                <div class="related-list">
                     <?php foreach ($relacionados as $rel): ?>
-                        <a href="<?= base_url('biblioteca/detalle/' . $rel['idrecurso']) ?>" class="rel-card">
-                            <div class="rel-cover">
+                        <a href="<?= base_url('biblioteca/detalle/' . $rel['idrecurso']) ?>" class="rel-item">
+                            <div class="rel-thumb">
                                 <?php if (!empty($rel['portada']) && file_exists('uploads/portadas/' . $rel['portada'])): ?>
-                                    <img src="<?= base_url('uploads/portadas/' . $rel['portada']) ?>"
-                                        alt="<?= esc((string)$rel['titulo']) ?>">
+                                    <img src="<?= base_url('uploads/portadas/' . $rel['portada']) ?>" alt="<?= esc((string)$rel['titulo']) ?>">
                                 <?php else: ?>
                                     <i class="fas fa-book"></i>
                                 <?php endif; ?>
                             </div>
-                            <div class="rel-info">
+                            <div class="rel-meta">
                                 <div class="rel-titulo"><?= esc((string)$rel['titulo']) ?></div>
-                                <div class="rel-autor"><?= esc((string)$rel['autores'] ?? 'Sin autor') ?></div>
-                                <span class="rel-badge">
-                                    <?= (int)$rel['cantidad_disponible'] ?> disponible(s)
-                                </span>
+                                <div class="rel-autor"><?= esc((string)($rel['autores'] ?? 'Sin autor')) ?></div>
+                                <span class="rel-avail"><?= (int)$rel['cantidad_disponible'] ?> disponible(s)</span>
                             </div>
                         </a>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="rel-vacio">
-                    <i class="fas fa-books" style="font-size:1.8rem;display:block;margin-bottom:8px;color:#e2e8f0;"></i>
-                    No hay otros libros disponibles en esta categoría
+                <div class="rel-empty">
+                    <i class="fas fa-book-open" style="display:block;font-size:1.6rem;margin-bottom:8px;color:#c8d5df;"></i>
+                    No hay más libros en esta categoría
                 </div>
             <?php endif; ?>
-        </div>
 
-    </div>
+        </div><!-- /col-side -->
+    </div><!-- /body-wrap -->
 
     <script>
+        /* ── dropdown ── */
         const userBtn = document.getElementById('userBtn');
-        const userDropdown = document.getElementById('userDropdown');
-
+        const userDd = document.getElementById('userDd');
         userBtn.addEventListener('click', e => {
             e.stopPropagation();
-            const open = userDropdown.classList.toggle('open');
+            const open = userDd.classList.toggle('open');
             userBtn.setAttribute('aria-expanded', open);
         });
+        document.addEventListener('click', () => userDd.classList.remove('open'));
 
-        document.addEventListener('click', () => {
-            userDropdown.classList.remove('open');
-        });
-
-        const btnFav = document.getElementById('btnFavToggle');
+        /* ── favoritos ── */
+        const btnFav = document.getElementById('btnFav');
         const libroId = Number(btnFav.dataset.id);
 
         fetch("<?= base_url('favoritos/ids') ?>")
@@ -887,10 +1137,7 @@ $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
                     })
                 })
                 .then(r => r.json())
-                .then(data => {
-                    if (data.favorito) activarFav();
-                    else desactivarFav();
-                })
+                .then(d => d.favorito ? activarFav() : desactivarFav())
                 .catch(() => alert('Error al actualizar favoritos.'));
         });
 
