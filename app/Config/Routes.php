@@ -20,6 +20,7 @@ $routes->get('alumnas/logout', 'AuthAlumna::logout');
 $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
 
     $routes->get('/', 'Home::dashboard');
+    $routes->get('home/chartData', 'Home::chartData');
 
     // ====================== LIBROS ======================
     $routes->get('libros', 'Libros::index');
