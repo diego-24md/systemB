@@ -18,19 +18,6 @@ class Prestamos extends BaseController
 
     public function index()
     {
-        $db = \Config\Database::connect();
-
-        $data['prestamos'] = $this->prestamosModel->getPrestamosActivos();
-
-        $data['pendientes'] = $db->table('prestamos p')
-            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega, a.nombre, a.dni, ac.titulo')
-            ->join('alumnas a', 'a.id = p.idalumna', 'left')
-            ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
-            ->where('p.estado', 'pendiente')
-            ->orderBy('p.idprestamo', 'ASC')
-            ->get()
-            ->getResultArray();
-
         $data['header'] = view('Partials/header');
         $data['footer'] = view('Partials/footer');
 
@@ -340,5 +327,37 @@ class Prestamos extends BaseController
         );
 
         return redirect()->back()->with('success', 'Reserva rechazada.');
+    }
+
+    // ====================== RESERVAS PENDIENTES ======================
+    public function pendientes()
+    {
+        $db = \Config\Database::connect();
+
+        $data['pendientes'] = $db->table('prestamos p')
+            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega, 
+                      a.nombre, a.dni, ac.titulo')
+            ->join('alumnas a', 'a.id = p.idalumna', 'left')
+            ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
+            ->where('p.estado', 'pendiente')
+            ->orderBy('p.idprestamo', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $data['header'] = view('Partials/header');
+        $data['footer'] = view('Partials/footer');
+
+        return view('prestamos/pendientes', $data);
+    }
+
+    // ====================== PRÉSTAMOS ACTIVOS ======================
+    public function activos()
+    {
+        $data['prestamos'] = $this->prestamosModel->getPrestamosActivos();
+
+        $data['header'] = view('Partials/header');
+        $data['footer'] = view('Partials/footer');
+
+        return view('prestamos/activos', $data);
     }
 }
