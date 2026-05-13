@@ -18,9 +18,21 @@ class Prestamos extends BaseController
 
     public function index()
     {
+        $db = \Config\Database::connect();
+
         $data['prestamos'] = $this->prestamosModel->getPrestamosActivos();
-        $data['header']    = view('Partials/header');
-        $data['footer']    = view('Partials/footer');
+
+        $data['pendientes'] = $db->table('prestamos p')
+            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega, a.nombre, a.dni, ac.titulo')
+            ->join('alumnas a', 'a.id = p.idalumna', 'left')
+            ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
+            ->where('p.estado', 'pendiente')
+            ->orderBy('p.idprestamo', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        $data['header'] = view('Partials/header');
+        $data['footer'] = view('Partials/footer');
 
         return view('prestamos/index', $data);
     }
@@ -95,7 +107,7 @@ class Prestamos extends BaseController
             return redirect()->back()->with('error', 'La alumna ya tiene un libro prestado. Debe devolverlo antes de pedir otro.');
         }
 
-        // Insertar préstamo
+        // Insertar préstamo directo como activo (desde el sistema del bibliotecario)
         $this->prestamosModel->insert([
             'idalumna'         => $idalumna,
             'idactivo'         => $idactivo,
@@ -150,9 +162,8 @@ class Prestamos extends BaseController
 
         // Calcular minutos
         $horaEntrega = new \DateTime($prestamo['entrega'] . ' ' . $prestamo['hora_entrega'], $lima);
-        $minutos     = (int) round(($now->getTimestamp() - $horaEntrega->getTimestamp()) / 60);
-        $diff           = $horaEntrega->diff($now);
-        $minutos        = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+        $diff        = $horaEntrega->diff($now);
+        $minutos     = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
 
         // Obtener datos para la notificación
         $detalle = $db->table('prestamos p')
@@ -180,7 +191,7 @@ class Prestamos extends BaseController
                 'estado'          => 'devuelto',
             ]);
 
-        // Devolver stock sin false en estado
+        // Devolver stock
         $db->table('activos')
             ->set('cantidad_disponible', 'cantidad_disponible + 1', false)
             ->set('estado', 'disponible')
@@ -235,5 +246,99 @@ class Prestamos extends BaseController
         }
 
         return $this->response->setJSON($data);
+    }
+
+    // ====================== APROBAR RESERVA ======================
+    public function aprobar($id)
+    {
+        $db   = \Config\Database::connect();
+        $lima = new \DateTimeZone('America/Lima');
+        $now  = new \DateTime('now', $lima);
+
+        $prestamo = $db->table('prestamos')
+            ->where('idprestamo', $id)
+            ->where('estado', 'pendiente')
+            ->get()->getRowArray();
+
+        if (! $prestamo) {
+            return redirect()->back()->with('error', 'Reserva no encontrada o ya fue procesada.');
+        }
+
+        // Verificar stock al momento de aprobar
+        $activo = $db->table('activos')
+            ->where('idactivo', $prestamo['idactivo'])
+            ->where('cantidad_disponible >', 0)
+            ->get()->getRowArray();
+
+        if (! $activo) {
+            return redirect()->back()->with('error', 'No hay stock disponible para aprobar este préstamo.');
+        }
+
+        $alumna = $db->table('alumnas')
+            ->where('id', $prestamo['idalumna'])
+            ->get()->getRowArray();
+
+        // Cambiar estado a activo
+        $db->table('prestamos')
+            ->where('idprestamo', $id)
+            ->update([
+                'estado'       => 'activo',
+                'hora_entrega' => $now->format('H:i:s'),
+            ]);
+
+        // Descontar stock
+        $db->table('activos')
+            ->set('cantidad_disponible', 'cantidad_disponible - 1', false)
+            ->set('estado', "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
+            ->where('idactivo', $prestamo['idactivo'])
+            ->update();
+
+        // Notificación
+        \App\Models\NotificacionesModel::registrar(
+            'prestamo',
+            'Préstamo aprobado: ' . $activo['titulo'] . ' → ' . ($alumna['nombre'] ?? '—'),
+            'fas fa-check-circle',
+            'success'
+        );
+
+        return redirect()->back()->with('success', 'Préstamo aprobado correctamente.');
+    }
+
+    // ====================== RECHAZAR RESERVA ======================
+    public function rechazar($id)
+    {
+        $db = \Config\Database::connect();
+
+        $prestamo = $db->table('prestamos')
+            ->where('idprestamo', $id)
+            ->where('estado', 'pendiente')
+            ->get()->getRowArray();
+
+        if (! $prestamo) {
+            return redirect()->back()->with('error', 'Reserva no encontrada o ya fue procesada.');
+        }
+
+        $activo = $db->table('activos')
+            ->where('idactivo', $prestamo['idactivo'])
+            ->get()->getRowArray();
+
+        $alumna = $db->table('alumnas')
+            ->where('id', $prestamo['idalumna'])
+            ->get()->getRowArray();
+
+        // Cambiar estado a rechazado (no toca stock)
+        $db->table('prestamos')
+            ->where('idprestamo', $id)
+            ->update(['estado' => 'rechazado']);
+
+        // Notificación
+        \App\Models\NotificacionesModel::registrar(
+            'prestamo',
+            'Reserva rechazada: ' . ($activo['titulo'] ?? '—') . ' → ' . ($alumna['nombre'] ?? '—'),
+            'fas fa-times-circle',
+            'danger'
+        );
+
+        return redirect()->back()->with('success', 'Reserva rechazada.');
     }
 }

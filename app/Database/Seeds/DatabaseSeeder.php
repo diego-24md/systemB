@@ -13,6 +13,5 @@ class DatabaseSeeder extends Seeder
         $this->call('GradosSeeder');
         $this->call('RecursosSeeder');
         $this->call('UsuarioSeeder');
-        $this->call('ActivosSeeder');
     }
 }

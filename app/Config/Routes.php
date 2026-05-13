@@ -40,39 +40,34 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     // Préstamos
     $routes->get('prestamos', 'Prestamos::index');
     $routes->get('prestamos/buscar-libros', 'Prestamos::buscarLibros');
+    $routes->post('prestamos/guardar', 'Prestamos::guardar');
+    $routes->get('prestamos/buscar-alumna', 'Prestamos::buscarAlumna');
+    $routes->get('prestamos/devolver/(:num)', 'Prestamos::devolver/$1');
+    $routes->get('prestamos/devoluciones', 'Prestamos::devoluciones');
+    $routes->get('prestamos/historial', 'Prestamos::historial');
+    $routes->get('prestamos/ranking', 'Prestamos::ranking');
+    $routes->get('prestamos/aprobar/(:num)', 'Prestamos::aprobar/$1');
+    $routes->get('prestamos/rechazar/(:num)', 'Prestamos::rechazar/$1');
 
     // Perfil
     $routes->get('perfil', 'PerfilController::index');
     $routes->post('perfil/actualizar', 'PerfilController::actualizar');
     $routes->post('perfil/actualizar-foto', 'PerfilController::actualizarFoto');
 
-    // Préstamos
-    $routes->get('prestamos', 'Prestamos::index');
-    $routes->get('prestamos/buscar-libros', 'Prestamos::buscarLibros');
-    $routes->post('prestamos/guardar', 'Prestamos::guardar');
-    $routes->get('prestamos/buscar-alumna', 'Prestamos::buscarAlumna');
-    $routes->get('prestamos/devolver/(:num)', 'Prestamos::devolver/$1');
-    $routes->get('prestamos/historial', 'Prestamos::historial');
-    $routes->get('prestamos/ranking', 'Prestamos::ranking');
-
-    //Devoluciones
-    $routes->get('prestamos/devoluciones', 'Prestamos::devoluciones');
-
-    //Notificaciones
+    // Notificaciones
     $routes->get('notificaciones/marcar/(:num)', 'Notificaciones::marcar/$1');
     $routes->get('notificaciones', 'Notificaciones::index');
     $routes->get('notificaciones/cargar-mas', 'Notificaciones::cargarMas');
-
-    // Reservas de libros
-    $routes->get('biblioteca/reservar/(:num)',  'Biblioteca::reservar/$1');
-    $routes->post('biblioteca/procesarReserva', 'Biblioteca::procesarReserva');
 });
 
 // ====================== BIBLIOTECA (protegida para alumnas) ======================
 $routes->group('', ['filter' => 'auth.alumna'], function ($routes) {
+
     $routes->get('catalogo', 'Biblioteca::catalogo');
     $routes->get('buscar-libros', 'Biblioteca::buscar');
     $routes->get('biblioteca/detalle/(:num)', 'Biblioteca::detalle/$1');
+    $routes->get('biblioteca/reservar/(:num)', 'Biblioteca::reservar/$1');
+    $routes->post('biblioteca/procesarReserva', 'Biblioteca::procesarReserva');
 
     // Favoritos
     $routes->post('favoritos/toggle', 'Favoritos::toggle');

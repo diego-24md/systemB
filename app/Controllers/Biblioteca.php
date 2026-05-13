@@ -133,6 +133,19 @@ class Biblioteca extends BaseController
             return redirect()->to(base_url('login'));
         }
 
+        $idalumna = (int) session()->get('alumna_id');
+
+        // Bloquear si ya tiene préstamo pendiente o activo
+        $bloqueo = $this->db->table('prestamos')
+            ->whereIn('estado', ['pendiente', 'activo'])
+            ->where('idalumna', $idalumna)
+            ->countAllResults();
+
+        if ($bloqueo > 0) {
+            return redirect()->to(base_url('biblioteca/detalle/' . $id))
+                ->with('error', 'Ya tienes un libro prestado o una reserva pendiente. Debes devolverlo antes de pedir otro.');
+        }
+
         // Obtener recurso
         $libro = $this->db->table('recursos r')
             ->select('r.*, GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores, c.categoria')
@@ -181,7 +194,18 @@ class Biblioteca extends BaseController
         $lima = new \DateTimeZone('America/Lima');
         $now  = new \DateTime('now', $lima);
 
-        // Validar stock
+        // Bloquear si ya tiene préstamo pendiente o activo
+        $bloqueo = $this->db->table('prestamos')
+            ->whereIn('estado', ['pendiente', 'activo'])
+            ->where('idalumna', $idalumna)
+            ->countAllResults();
+
+        if ($bloqueo > 0) {
+            return redirect()->to(base_url('biblioteca/detalle/' . $idrecurso))
+                ->with('error', 'Ya tienes un libro prestado o una reserva pendiente. Debes devolverlo antes de pedir otro.');
+        }
+
+        // Validar que el activo existe y tiene stock
         $activo = $this->db->table('activos')
             ->where('idactivo', $idactivo)
             ->where('cantidad_disponible >', 0)
@@ -203,55 +227,25 @@ class Biblioteca extends BaseController
             return redirect()->to(base_url('login'));
         }
 
-        // Validar que no tenga ya este libro prestado
-        $existe = $this->db->table('prestamos')
-            ->where('idalumna', $idalumna)
-            ->where('idactivo', $idactivo)
-            ->where('estado', 'activo')
-            ->countAllResults();
-
-        if ($existe > 0) {
-            return redirect()->to(base_url('biblioteca/detalle/' . $idrecurso))
-                ->with('error', 'Ya tienes este libro prestado.');
-        }
-
-        // Validar que no tenga ningún préstamo activo
-        $tieneActivo = $this->db->table('prestamos')
-            ->where('idalumna', $idalumna)
-            ->where('estado', 'activo')
-            ->countAllResults();
-
-        if ($tieneActivo > 0) {
-            return redirect()->to(base_url('biblioteca/detalle/' . $idrecurso))
-                ->with('error', 'Ya tienes un libro prestado. Debes devolverlo antes de pedir otro.');
-        }
-
-        // Insertar préstamo
+        // Insertar préstamo como PENDIENTE (sin descontar stock todavía)
         $this->db->table('prestamos')->insert([
             'idalumna'         => $idalumna,
             'idactivo'         => $idactivo,
             'entrega'          => $now->format('Y-m-d'),
             'hora_entrega'     => $now->format('H:i:s'),
             'condicionentrega' => 'bueno',
-            'estado'           => 'activo',
+            'estado'           => 'pendiente',
         ]);
 
-        // Notificación
+        // Notificación al bibliotecario
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
-            'Reserva solicitada: ' . $activo['titulo'] . ' → ' . $alumna['nombre'],
+            'Nueva reserva pendiente: ' . $activo['titulo'] . ' → ' . $alumna['nombre'],
             'fas fa-bookmark',
-            'primary'
+            'warning'
         );
 
-        // Descontar stock
-        $this->db->table('activos')
-            ->set('cantidad_disponible', 'cantidad_disponible - 1', false)
-            ->set('estado', "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
-            ->where('idactivo', $idactivo)
-            ->update();
-
         return redirect()->to(base_url('catalogo'))
-            ->with('success', '¡Reserva realizada! Pasa a recoger tu libro en la biblioteca.');
+            ->with('success', '¡Reserva enviada! El bibliotecario la revisará pronto. Pasa a la biblioteca para recoger tu libro.');
     }
 }
