@@ -1,267 +1,269 @@
 <?= $header ?>
 
+<!-- ================= ESTILOS ================= -->
 <style>
+
     body {
-        background-color: #f4f6f9;
+        background: linear-gradient(to right, #eef2ff, #f8fafc);
     }
 
-    .page-title {
-        font-size: 1.4rem;
+    .wrapper {
+        padding: 30px;
+    }
+
+    .titulo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #1e1b4b;
+    }
+
+    .subtitulo {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    .card-main {
+        background: white;
+        border-radius: 14px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .label {
+        font-size: 0.8rem;
         font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 2px;
-    }
-
-    .page-subtitle {
-        font-size: 0.85rem;
-        color: #6c757d;
-    }
-
-    .panel {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
-
-    .panel-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: #94a3b8;
-        text-transform: uppercase;
-        margin-bottom: 16px;
-    }
-
-    .form-group label {
-        font-size: 0.82rem;
-        color: #64748b;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
         display: block;
     }
 
-    .form-control,
-    .form-select {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.88rem;
-        padding: 10px 14px;
-        color: #475569;
+    .input, .select {
         width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #c7d2fe;
     }
 
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #1e3a5f;
-        box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
+    .input:focus {
+        border-color: #4f46e5;
         outline: none;
     }
 
-    .btn-guardar {
-        background-color: #1e3a5f;
-        color: #fff;
-        border: none;
+    .btn-main {
+        background: #4f46e5;
+        color: white;
         border-radius: 8px;
-        padding: 10px 24px;
-        font-size: 0.88rem;
-        cursor: pointer;
+        padding: 10px 20px;
+        border: none;
     }
 
-    .btn-guardar:hover {
-        background-color: #16304f;
+    .btn-main:hover {
+        background: #3730a3;
     }
 
-    .table thead th {
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.07em;
-        color: #94a3b8;
-        text-transform: uppercase;
-        border-bottom: 1px solid #e2e8f0;
-        background: #fff;
-        padding: 12px 16px;
-    }
-
-    .table tbody td {
-        padding: 13px 16px;
-        font-size: 0.88rem;
-        color: #334155;
-        border-bottom: 1px solid #f1f5f9;
-        vertical-align: middle;
-    }
-
-    .table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .table tbody tr:hover {
-        background-color: #f8fafc;
-    }
-
-    .num-col {
-        color: #cbd5e1;
-        font-size: 0.82rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #94a3b8;
-    }
-
-    .empty-state i {
-        font-size: 2.5rem;
-        margin-bottom: 12px;
-        display: block;
-    }
-
-    .empty-state p {
-        font-size: 0.88rem;
-        margin: 0;
-    }
-
-    .estado-activo {
-        background-color: #fef3c7;
-        color: #d97706;
-        font-weight: 600;
-        padding: 4px 10px;
+    .estado {
+        padding: 5px 12px;
         border-radius: 20px;
-        font-size: 0.78rem;
+        font-size: 0.75rem;
     }
 
-    .estado-devuelto {
-        background-color: #f0fdf4;
-        color: #15803d;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 0.78rem;
+    .activo {
+        background: #e0e7ff;
+        color: #3730a3;
     }
 
-    .estado-vencido {
-        background-color: #fef2f2;
-        color: #dc2626;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 0.78rem;
+    .tabla {
+        width: 100%;
+        border-collapse: collapse;
     }
+
+    .tabla th {
+        background: #eef2ff;
+        padding: 10px;
+        font-size: 0.75rem;
+    }
+
+    .tabla td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
 </style>
 
-<div class="container-fluid px-4 py-4">
+<div class="wrapper">
 
-    <!-- Encabezado -->
-    <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-            <div class="page-title">Gestión de Préstamos</div>
-            <div class="page-subtitle">Registro y seguimiento de préstamos de libros</div>
-        </div>
+    <!-- ================= HEADER ================= -->
+    <div class="mb-4">
+        <div class="titulo">Sistema de Biblioteca</div>
+        <div class="subtitulo">Gestión completa de préstamos</div>
     </div>
 
-    <!-- Mensajes -->
-    <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-dismissible fade show rounded-3 border-0 mb-3" style="background:#f0fdf4;color:#15803d;">
-            <i class="fas fa-check-circle me-2"></i><?= session()->getFlashdata('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+    <!-- ================= FORMULARIO ================= -->
+    <div class="card-main">
 
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-dismissible fade show rounded-3 border-0 mb-3" style="background:#fef2f2;color:#dc2626;">
-            <i class="fas fa-exclamation-circle me-2"></i><?= session()->getFlashdata('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+        <h5>Registrar nuevo préstamo</h5>
 
-    <!-- Formulario -->
-    <div class="panel">
-        <div class="panel-label">Registrar Préstamo</div>
-        <form action="<?= base_url('prestamos/guardar') ?>" method="post">
+        <form id="formPrestamo" method="post" action="<?= base_url('prestamos/guardar') ?>">
             <?= csrf_field() ?>
-            <div class="row g-3">
 
-                <div class="col-md-3 form-group">
-                    <label>DNI Alumna</label>
-                    <input type="text" name="alumna_id" class="form-control" placeholder="Ej: 72894561" required>
+            <input type="hidden" name="idalumna" id="idalumna">
+
+            <div class="row">
+
+                <!-- DNI -->
+                <div class="col-md-3">
+                    <label class="label">DNI</label>
+                    <input type="text" id="dni" class="input">
+                    <small id="msgDni"></small>
                 </div>
 
-                <div class="col-md-3 form-group">
-                    <label>Nombre del Libro</label>
-                    <input type="text" name="libro_id" class="form-control" placeholder="Ej: Matemática 3°" required>
+                <!-- LIBRO -->
+                <div class="col-md-4">
+                    <label class="label">Libro</label>
+                    <select id="libro" name="idactivo"></select>
                 </div>
 
-                <div class="col-md-2 form-group">
-                    <label>Fecha Préstamo</label>
-                    <input type="date" name="fecha_prestamo" class="form-control" required>
-                </div>
-
-                <div class="col-md-2 form-group">
-                    <label>Fecha Devolución</label>
-                    <input type="date" name="fecha_devolucion" class="form-control" required>
+                <!-- CONDICION -->
+                <div class="col-md-3">
+                    <label class="label">Condición</label>
+                    <select name="condicionentrega" class="select">
+                        <option value="">Seleccionar</option>
+                        <option>Bueno</option>
+                        <option>Regular</option>
+                        <option>Malo</option>
+                    </select>
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn-guardar w-100">
-                        <i class="fas fa-save me-2"></i> Guardar
-                    </button>
+                    <button class="btn-main w-100">Guardar</button>
                 </div>
 
             </div>
         </form>
+
     </div>
 
-    <!-- Tabla -->
-    <div class="panel">
-        <div class="panel-label">Listado de Préstamos</div>
+    <!-- ================= TABLA ================= -->
+    <div class="card-main">
 
-        <table class="table mb-0">
+        <h5>Listado de préstamos</h5>
+
+        <input type="text" id="buscador" class="input mb-3" placeholder="Filtrar registros...">
+
+        <table class="tabla" id="tabla">
             <thead>
                 <tr>
-                    <th style="width:40px;">#</th>
-                    <th>Alumna</th>
+                    <th>#</th>
+                    <th>Estudiante</th>
+                    <th>DNI</th>
                     <th>Libro</th>
-                    <th>F. Préstamo</th>
-                    <th>F. Devolución</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Condición</th>
                     <th>Estado</th>
                 </tr>
             </thead>
+
             <tbody>
-                <?php if (!empty($prestamos)): ?>
-                    <?php foreach ($prestamos as $i => $p): ?>
-                        <tr>
-                            <td class="num-col"><?= $i + 1 ?></td>
-                            <td><?= esc($p['alumna_id']) ?></td>
-                            <td><?= esc($p['libro_id']) ?></td>
-                            <td><?= esc($p['fecha_prestamo']) ?></td>
-                            <td><?= esc($p['fecha_devolucion']) ?></td>
-                            <td>
-                                <?php
-                                $estado = strtolower($p['estado'] ?? '');
-                                $clase = match ($estado) {
-                                    'devuelto' => 'estado-devuelto',
-                                    'vencido' => 'estado-vencido',
-                                    default => 'estado-activo',
-                                };
-                                ?>
-                                <span class="<?= $clase ?>"><?= esc(ucfirst($p['estado'])) ?></span>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <i class="fas fa-book-open"></i>
-                                <p>No hay préstamos registrados</p>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endif; ?>
+                <?php foreach ($prestamos as $i => $p): ?>
+                <tr>
+                    <td><?= $i+1 ?></td>
+                    <td><?= esc($p['nombre']) ?></td>
+                    <td><?= esc($p['dni']) ?></td>
+                    <td><?= esc($p['titulo']) ?></td>
+                    <td><?= esc($p['entrega']) ?></td>
+                    <td><?= esc($p['hora_entrega']) ?></td>
+                    <td><?= esc($p['condicionentrega']) ?></td>
+                    <td><span class="estado activo">Activo</span></td>
+                </tr>
+                <?php endforeach; ?>
             </tbody>
+
         </table>
+
     </div>
 
 </div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+let timeout;
+
+// ================= BUSCAR DNI =================
+document.getElementById('dni').addEventListener('input', function() {
+
+    clearTimeout(timeout);
+
+    let dni = this.value;
+
+    if(dni.length < 8) return;
+
+    timeout = setTimeout(() => {
+
+        fetch(`<?= base_url('prestamos/buscar-alumna') ?>?dni=${dni}`)
+        .then(r => r.json())
+        .then(data => {
+
+            if(data.success){
+                document.getElementById('msgDni').innerHTML = data.nombre;
+                document.getElementById('idalumna').value = data.id;
+            } else {
+                document.getElementById('msgDni').innerHTML = "No encontrado";
+            }
+
+        });
+
+    }, 500);
+
+});
+
+// ================= VALIDACION =================
+document.getElementById('formPrestamo').addEventListener('submit', function(e){
+
+    let dni = document.getElementById('dni').value;
+    let libro = document.getElementById('libro').value;
+
+    if(dni === "" || libro === ""){
+        e.preventDefault();
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Faltan datos',
+            text: 'Completa todos los campos'
+        });
+    }
+
+});
+
+// ================= FILTRO TABLA =================
+document.getElementById('buscador').addEventListener('keyup', function(){
+
+    let valor = this.value.toLowerCase();
+    let filas = document.querySelectorAll("#tabla tbody tr");
+
+    filas.forEach(fila => {
+        fila.style.display = fila.textContent.toLowerCase().includes(valor) ? "" : "none";
+    });
+
+});
+
+// ================= SELECT LIBROS =================
+new TomSelect("#libro", {
+    valueField: "idactivo",
+    labelField: "titulo",
+    searchField: "titulo",
+
+    load: function(query, callback) {
+        fetch(`<?= base_url('prestamos/buscar-libros?q=') ?>${query}`)
+        .then(res => res.json())
+        .then(data => callback(data));
+    }
+});
+
+</script>
 
 <?= $footer ?>

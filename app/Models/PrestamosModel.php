@@ -6,13 +6,17 @@ use CodeIgniter\Model;
 
 class PrestamosModel extends Model
 {
-    protected $table = 'prestamos';
-    protected $primaryKey = 'id';
+    protected $table      = 'prestamos';
+    protected $primaryKey = 'idprestamo';
+    protected $returnType = 'array';
+
     protected $allowedFields = [
-        'alumna_id',
-        'libro_id',
-        'fecha_prestamo',
-        'fecha_devolucion',
-        'estado'
+        'idactivo',
+        'idalumna',
+        'entrega',
+        'devolucion',
+        'condicionentrega',
     ];
+
+    protected $useTimestamps = false;
 }
