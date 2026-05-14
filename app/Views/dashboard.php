@@ -321,7 +321,7 @@
 
         <div class="chart-toolbar">
             <div class="chart-toolbar-left">
-                <h3><i class="fas fa-chart-bar me-2" style="color:#1e3a5f;"></i>Préstamos registrados</h3>
+                <h3><i class="fas fa-chart-bar me-2" style="color:#1e3a5f;"></i> Préstamos registrados</h3>
                 <p id="chart-subtitle">Últimos 30 días</p>
             </div>
 
