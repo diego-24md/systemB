@@ -8,77 +8,7 @@
 ?>
 <?= $header ?>
 
-<style>
-    body {
-        background-color: #f4f6f9;
-    }
-
-    .page-title {
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 2px;
-    }
-
-    .page-subtitle {
-        font-size: 0.85rem;
-        color: #6c757d;
-    }
-
-    .panel {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
-
-    .panel-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: #94a3b8;
-        text-transform: uppercase;
-        margin-bottom: 16px;
-    }
-
-    .form-label-custom {
-        font-size: 0.82rem;
-        color: #475569;
-        margin-bottom: 6px;
-    }
-
-    .form-select,
-    .form-control {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.88rem;
-        padding: 10px 14px;
-        color: #475569;
-    }
-
-    .btn-guardar {
-        background-color: #1e3a5f;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 24px;
-        font-size: 0.9rem;
-    }
-
-    .btn-guardar:hover {
-        background-color: #16304f;
-    }
-
-    .btn-cancelar {
-        border: 1px solid #e2e8f0;
-        color: #64748b;
-        border-radius: 8px;
-        padding: 10px 24px;
-        font-size: 0.9rem;
-        background: #fff;
-    }
-</style>
+<link rel="stylesheet" href="<?= base_url('css/alumnas/editar.css') ?>">
 
 <div class="container-fluid px-4 py-4">
 
