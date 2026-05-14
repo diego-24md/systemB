@@ -29,11 +29,13 @@ class Libros extends BaseController
     {
         $data['libros'] = $this->db->table('recursos r')
             ->select('
-                r.*,
-                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores
-            ')
+        r.*,
+        GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+        c.categoria
+    ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
+            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->groupBy('r.idrecurso')
             ->get()
             ->getResultArray();
@@ -96,9 +98,10 @@ class Libros extends BaseController
                 ->with('errors', $validation->getErrors());
         }
 
-        $isbn = preg_replace('/\D/', '', $this->request->getPost('isbn'));
+        $isbnRaw = $this->request->getPost('isbn');
+        $isbn = $isbnRaw ? preg_replace('/\D/', '', $isbnRaw) : null;
 
-        if (strlen($isbn) !== 13 && strlen($isbn) !== 10) {
+        if ($isbn && strlen($isbn) !== 13 && strlen($isbn) !== 10) {
             return redirect()->back()
                 ->withInput()
                 ->with('errors', ['isbn' => 'El ISBN debe tener 10 o 13 dígitos']);
@@ -256,7 +259,8 @@ class Libros extends BaseController
     // ====================== ACTUALIZAR ======================
     public function actualizar($id)
     {
-        $isbn = preg_replace('/\D/', '', $this->request->getPost('isbn'));
+        $isbnRaw = $this->request->getPost('isbn');
+        $isbn = $isbnRaw ? preg_replace('/\D/', '', $isbnRaw) : null;
 
         $file         = $this->request->getFile('portada');
         $nombreImagen = $this->request->getPost('portada_actual');

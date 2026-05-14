@@ -51,10 +51,10 @@
                         </div>
 
                         <div class="col-md-6 form-group">
-                            <label>ISBN <span class="text-danger">*</span></label>
+                            <label>ISBN <span class="text-muted" style="font-size:0.78rem;">(opcional)</span></label>
                             <input type="text" name="isbn" class="form-control" maxlength="13"
                                 oninput="this.value = this.value.replace(/\D/g, '').slice(0, 13); document.getElementById('isbn-contador').textContent = this.value.length + ' / 13 dígitos'"
-                                placeholder="Ej: 9780306406157" required>
+                                placeholder="Ej: 9780306406157">
                             <small class="text-muted" id="isbn-contador">0 / 13 dígitos</small>
                         </div>
 

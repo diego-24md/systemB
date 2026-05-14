@@ -2,6 +2,10 @@ body {
     background-color: #f4f6f9;
 }
 
+.label {
+    margin-right: 12px;
+}
+
 .page-title {
     font-size: 1.4rem;
     font-weight: 600;

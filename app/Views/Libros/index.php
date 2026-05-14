@@ -71,9 +71,9 @@
                                     <i class="fas fa-user-edit me-1"></i><?= esc((string)($libro['autores'] ?? '—')) ?>
                                 </div>
                                 <div class="book-meta">
-                                    <div class="mb-1"><span class="label">ISBN</span>: <?= esc((string)($libro['isbn'] ?? '—')) ?></div>
-                                    <div class="mb-1"><span class="label">Año</span>: <?= esc((string)($libro['anio'] ?? '—')) ?></div>
-                                    <div><span class="label">Págs.</span>: <?= esc((string)($libro['numpaginas'] ?? '—')) ?></div>
+                                    <div class="mb-1"><span class="label">Categoría:</span> <?= esc((string)($libro['categoria'] ?? '—')) ?></div>
+                                    <div class="mb-1"><span class="label">Año:</span> <?= esc((string)($libro['anio'] ?? '—')) ?></div>
+                                    <div><span class="label">Páginas:</span> <?= esc((string)($libro['numpaginas'] ?? '—')) ?></div>
                                 </div>
                             </div>
 

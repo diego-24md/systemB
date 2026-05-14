@@ -14,7 +14,7 @@
 <div class="container-fluid px-4 py-4">
 
     <div class="mb-4">
-        <div class="page-title">Dashboard</div>
+        <div class="page-title">Pantalla Principal</div>
         <div class="page-subtitle">Resumen general del sistema de biblioteca</div>
     </div>
 
