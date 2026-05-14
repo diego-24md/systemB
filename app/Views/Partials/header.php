@@ -13,10 +13,7 @@
 
     <!-- Custom fonts for this template-->
     <link href="<?= base_url('vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet" type="text/css">
-
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="<?= base_url('css/sb-admin-2.min.css') ?>" rel="stylesheet">
@@ -24,101 +21,11 @@
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Librería de Tom Select -->
+    <!-- Tom Select -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
 </head>
-
-<style>
-    .nav-buscar-libros {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        width: 100%;
-        padding: 0.75rem 1rem;
-        color: #fff !important;
-        border-radius: 0.35rem;
-        background: linear-gradient(135deg, #4e73df, #224abe);
-        transition: all 0.2s ease;
-        text-decoration: none;
-    }
-
-    .nav-buscar-libros:hover {
-        background: linear-gradient(135deg, #5a8dee, #2e59d9);
-        transform: translateX(3px);
-    }
-
-    /* ===== SIDEBAR FIJO ===== */
-    #wrapper {
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    .sidebar {
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        height: 100vh !important;
-        overflow-y: auto;
-        z-index: 1000;
-    }
-
-    #content-wrapper {
-        margin-left: 224px;
-        width: calc(100% - 224px);
-        height: 100vh;
-        overflow-y: auto;
-    }
-
-    body.sidebar-toggled #content-wrapper {
-        margin-left: 6.5rem;
-        width: calc(100% - 6.5rem);
-    }
-
-    .sidebar::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
-    }
-
-    /* ===== BOTÓN MARCAR TODAS ===== */
-    #marcarTodasBtn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-
-        padding: 6px 14px;
-        border-radius: 20px;
-
-        background: linear-gradient(135deg, #f6c23e, #dda20a);
-        color: #ffffff !important;
-
-        font-size: 12px;
-        font-weight: 600;
-        text-decoration: none;
-
-        box-shadow: 0 4px 10px rgba(221, 162, 10, 0.18);
-        transition: all 0.25s ease;
-    }
-
-    #marcarTodasBtn:hover {
-        background: linear-gradient(135deg, #ffd04d, #e0a800);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(221, 162, 10, 0.25);
-        color: #ffffff !important;
-        text-decoration: none;
-    }
-
-    #marcarTodasBtn:active {
-        transform: scale(0.98);
-    }
-</style>
 
 <body id="page-top">
 
@@ -133,7 +40,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-book-open"></i>
                 </div>
-                <div class="sidebar-brand-text mx-4"> Sistema de Biblioteca <sup></sup></div>
+                <div class="sidebar-brand-text mx-4">Sistema de Biblioteca <sup></sup></div>
             </a>
 
             <!-- Divider -->
@@ -147,16 +54,13 @@
                 </a>
             </li>
 
-            <!-- Divider -->
             <hr class="sidebar-divider my-0">
             <hr class="sidebar-divider">
 
             <!-- Heading -->
-            <div class="sidebar-heading">
-                Menú Principal
-            </div>
+            <div class="sidebar-heading">Menú Principal</div>
 
-            <!-- CATÁLOGO -->
+            <!-- LIBROS -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCatalogo"
                     aria-expanded="false" aria-controls="collapseCatalogo">
@@ -164,7 +68,7 @@
                     <span>Libros</span>
                 </a>
                 <div id="collapseCatalogo" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Libros</h6>
                         <a class="collapse-item" href="<?= base_url('libros') ?>">Libros</a>
                     </div>
@@ -179,7 +83,7 @@
                     <span>Usuarios</span>
                 </a>
                 <div id="collapseUsuarios" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Usuarios</h6>
                         <a class="collapse-item" href="<?= base_url('alumnas') ?>">Alumnas</a>
                     </div>
@@ -194,13 +98,12 @@
                     <span>Préstamos</span>
                 </a>
                 <div id="collapsePrestamos" class="collapse" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Préstamos</h6>
                         <a class="collapse-item" href="<?= base_url('prestamos') ?>">Registrar préstamo</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/pendientes') ?>">Reservas Pendientes</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/activos') ?>">Préstamos Activos</a>
                         <a class="collapse-item" href="<?= base_url('prestamos/devoluciones') ?>">Devoluciones</a>
                         <a class="collapse-item" href="<?= base_url('prestamos/historial') ?>">Ver Historial</a>
+                        <a class="collapse-item" href="<?= base_url('prestamos/ranking') ?>">Ranking</a>
                     </div>
                 </div>
             </li>
@@ -208,20 +111,18 @@
             <!-- EXPORTAR -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
+                    aria-expanded="false" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-file-export"></i>
                     <span>Exportar</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">DESCARGAR HISTORIAL</h6>
+                <div id="collapseUtilities" class="collapse" data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Descargar Historial</h6>
                         <a class="collapse-item" href="utilities-other.html">Exportar a PDF</a>
                     </div>
                 </div>
             </li>
 
-            <!-- Divider -->
             <hr class="sidebar-divider">
 
             <!-- Sidebar Toggler -->
@@ -450,10 +351,10 @@
                             if (items.length === 0) {
                                 const lista = document.getElementById('lista-notificaciones');
                                 lista.innerHTML = `
-                            <div class="dropdown-item text-center small text-gray-500 py-3">
-                                <i class="fas fa-check-circle text-success mr-1"></i>
-                                Sin notificaciones nuevas
-                            </div>`;
+                                    <div class="dropdown-item text-center small text-gray-500 py-3">
+                                        <i class="fas fa-check-circle text-success mr-1"></i>
+                                        Sin notificaciones nuevas
+                                    </div>`;
                             }
                         }
                     </script>

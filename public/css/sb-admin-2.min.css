@@ -10545,12 +10545,12 @@ body.sidebar-toggled footer.sticky-footer {
 /* ==================== FONDO BLANCO EN EL CONTENIDO ==================== */
 
 #content-wrapper {
-    background-color: #ffffff !important;
+    background-color: #0f1c33 !important;     /* Fondo oscuro del sistema */
 }
 
 .container-fluid,
 .container {
-    background-color: #ffffff !important;
+    background-color: transparent !important;
 }
 
 /* Cards blancas */
@@ -10588,30 +10588,35 @@ h1, h2, h3, h4, h5, h6 {
     border-top: 1px solid #e3e6f0;
 }
 
-/* ==================== TEXTO NEGRO EN SUBMENÚ DE MANTENIMIENTO ==================== */
+/* ==================== GLASSMORPHISM + TEXTO BLANCO ==================== */
 
-/* Panel principal */
-#accordionSidebar .nav-item .collapse .collapse-inner {
-    background-color: #ffffff !important;
-    border: 1px solid #e3e6f0;
+/* Fondo glass */
+#accordionSidebar .nav-item .collapse .collapse-inner,
+#accordionSidebar .collapse-inner,
+.sidebar .collapse-inner {
+    background: rgba(255, 255, 255, 0.10) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.20) !important;
 }
 
-/* Items del submenú */
+/* Texto blanco */
 #accordionSidebar .nav-item .collapse .collapse-item,
-#accordionSidebar .nav-item .collapse .collapse-inner a {
-    color: #2c2c2c !important;     /* Negro fuerte */
+#accordionSidebar .nav-item .collapse .collapse-inner a,
+#accordionSidebar .collapse-item {
+    color: #ffffff !important;
     font-weight: 500;
 }
 
-/* Hover (cuando pasa el mouse) */
+/* Hover */
 #accordionSidebar .nav-item .collapse .collapse-item:hover,
-#accordionSidebar .nav-item .collapse .collapse-inner a:hover {
-    background-color: #f8f9fc !important;
-    color: #0a2540 !important;     /* Azul oscuro al pasar mouse */
+#accordionSidebar .nav-item .collapse .collapse-inner a:hover,
+#accordionSidebar .collapse-item:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
 }
 
-/* Título del panel "Sistema de Almacén" */
+/* Collapse header */
 .collapse-header {
-    color: #0a2540 !important;
-    font-weight: 700;
+    color: rgba(255, 255, 255, 0.80) !important;
 }
