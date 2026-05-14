@@ -33,6 +33,10 @@ class Notificaciones extends BaseController
     {
         $model = new NotificacionesModel();
         $model->update($id, ['leida' => 1]);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON(['success' => true]);
+        }
         return redirect()->back();
     }
 
@@ -48,5 +52,16 @@ class Notificaciones extends BaseController
             ->findAll();
 
         return $this->response->setJSON($notificaciones);
+    }
+
+    public function marcarTodas()
+    {
+        $db = \Config\Database::connect();
+        $db->table('notificaciones')->where('leida', 0)->update(['leida' => 1]);
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON(['success' => true]);
+        }
+        return redirect()->back();
     }
 }

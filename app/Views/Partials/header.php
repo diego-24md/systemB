@@ -29,20 +29,17 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
 </head>
+
 <style>
     .nav-buscar-libros {
         display: flex;
         align-items: center;
         gap: 10px;
-
         width: 100%;
         padding: 0.75rem 1rem;
-
         color: #fff !important;
         border-radius: 0.35rem;
-
         background: linear-gradient(135deg, #4e73df, #224abe);
-
         transition: all 0.2s ease;
         text-decoration: none;
     }
@@ -70,19 +67,16 @@
 
     #content-wrapper {
         margin-left: 224px;
-        /* ancho del sidebar */
         width: calc(100% - 224px);
         height: 100vh;
         overflow-y: auto;
     }
 
-    /* Cuando el sidebar está colapsado */
     body.sidebar-toggled #content-wrapper {
         margin-left: 6.5rem;
         width: calc(100% - 6.5rem);
     }
 
-    /* Scrollbar del sidebar más discreta */
     .sidebar::-webkit-scrollbar {
         width: 4px;
     }
@@ -90,6 +84,39 @@
     .sidebar::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.2);
         border-radius: 4px;
+    }
+
+    /* ===== BOTÓN MARCAR TODAS ===== */
+    #marcarTodasBtn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+
+        padding: 6px 14px;
+        border-radius: 20px;
+
+        background: linear-gradient(135deg, #f6c23e, #dda20a);
+        color: #ffffff !important;
+
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+
+        box-shadow: 0 4px 10px rgba(221, 162, 10, 0.18);
+        transition: all 0.25s ease;
+    }
+
+    #marcarTodasBtn:hover {
+        background: linear-gradient(135deg, #ffd04d, #e0a800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(221, 162, 10, 0.25);
+        color: #ffffff !important;
+        text-decoration: none;
+    }
+
+    #marcarTodasBtn:active {
+        transform: scale(0.98);
     }
 </style>
 
@@ -122,8 +149,6 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
-
-            <!-- Divider -->
             <hr class="sidebar-divider">
 
             <!-- Heading -->
@@ -180,7 +205,7 @@
                 </div>
             </li>
 
-            <!-- Nav Item - Utilities Collapse Menu -->
+            <!-- EXPORTAR -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
@@ -199,7 +224,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Sidebar Toggler (Sidebar) -->
+            <!-- Sidebar Toggler -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
@@ -224,13 +249,12 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <!-- Search XS -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
-                            <!-- Dropdown - Messages -->
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                 aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
@@ -254,6 +278,7 @@
                         $totalNoLeidas  = $notifModel->contarNoLeidas();
                         ?>
 
+                        <!-- NOTIFICACIONES -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -267,36 +292,48 @@
 
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Notificaciones
+                                <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                                    <span>Notificaciones</span>
                                     <?php if ($totalNoLeidas > 0): ?>
-                                        <span class="float-right badge badge-light"><?= $totalNoLeidas ?> nuevas</span>
+                                        <div>
+                                            <span class="badge badge-light mr-2"><?= $totalNoLeidas ?> nuevas</span>
+                                            <a href="#" id="marcarTodasBtn" class="small text-warning" style="font-size:11px;">
+                                                Marcar todas ✓
+                                            </a>
+                                        </div>
                                     <?php endif; ?>
                                 </h6>
 
-                                <?php if (!empty($notificaciones)): ?>
-                                    <?php foreach ($notificaciones as $n): ?>
-                                        <a class="dropdown-item d-flex align-items-center"
-                                            href="<?= base_url('notificaciones/marcar/' . $n['id']) ?>">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-<?= esc((string)$n['color']) ?>">
-                                                    <i class="<?= esc((string)$n['icono']) ?> text-white"></i>
+                                <div id="lista-notificaciones">
+                                    <?php if (!empty($notificaciones)): ?>
+                                        <?php foreach ($notificaciones as $n): ?>
+                                            <a class="dropdown-item d-flex align-items-center notif-item"
+                                                data-id="<?= $n['id'] ?>"
+                                                href="#"
+                                                style="cursor:pointer; transition: all 0.4s ease;">
+                                                <div class="mr-3">
+                                                    <div class="icon-circle bg-<?= esc((string)$n['color']) ?>">
+                                                        <i class="<?= esc((string)$n['icono']) ?> text-white"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <div class="small text-gray-500">
-                                                    <?= date('d/m/Y H:i', strtotime((string)$n['created_at'])) ?>
+                                                <div class="flex-grow-1">
+                                                    <div class="small text-gray-500">
+                                                        <?= date('d/m/Y H:i', strtotime((string)$n['created_at'])) ?>
+                                                    </div>
+                                                    <span class="font-weight-bold"><?= esc((string)$n['mensaje']) ?></span>
                                                 </div>
-                                                <span class="font-weight-bold"><?= esc((string)$n['mensaje']) ?></span>
-                                            </div>
-                                        </a>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="dropdown-item text-center small text-gray-500 py-3">
-                                        <i class="fas fa-check-circle text-success mr-1"></i>
-                                        Sin notificaciones nuevas
-                                    </div>
-                                <?php endif; ?>
+                                                <div class="ml-2">
+                                                    <span class="badge badge-pill badge-primary small">Nueva</span>
+                                                </div>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="dropdown-item text-center small text-gray-500 py-3" id="sin-notificaciones">
+                                            <i class="fas fa-check-circle text-success mr-1"></i>
+                                            Sin notificaciones nuevas
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
 
                                 <a class="dropdown-item text-center small text-gray-500"
                                     href="<?= base_url('notificaciones') ?>">
@@ -312,11 +349,9 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= session()->get('nombre') ?? 'Bibliotecario' ?></span>
-                                <img
-                                    class="img-profile rounded-circle"
+                                <img class="img-profile rounded-circle"
                                     src="<?= base_url('uploads/perfiles/' . (session()->get('foto') ?? 'perfil.png')) ?>">
                             </a>
-                            <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="<?= base_url('perfil') ?>">
@@ -338,3 +373,87 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+
+                    <!-- JavaScript Notificaciones -->
+                    <script>
+                        document.addEventListener('click', function(e) {
+                            const item = e.target.closest('.notif-item');
+                            if (!item) return;
+
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const id = item.dataset.id;
+
+                            item.style.opacity = '0';
+                            item.style.transform = 'translateX(20px)';
+
+                            setTimeout(() => {
+                                item.remove();
+                                actualizarContador(-1);
+                                verificarVacia();
+                            }, 400);
+
+                            fetch('<?= base_url('notificaciones/marcar/') ?>' + id, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            });
+                        });
+
+                        const marcarTodasBtn = document.getElementById('marcarTodasBtn');
+                        if (marcarTodasBtn) {
+                            marcarTodasBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                const items = document.querySelectorAll('.notif-item');
+                                items.forEach((item, i) => {
+                                    setTimeout(() => {
+                                        item.style.opacity = '0';
+                                        item.style.transform = 'translateX(20px)';
+                                        setTimeout(() => item.remove(), 400);
+                                    }, i * 80);
+                                });
+
+                                setTimeout(() => {
+                                    actualizarContador(-items.length);
+                                    verificarVacia();
+                                }, items.length * 80 + 400);
+
+                                fetch('<?= base_url('notificaciones/marcarTodas') ?>', {
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                });
+                            });
+                        }
+
+                        function actualizarContador(cambio) {
+                            const badge = document.querySelector('.badge-counter');
+                            const badgeHeader = document.querySelector('.badge-light');
+                            if (!badge) return;
+
+                            let count = parseInt(badge.textContent) || 0;
+                            count = Math.max(0, count + cambio);
+
+                            if (count <= 0) {
+                                badge.remove();
+                                if (badgeHeader) badgeHeader.parentElement.remove();
+                            } else {
+                                badge.textContent = count > 9 ? '9+' : count;
+                                if (badgeHeader) badgeHeader.textContent = count + ' nuevas';
+                            }
+                        }
+
+                        function verificarVacia() {
+                            const items = document.querySelectorAll('.notif-item');
+                            if (items.length === 0) {
+                                const lista = document.getElementById('lista-notificaciones');
+                                lista.innerHTML = `
+                            <div class="dropdown-item text-center small text-gray-500 py-3">
+                                <i class="fas fa-check-circle text-success mr-1"></i>
+                                Sin notificaciones nuevas
+                            </div>`;
+                            }
+                        }
+                    </script>
