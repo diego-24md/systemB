@@ -14,7 +14,7 @@
     <div class="login-card">
         <div class="login-header">
             <div class="login-icon">
-                <i class="fas fa-graduation-cap"></i>
+                <img src="<?= base_url('img/insignia.png') ?>" alt="Logo IE">
             </div>
             <div class="login-title">Biblioteca Escolar</div>
             <div class="login-subtitle">Institución Educativa Chinchaysuyo</div>

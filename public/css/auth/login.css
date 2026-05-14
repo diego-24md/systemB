@@ -1,5 +1,5 @@
 body {
-    background: url('/img/colegio.jpg') center center / cover no-repeat;
+    background: url('/img/colegio.jpg') center center / cover no-repeat fixed;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -11,45 +11,39 @@ body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: rgba(10, 30, 80, 0.55);
+    background: rgba(10, 20, 60, 0.45);
     z-index: 0;
 }
 
-body::after {
-    content: '';
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 45%;
-    background: linear-gradient(to bottom, transparent, #ffffff);
-    pointer-events: none;
-    z-index: 0;
-}
-
+/* ── CARD GLASS ─────────────────────────── */
 .login-card {
     position: relative;
     z-index: 1;
-}
-
-.login-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 40px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 44px 40px;
     width: 100%;
     max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
+/* ── ICONO ──────────────────────────────── */
 .login-icon {
     width: 70px;
     height: 70px;
-    background: linear-gradient(135deg, #4e73df, #224abe);
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .login-icon i {
@@ -57,80 +51,122 @@ body::after {
     color: #fff;
 }
 
+/* ── TÍTULOS ────────────────────────────── */
 .login-title {
     font-size: 1.3rem;
     font-weight: 800;
-    color: #1a1a2e;
+    color: #ffffff;
     text-align: center;
     margin-bottom: 4px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .login-subtitle {
     font-size: 0.83rem;
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.65);
     text-align: center;
     margin-bottom: 28px;
 }
 
+/* ── LABELS ─────────────────────────────── */
 .form-label {
     font-size: 0.82rem;
-    color: #475569;
+    color: rgba(255, 255, 255, 0.85);
     font-weight: 600;
 }
 
+/* ── INPUTS ─────────────────────────────── */
 .form-control {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0;
+    padding: 11px 14px;
     font-size: 0.88rem;
-    color: #334155;
+    color: #ffffff;
+    transition: all .2s;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.45);
 }
 
 .form-control:focus {
-    border-color: #4e73df;
-    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+    background: transparent;
+    border-bottom-color: #38bdf8;
+    box-shadow: none;
+    color: #ffffff;
+    outline: none;
 }
 
-.btn-login {
-    background: linear-gradient(135deg, #4e73df, #224abe);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 11px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    width: 100%;
-    margin-top: 8px;
+/* Eliminar fondo blanco */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:not(:placeholder-shown) {
+    background: transparent !important;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 0 !important;
 }
 
-.btn-login:hover {
-    background: linear-gradient(135deg, #5a7fe8, #2e59d9);
-    color: #fff;
-}
-
-.alert-error {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 0.84rem;
-    margin-bottom: 16px;
-}
-
+/* ── INPUT CON ICONO ────────────────────── */
 .input-icon {
     position: relative;
 }
 
 .input-icon i {
     position: absolute;
-    left: 12px;
+    left: 13px;
     top: 50%;
     transform: translateY(-50%);
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.55);
     font-size: 0.85rem;
+    z-index: 2;
 }
 
 .input-icon .form-control {
-    padding-left: 34px;
+    padding-left: 36px;
+}
+
+/* ── BOTÓN ──────────────────────────────── */
+.btn-login {
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .02em;
+    backdrop-filter: blur(6px);
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* ── ALERTA ERROR ───────────────────────── */
+.alert-error {
+    background: rgba(220, 38, 38, 0.2);
+    color: #fecaca;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.84rem;
+    margin-bottom: 16px;
 }
