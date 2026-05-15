@@ -42,10 +42,13 @@
 
             <div class="mb-3">
                 <label class="form-label">Contraseña</label>
-                <div class="input-icon">
+                <div class="input-icon input-icon--with-toggle">
                     <i class="fas fa-lock"></i>
-                    <input type="password" name="password" class="form-control"
+                    <input type="password" name="password" id="password" class="form-control"
                         placeholder="Ingresa tu contraseña" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Mostrar contraseña">
+                        <i class="fas fa-eye" id="toggle-icon"></i>
+                    </button>
                 </div>
             </div>
 
@@ -56,6 +59,19 @@
         </form>
 
     </div>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('toggle-icon');
+            const btn = document.querySelector('.toggle-password');
+            const show = input.type === 'password';
+
+            input.type = show ? 'text' : 'password';
+            icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+            btn.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        }
+    </script>
 
 </body>
 
