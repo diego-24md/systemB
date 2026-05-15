@@ -35,8 +35,9 @@ class CreateRecursos extends Migration
                 'default' => null
             ],
             'isbn' => [
-                'type' => 'VARCHAR',
-                'constraint' => 20
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
+                'null'       => true,
             ],
             'anio' => [
                 'type' => 'YEAR'

@@ -118,7 +118,6 @@
             <button type="submit" class="btn btn-guardar">
                 <i class="fas fa-save me-2"></i> Guardar cambios
             </button>
-            <a href="<?= base_url('alumnas') ?>" class="btn btn-cancelar">Cancelar</a>
         </div>
 
     </form>

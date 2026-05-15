@@ -70,7 +70,7 @@
                         </div>
 
                         <div class="col-md-6 form-group">
-                            <label>ISBN</label>
+                            <label>ISBN <span class="text-muted" style="font-size:0.78rem;">(opcional)</span></label>
                             <input type="text" name="isbn" class="form-control"
                                 value="<?= esc((string)$libro['isbn'] ?? '') ?>"
                                 maxlength="13"
