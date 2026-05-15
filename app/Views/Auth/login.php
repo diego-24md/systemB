@@ -20,7 +20,7 @@
         </div>
 
         <div class="login-title">Sistema de Biblioteca</div>
-        <div class="login-subtitle">Acceso para bibliotecarios</div>
+        <div class="login-subtitle">Acceso para Bibliotecario</div>
 
         <?php if (!empty($error)): ?>
             <div class="alert-error">
