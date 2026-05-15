@@ -12,7 +12,7 @@ class Persona extends BaseController
     {
         $db = \Config\Database::connect();
 
-        // ✅ JOIN CORRECTO (usando matriculas)
+        // Obtiene las personas junto con su matrícula y grupo (grado y sección) desde la base de datos
         $personas = $db->table('personas p')
             ->select('p.*, g.grado, g.seccion, m.idgrupo')
             ->join('matriculas m', 'm.idpersona = p.idpersona', 'left')
