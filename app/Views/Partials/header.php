@@ -27,6 +27,42 @@
 
 </head>
 
+<style>
+    /* SIDEBAR FIJO */
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        width: 14rem;
+        /* ancho del menú */
+        height: 100vh;
+        /* alto completo de pantalla */
+        overflow-y: auto;
+        /* scroll interno si hay mucho contenido */
+        z-index: 1000;
+    }
+
+    /* EVITA QUE EL CONTENIDO SE META DEBAJO DEL SIDEBAR */
+    #content-wrapper {
+        margin-left: 14rem;
+        width: calc(100% - 14rem);
+    }
+
+    /* PARA QUE NO SE DESORDENE EN MÓVIL */
+    @media (max-width: 768px) {
+        .sidebar {
+            position: relative !important;
+            width: 100%;
+            height: auto;
+        }
+
+        #content-wrapper {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+</style>
+
 <body id="page-top">
 
     <!-- Page Wrapper -->
