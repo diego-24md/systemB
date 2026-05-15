@@ -93,4 +93,7 @@ $routes->group('', ['filter' => 'auth.alumna'], function ($routes) {
     // Favoritos
     $routes->post('favoritos/toggle', 'Favoritos::toggle');
     $routes->get('favoritos/ids', 'Favoritos::ids');
+
+    // Ranking
+    $routes->get('biblioteca/ranking', 'Biblioteca::ranking');
 });

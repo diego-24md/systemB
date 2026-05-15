@@ -137,9 +137,10 @@
                     <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Préstamos</h6>
                         <a class="collapse-item" href="<?= base_url('prestamos') ?>">Registrar préstamo</a>
+                        <a class="collapse-item" href="<?= base_url('prestamos/pendientes') ?>">Reservas Pendientes</a>
+                        <a class="collapse-item" href="<?= base_url('prestamos/activos') ?>">Préstamos Activos</a>
                         <a class="collapse-item" href="<?= base_url('prestamos/devoluciones') ?>">Devoluciones</a>
                         <a class="collapse-item" href="<?= base_url('prestamos/historial') ?>">Ver Historial</a>
-                        <a class="collapse-item" href="<?= base_url('prestamos/ranking') ?>">Ranking</a>
                     </div>
                 </div>
             </li>

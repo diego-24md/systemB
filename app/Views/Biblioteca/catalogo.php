@@ -17,6 +17,30 @@ $libros       = $libros ?? [];
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="<?= base_url('css/biblioteca/catalogo.css') ?>">
+    <style>
+        /* Botón ranking */
+        .btn-ranking-top {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background .18s;
+        }
+
+        .btn-ranking-top:hover {
+            background: rgba(255, 255, 255, .2);
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,10 +69,18 @@ $libros       = $libros ?? [];
         </div>
         <div class="topbar-sep"></div>
         <div class="topbar-actions">
+
+            <!-- Botón favoritos -->
             <button class="btn-fav-top" id="btnAbrirFav" title="Mis favoritos">
                 <i class="fas fa-heart"></i>
                 <span class="fav-badge" id="favBadge"></span>
             </button>
+
+            <!-- Botón ranking -->
+            <a href="<?= base_url('biblioteca/ranking') ?>" class="btn-ranking-top" title="Más lectores">
+                <i class="fas fa-trophy"></i>
+            </a>
+
             <div class="topbar-user">
                 <button class="btn-user" id="userBtn" aria-expanded="false">
                     <i class="fa-solid fa-circle-user"></i>
@@ -104,7 +136,7 @@ $libros       = $libros ?? [];
             <?php endif; ?>
         </div>
 
-        <!-- Resultados de búsqueda (se llena dinámicamente) -->
+        <!-- Resultados de búsqueda -->
         <div id="resultados" class="books-grid"></div>
 
         <!-- Grid principal -->
@@ -144,10 +176,9 @@ $libros       = $libros ?? [];
             <?php endif; ?>
         </div>
 
-    </div><!-- /main -->
+    </div>
 
     <script>
-        /* ── menú usuario ──────────────────────── */
         const userBtn = document.getElementById('userBtn');
         const userDd = document.getElementById('userDd');
         userBtn.addEventListener('click', e => {
@@ -160,7 +191,6 @@ $libros       = $libros ?? [];
             userBtn.setAttribute('aria-expanded', false);
         });
 
-        /* ── drawer ─────────────────────────────── */
         const drawer = document.getElementById('drawer');
         const drawerOverlay = document.getElementById('drawerOverlay');
         const drawerBody = document.getElementById('drawerBody');
@@ -181,7 +211,6 @@ $libros       = $libros ?? [];
             drawerOverlay.classList.remove('open');
         }
 
-        /* ── buscador ───────────────────────────── */
         const input = document.getElementById('buscador');
         const resultados = document.getElementById('resultados');
         const grid = document.getElementById('grid');
@@ -234,7 +263,6 @@ $libros       = $libros ?? [];
                 });
         }, true);
 
-        /* ── favoritos ──────────────────────────── */
         let favIds = new Set();
         let favData = {};
 
@@ -301,14 +329,11 @@ $libros       = $libros ?? [];
                     }
                 }
                 if (!d) return;
-
                 const item = document.createElement('div');
                 item.className = 'fav-item';
                 item.dataset.id = id;
                 item.innerHTML = `
-                    <div class="fav-thumb">
-                        ${d.portada ? `<img src="/uploads/portadas/${d.portada}" alt="${d.titulo}">` : `<i class="fas fa-book"></i>`}
-                    </div>
+                    <div class="fav-thumb">${d.portada ? `<img src="/uploads/portadas/${d.portada}" alt="${d.titulo}">` : `<i class="fas fa-book"></i>`}</div>
                     <div class="fav-info">
                         <div class="fav-titulo">${d.titulo}</div>
                         <div class="fav-autor">${d.autor}</div>
@@ -357,7 +382,6 @@ $libros       = $libros ?? [];
 
         bindFavCards(grid);
 
-        /* ── filtros por categoría ──────────────── */
         let filtroActual = 'todos';
         document.querySelectorAll('.filtro-btn').forEach(btn => {
             btn.addEventListener('click', () => {

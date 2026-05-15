@@ -248,4 +248,54 @@ class Biblioteca extends BaseController
         return redirect()->to(base_url('catalogo'))
             ->with('success', '¡Reserva enviada! El bibliotecario la revisará pronto. Pasa a la biblioteca para recoger tu libro.');
     }
+
+    // ====================== RANKING ======================
+    public function ranking()
+    {
+        if (! session()->get('alumna_id')) {
+            return redirect()->to(base_url('login'));
+        }
+
+        // Ranking de alumnas por total de préstamos
+        $rankingAlumnas = $this->db->table('prestamos p')
+            ->select('
+                a.id AS idalumna,
+                a.nombre,
+                g.nombre AS grado,
+                s.nombre AS seccion,
+                COUNT(p.idprestamo) AS total_prestamos
+            ')
+            ->join('alumnas a',   'a.id = p.idalumna',       'left')
+            ->join('grados g',    'g.id = a.grado_id',       'left')
+            ->join('secciones s', 's.id = a.seccion_id',     'left')
+            ->whereIn('p.estado', ['activo', 'devuelto'])
+            ->groupBy('a.id')
+            ->orderBy('total_prestamos', 'DESC')
+            ->limit(20)
+            ->get()
+            ->getResultArray();
+
+        // Ranking de aulas por total de préstamos
+        $rankingAulas = $this->db->table('prestamos p')
+            ->select('
+                g.nombre AS grado,
+                s.nombre AS seccion,
+                COUNT(p.idprestamo)  AS total_prestamos,
+                COUNT(DISTINCT a.id) AS total_alumnas
+            ')
+            ->join('alumnas a',   'a.id = p.idalumna',   'left')
+            ->join('grados g',    'g.id = a.grado_id',   'left')
+            ->join('secciones s', 's.id = a.seccion_id', 'left')
+            ->whereIn('p.estado', ['activo', 'devuelto'])
+            ->groupBy('g.id, s.id')
+            ->orderBy('total_prestamos', 'DESC')
+            ->limit(10)
+            ->get()
+            ->getResultArray();
+
+        return view('Biblioteca/ranking', [
+            'rankingAlumnas' => $rankingAlumnas,
+            'rankingAulas'   => $rankingAulas,
+        ]);
+    }
 }
