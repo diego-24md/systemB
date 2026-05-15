@@ -1,16 +1,22 @@
 :root {
+    /* === PALETA INSTITUCIONAL CHINCHAYSUYO === */
     --ink: #1b2436;
     --ink-light: #4a5568;
-    --teal: #0f6e56;
-    --teal-mid: #1d9e75;
-    --teal-pale: #e1f5ee;
-    --amber: #ba7517;
-    --amber-pale: #faeeda;
-    --sand: #f7f4ef;
+    --primary-red: #C8102E;
+    --red-dark: #9B0F23;
+    --gold: #FFCC00;
+    --gold-dark: #D4A017;
+    --blue-dark: #003087;
+    --teal: #C8102E;
+    --teal-mid: #9B0F23;
+    --teal-pale: #ffe6e9;
+    --amber: #FFCC00;
+    --amber-pale: #fff4d1;
+    --sand: #f8f6f0;
     --white: #ffffff;
-    --border: rgba(27, 36, 54, .1);
-    --shadow: 0 2px 12px rgba(27, 36, 54, .07);
-    --shadow-lg: 0 8px 28px rgba(27, 36, 54, .13);
+    --border: rgba(27, 36, 54, .12);
+    --shadow: 0 2px 12px rgba(27, 36, 54, .08);
+    --shadow-lg: 0 8px 28px rgba(27, 36, 54, .14);
 }
 
 * {
@@ -32,6 +38,7 @@ body {
     top: 0;
     z-index: 100;
     background: var(--ink);
+    /* ← Volvió al azul original */
     display: flex;
     align-items: center;
     gap: 14px;
@@ -58,7 +65,7 @@ body {
     display: block;
     font-size: 11px;
     font-weight: 300;
-    color: rgba(255, 255, 255, .5);
+    color: rgba(255, 255, 255, .75);
 }
 
 .topbar-sep {
@@ -77,8 +84,8 @@ body {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .1);
-    border: 1px solid rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -89,15 +96,15 @@ body {
 }
 
 .btn-fav-top:hover {
-    background: rgba(255, 255, 255, .2);
+    background: rgba(255, 255, 255, .25);
 }
 
 .fav-badge {
     position: absolute;
     top: -4px;
     right: -4px;
-    background: var(--amber);
-    color: #3b2500;
+    background: var(--gold);
+    color: #fff;
     font-size: 10px;
     font-weight: 700;
     width: 18px;
@@ -118,8 +125,8 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, .08);
-    border: 1px solid rgba(255, 255, 255, .14);
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .2);
     border-radius: 30px;
     padding: 6px 14px 6px 8px;
     cursor: pointer;
@@ -132,7 +139,7 @@ body {
 }
 
 .btn-user:hover {
-    background: rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, .22);
 }
 
 .btn-user i {
@@ -181,7 +188,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 12px 18px;
-    color: var(--teal);
+    color: var(--primary-red);
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
@@ -192,12 +199,13 @@ body {
     background: var(--teal-pale);
 }
 
-/* ── DRAWER FAVORITOS ───────────────────── */
+/* Resto del CSS se mantiene igual (drawer, cards, etc.) */
+
 .drawer-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(27, 36, 54, .4);
+    background: rgba(27, 36, 54, .45);
     z-index: 300;
     backdrop-filter: blur(2px);
 }
@@ -244,7 +252,7 @@ body {
 }
 
 .drawer-header h2 i {
-    color: var(--teal);
+    color: var(--primary-red);
 }
 
 .drawer-close {
@@ -264,8 +272,8 @@ body {
 
 .drawer-close:hover {
     background: var(--teal-pale);
-    color: var(--teal);
-    border-color: var(--teal-mid);
+    color: var(--primary-red);
+    border-color: var(--primary-red);
 }
 
 .drawer-body {
@@ -353,7 +361,7 @@ body {
     font-size: 11.5px;
     font-weight: 600;
     padding: 4px 12px;
-    background: var(--teal);
+    background: var(--primary-red);
     color: #fff;
     border-radius: 20px;
     text-decoration: none;
@@ -362,7 +370,7 @@ body {
 }
 
 .fav-ver:hover {
-    background: var(--teal-mid);
+    background: var(--red-dark);
 }
 
 .fav-remove {
@@ -382,7 +390,7 @@ body {
 }
 
 .fav-remove:hover {
-    color: var(--teal);
+    color: var(--primary-red);
     background: var(--teal-pale);
 }
 
@@ -440,9 +448,9 @@ body {
 }
 
 .search-wrap input:focus {
-    border-color: var(--teal-mid);
+    border-color: var(--primary-red);
     background: var(--white);
-    box-shadow: 0 0 0 3px rgba(29, 158, 117, .1);
+    box-shadow: 0 0 0 3px rgba(200, 16, 46, .12);
 }
 
 .search-wrap input::placeholder {
@@ -477,13 +485,13 @@ body {
 }
 
 .filtro-btn:hover {
-    border-color: var(--teal-mid);
-    color: var(--teal);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
 }
 
 .filtro-btn.activo {
-    background: var(--teal);
-    border-color: var(--teal);
+    background: var(--primary-red);
+    border-color: var(--primary-red);
     color: #fff;
 }
 
@@ -537,7 +545,7 @@ body {
 .book-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
-    border-color: rgba(27, 36, 54, .18);
+    border-color: var(--gold);
 }
 
 /* corazón flotante */
@@ -562,13 +570,13 @@ body {
 
 .btn-fav-card:hover {
     background: #fff;
-    color: var(--teal);
+    color: var(--gold);
     transform: scale(1.12);
-    border-color: var(--teal-pale);
+    border-color: var(--gold);
 }
 
 .btn-fav-card.activo {
-    color: var(--teal);
+    color: var(--gold);
 }
 
 .book-cover {
@@ -629,7 +637,7 @@ body {
     font-weight: 600;
     font-family: inherit;
     padding: 9px 16px;
-    background: var(--teal);
+    background: var(--primary-red);
     color: #fff;
     border-radius: 8px;
     text-decoration: none;
@@ -639,7 +647,7 @@ body {
 }
 
 .book-btn:hover {
-    background: var(--teal-mid);
+    background: var(--red-dark);
     transform: translateY(-1px);
 }
 
