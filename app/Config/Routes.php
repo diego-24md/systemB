@@ -79,6 +79,10 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('notificaciones/marcar/(:num)', 'Notificaciones::marcar/$1');
     $routes->get('notificaciones/cargar-mas', 'Notificaciones::cargarMas');
     $routes->get('notificaciones/marcarTodas', 'Notificaciones::marcarTodas');
+
+    // ====================== EXPORTAR ======================
+    $routes->get('exportar/historial', 'Exportar::historial');
+    $routes->get('exportar/catalogo',  'Exportar::catalogo');
 });
 
 // ====================== RUTAS PARA ALUMNAS ======================

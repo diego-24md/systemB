@@ -154,8 +154,9 @@
                 </a>
                 <div id="collapseUtilities" class="collapse" data-parent="#accordionSidebar">
                     <div class="py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Descargar Historial</h6>
-                        <a class="collapse-item" href="utilities-other.html">Exportar a PDF</a>
+                        <h6 class="collapse-header">Exportar a PDF</h6>
+                        <a class="collapse-item" href="<?= base_url('exportar/historial') ?>">Historial de Préstamos</a>
+                        <a class="collapse-item" href="<?= base_url('exportar/catalogo') ?>">Catálogo de Libros</a>
                     </div>
                 </div>
             </li>
