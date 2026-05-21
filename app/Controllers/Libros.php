@@ -37,6 +37,7 @@ class Libros extends BaseController
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->groupBy('r.idrecurso')
+            ->where('r.deleted_at IS NULL')
             ->get()
             ->getResultArray();
 
@@ -46,7 +47,7 @@ class Libros extends BaseController
         return view('libros/index', $data);
     }
 
-    // ====================== FORMULARIO REGISTRAR ======================
+    // ====================== REGISTRAR ======================
     public function registrar()
     {
         $data['tipos_recurso'] = $this->tipoRecursoModel->findAll();
@@ -208,6 +209,7 @@ class Libros extends BaseController
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
             ->where('r.idrecurso', $id)
+            ->where('r.deleted_at IS NULL')
             ->groupBy('r.idrecurso')
             ->get()
             ->getRowArray();
@@ -370,11 +372,37 @@ class Libros extends BaseController
 
         \App\Models\NotificacionesModel::registrar(
             'libro',
-            'Libro eliminado (ID: ' . $id . ')',
+            'Libro enviado a papelera: ' . $libro['titulo'],
             'fas fa-trash',
             'danger'
         );
 
         return redirect()->to('/libros')->with('success', 'Libro eliminado');
+    }
+
+    // ====================== PAPELERA ======================
+    public function papelera()
+    {
+        $data['libros']  = $this->librosModel->onlyDeleted()->findAll();
+        $data['header']  = view('partials/header');
+        $data['footer']  = view('partials/footer');
+        return view('libros/papelera', $data);
+    }
+
+    // Restaurar un libro
+    public function restaurar($id)
+    {
+        $this->db->table('recursos')
+            ->where('idrecurso', $id)
+            ->update(['deleted_at' => null]);
+
+        return redirect()->to('/libros/papelera')->with('success', 'Libro restaurado correctamente.');
+    }
+
+    // Eliminar permanentemente
+    public function eliminarDefinitivo($id)
+    {
+        $this->librosModel->delete($id, true); // true = fuerza eliminación real
+        return redirect()->to('/libros/papelera')->with('success', 'Libro eliminado permanentemente.');
     }
 }

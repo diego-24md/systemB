@@ -221,3 +221,21 @@ body {
     margin-bottom: 10px;
     display: block;
 }
+
+/* CSS para el botón de Restaurar */
+.btn-accion.restaurar {
+    color: #2e7d52;
+    background-color: #dcfce7;
+}
+
+.btn-accion.restaurar:hover {
+    background-color: #bbf7d0;
+}
+
+.btn-agregar,
+.btn-agregar:visited,
+.btn-agregar:hover,
+.btn-agregar:focus,
+.btn-agregar:active {
+    text-decoration: none !important;
+}

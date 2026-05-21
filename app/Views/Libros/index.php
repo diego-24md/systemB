@@ -26,9 +26,14 @@
             <div class="page-title">Gestión de Libros</div>
             <div class="page-subtitle">Catálogo de recursos bibliográficos</div>
         </div>
-        <a href="<?= base_url('libros/registrar') ?>" class="btn-agregar">
-            <i class="fas fa-plus me-2"></i> Agregar Libro
-        </a>
+        <div class="d-flex">
+            <a href="<?= base_url('libros/papelera') ?>" class="btn-agregar" style="background:#64748b; margin-right: 16px;">
+                <i class="fas fa-trash-alt me-2"></i> Papelera
+            </a>
+            <a href="<?= base_url('libros/registrar') ?>" class="btn-agregar">
+                <i class="fas fa-plus me-2"></i> Agregar Libro
+            </a>
+        </div>
     </div>
 
     <!-- Buscador fuera del panel -->
@@ -44,15 +49,15 @@
             <div class="row g-3" id="grid-libros">
                 <?php foreach ($libros as $libro): ?>
                     <div class="col-md-6 col-lg-4 col-xl-3 libro-col"
-                        data-titulo="<?= strtolower(esc((string)$libro['titulo'])) ?>"
-                        data-autor="<?= strtolower(esc((string)($libro['autores'] ?? ''))) ?>"
-                        data-isbn="<?= strtolower(esc((string)($libro['isbn'] ?? ''))) ?>">
+                        data-titulo="<?= strtolower(esc($libro['titulo'])) ?>"
+                        data-autor="<?= strtolower(esc(($libro['autores'] ?? ''))) ?>"
+                        data-isbn="<?= strtolower(esc(($libro['isbn'] ?? ''))) ?>">
                         <div class="book-card">
 
                             <div class="cover-area">
                                 <?php if (!empty($libro['portada']) && file_exists('uploads/portadas/' . $libro['portada'])): ?>
                                     <img src="<?= base_url('uploads/portadas/' . $libro['portada']) ?>"
-                                        alt="<?= esc((string)$libro['titulo']) ?>">
+                                        alt="<?= esc($libro['titulo']) ?>">
                                 <?php else: ?>
                                     <div class="text-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none"
@@ -66,14 +71,14 @@
                             </div>
 
                             <div class="book-info">
-                                <div class="book-title"><?= esc((string)$libro['titulo']) ?></div>
+                                <div class="book-title"><?= esc($libro['titulo']) ?></div>
                                 <div class="book-author">
-                                    <i class="fas fa-user-edit me-1"></i><?= esc((string)($libro['autores'] ?? '—')) ?>
+                                    <i class="fas fa-user-edit me-1"></i><?= esc(($libro['autores'] ?? '—')) ?>
                                 </div>
                                 <div class="book-meta">
-                                    <div class="mb-1"><span class="label">Categoría:</span> <?= esc((string)($libro['categoria'] ?? '—')) ?></div>
-                                    <div class="mb-1"><span class="label">Año:</span> <?= esc((string)($libro['anio'] ?? '—')) ?></div>
-                                    <div><span class="label">Páginas:</span> <?= esc((string)($libro['numpaginas'] ?? '—')) ?></div>
+                                    <div class="mb-1"><span class="label">Categoría:</span> <?= esc(($libro['categoria'] ?? '—')) ?></div>
+                                    <div class="mb-1"><span class="label">Año:</span> <?= esc(($libro['anio'] ?? '—')) ?></div>
+                                    <div><span class="label">Páginas:</span> <?= esc(($libro['numpaginas'] ?? '—')) ?></div>
                                 </div>
                             </div>
 
@@ -135,13 +140,13 @@
 
     function confirmarEliminar(id, titulo) {
         Swal.fire({
-            title: '¿Eliminar libro?',
-            text: `"${titulo}" será eliminado permanentemente.`,
+            title: '¿Mover libro a la papelera?',
+            text: `"${titulo}" se enviará a la papelera.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
             cancelButtonColor: '#94a3b8',
-            confirmButtonText: 'Sí, eliminar',
+            confirmButtonText: 'Sí, mover',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {

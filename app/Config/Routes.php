@@ -29,6 +29,10 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('libros/editar/(:num)', 'Libros::editar/$1');
     $routes->post('libros/actualizar/(:num)', 'Libros::actualizar/$1');
     $routes->post('libros/eliminar/(:num)', 'Libros::eliminar/$1');
+    // Papelera
+    $routes->get('libros/papelera',           'Libros::papelera');
+    $routes->get('libros/restaurar/(:num)',    'Libros::restaurar/$1');
+    $routes->post('libros/eliminar-definitivo/(:num)', 'Libros::eliminarDefinitivo/$1');
 
     // ====================== ALUMNAS ======================
     $routes->get('alumnas', 'Alumnas::index');

@@ -1,6 +1,6 @@
 <?php
 
-/** @var int $totalLibros */
+    /** @var int $totalLibros */
 /** @var int $prestados */
 /** @var int $disponibles */
 /** @var int $usuarios */

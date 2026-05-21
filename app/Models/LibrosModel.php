@@ -8,22 +8,24 @@ class LibrosModel extends Model
 {
     protected $table      = 'recursos';
     protected $primaryKey = 'idrecurso';
-
     protected $returnType = 'array';
+    protected $useSoftDeletes = true;
+    protected $deletedField   = 'deleted_at';
+    protected $useTimestamps  = false;
 
     protected $allowedFields = [
         'idtiporecurso',
-        'idcategoria',    // ✅ corregido (era idsubcategoria)
+        'idcategoria',
         'titulo',
         'isbn',
         'anio',
         'portada',
         'numpaginas',
-        'descripcion',    // ✅ agregado
+        'descripcion',
     ];
 
     // =========================
-    // 🔍 BUSCADOR DE LIBROS
+    // BUSCADOR DE LIBROS
     // =========================
     public function buscar($q = '', $idcategoria = '', $disponible = '')
     {
@@ -52,28 +54,29 @@ class LibrosModel extends Model
                     END
                 ) AS disponible
             ')
-            ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')  // ✅ tabla pivote
-            ->join('autores a', 'a.idautor = ra.idautor', 'left')              // ✅ join correcto
-            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')   // ✅ directo a categorias
+            ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
+            ->join('autores a', 'a.idautor = ra.idautor', 'left')
+            ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
             ->join('activos act', 'act.idrecurso = r.idrecurso', 'left')
-            ->groupBy('r.idrecurso');
+            ->groupBy('r.idrecurso')
+            ->where('r.deleted_at IS NULL');
 
-        // 🔎 búsqueda general
+        // Búsqueda general
         if (!empty($q)) {
             $builder->groupStart()
                 ->like('r.titulo', $q)
                 ->orLike('r.isbn', $q)
-                ->orLike('a.nombre', $q)  // ✅ campo correcto
+                ->orLike('a.nombre', $q)
                 ->groupEnd();
         }
 
-        // 📂 filtro por categoría
+        // Filtro por categoría
         if (!empty($idcategoria)) {
             $builder->where('c.idcategoria', $idcategoria);
         }
 
-        // 📦 filtro disponibilidad
+        // Filtro disponibilidad
         if ($disponible !== '') {
             $builder->having('disponible ' . ($disponible == '1' ? '>' : '=') . ' 0');
         }

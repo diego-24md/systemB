@@ -51,6 +51,11 @@ class CreateRecursos extends Migration
                 'type' => 'INT',
                 'constraint' => 11
             ],
+            'deleted_at' => [
+                'type'    => 'DATETIME',
+                'null'    => true,
+                'default' => null,
+            ],
         ]);
 
         $this->forge->addKey('idrecurso', true);
