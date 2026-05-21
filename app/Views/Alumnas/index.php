@@ -102,17 +102,23 @@
     </div>
 
     <!-- Resultados -->
+    <?php
+    $hayFiltro = ($grado !== null && $grado !== '')
+        || ($seccion !== null && $seccion !== '')
+        || ($buscar !== null && $buscar !== '');
+    ?>
+
     <div class="panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="panel-label mb-0">Resultados</div>
-            <?php if (!empty($alumnas) && $grado !== null && $grado !== '' && $seccion !== null && $seccion !== ''): ?>
+            <?php if ($hayFiltro && !empty($alumnas)): ?>
                 <span class="total-badge">
                     <?= number_format($total ?? 0) ?> alumna<?= ($total ?? 0) != 1 ? 's' : '' ?>
                 </span>
             <?php endif; ?>
         </div>
 
-        <?php if ($grado !== null && $grado !== '' && $seccion !== null && $seccion !== ''): ?>
+        <?php if ($hayFiltro): ?>
 
             <?php
             $mapaGrados    = array_column($grados,    'nombre', 'id');
@@ -158,7 +164,7 @@
                                 </td>
                                 <td class="text-center">
                                     <a href="<?= base_url('alumnas/editar/' . ($alumna['id'] ?? 0)) ?>"
-                                        class="btn-accion editar me-1">
+                                        class="btn-accion editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
@@ -179,7 +185,7 @@
         <?php else: ?>
             <div class="empty-state">
                 <i class="fas fa-filter"></i>
-                <p>Selecciona un grado y una sección para ver las alumnas</p>
+                <p>Selecciona un grado y sección, o busca por nombre o DNI</p>
             </div>
         <?php endif; ?>
 

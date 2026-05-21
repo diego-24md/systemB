@@ -125,6 +125,7 @@ body {
 .btn-accion.editar {
     color: #d97706;
     background-color: #fef3c7;
+    margin-right: 6px;
 }
 
 .btn-accion.editar:hover {
