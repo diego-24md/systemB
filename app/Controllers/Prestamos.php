@@ -288,6 +288,14 @@ class Prestamos extends BaseController
             'success'
         );
 
+        // Notificación para la alumna
+        $notifAlumna = new \App\Models\AlumnaNotificacionModel();
+        $notifAlumna->notificar(
+            (int) $prestamo['idalumna'],
+            'Tu reserva del libro "' . ($activo['titulo'] ?? '—') . '" fue rechazada.',
+            'rechazado'
+        );
+
         return redirect()->back()->with('success', 'Préstamo aprobado correctamente.');
     }
 
@@ -324,6 +332,14 @@ class Prestamos extends BaseController
             'Reserva rechazada: ' . ($activo['titulo'] ?? '—') . ' → ' . ($alumna['nombre'] ?? '—'),
             'fas fa-times-circle',
             'danger'
+        );
+
+        // Notificación para la alumna
+        $notifAlumna = new \App\Models\AlumnaNotificacionModel();
+        $notifAlumna->notificar(
+            (int) $prestamo['idalumna'],
+            'Tu reserva del libro "' . ($activo['titulo'] ?? '—') . '" fue rechazada.',
+            'rechazado'
         );
 
         return redirect()->back()->with('success', 'Reserva rechazada.');

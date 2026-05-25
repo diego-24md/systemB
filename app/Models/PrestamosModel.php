@@ -94,4 +94,17 @@ class PrestamosModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    public function getMisReservas(int $alumnaId): array
+    {
+        $db = \Config\Database::connect();
+
+        return $db->table('prestamos p')
+            ->select('p.idprestamo, p.entrega, p.devolucion, p.hora_entrega, p.hora_devolucion, p.estado, ac.titulo, ac.foto')
+            ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
+            ->where('p.idalumna', $alumnaId)
+            ->orderBy('p.idprestamo', 'DESC')
+            ->get()
+            ->getResultArray();
+    }
 }

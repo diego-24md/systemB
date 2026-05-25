@@ -298,4 +298,19 @@ class Biblioteca extends BaseController
             'rankingAulas'   => $rankingAulas,
         ]);
     }
+
+    public function misReservas()
+    {
+        if (! session()->get('alumna_id')) {
+            return redirect()->to(base_url('login'));
+        }
+
+        $alumnaId = (int) session()->get('alumna_id');
+
+        $prestamosModel = new \App\Models\PrestamosModel();
+
+        return view('Biblioteca/mis_reservas', [
+            'reservas' => $prestamosModel->getMisReservas($alumnaId),
+        ]);
+    }
 }

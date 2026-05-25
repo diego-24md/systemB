@@ -104,4 +104,9 @@ $routes->group('', ['filter' => 'auth.alumna'], function ($routes) {
 
     // Ranking
     $routes->get('biblioteca/ranking', 'Biblioteca::ranking');
+
+    // Notificaciones alumna
+    $routes->get('biblioteca/notificaciones',          'AlumnaNotificacion::index');
+    $routes->get('biblioteca/notificaciones/sin-leer', 'AlumnaNotificacion::sinLeer');
+    $routes->get('biblioteca/mis-reservas', 'Biblioteca::misReservas');
 });
