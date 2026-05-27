@@ -248,7 +248,8 @@ class Prestamos extends BaseController
             ->get()->getRowArray();
 
         if (! $prestamo) {
-            return redirect()->back()->with('error', 'Reserva no encontrada o ya fue procesada.');
+            return redirect()->to(base_url('prestamos/pendientes'))
+                ->with('error', 'Reserva no encontrada o ya fue procesada.');
         }
 
         // Verificar stock al momento de aprobar
@@ -258,7 +259,8 @@ class Prestamos extends BaseController
             ->get()->getRowArray();
 
         if (! $activo) {
-            return redirect()->back()->with('error', 'No hay stock disponible para aprobar este préstamo.');
+            return redirect()->to(base_url('prestamos/pendientes'))
+                ->with('error', 'No hay stock disponible para aprobar este préstamo.');
         }
 
         $alumna = $db->table('alumnas')
@@ -280,7 +282,7 @@ class Prestamos extends BaseController
             ->where('idactivo', $prestamo['idactivo'])
             ->update();
 
-        // Notificación
+        // Notificación sistema
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Préstamo aprobado: ' . $activo['titulo'] . ' → ' . ($alumna['nombre'] ?? '—'),
@@ -292,11 +294,12 @@ class Prestamos extends BaseController
         $notifAlumna = new \App\Models\AlumnaNotificacionModel();
         $notifAlumna->notificar(
             (int) $prestamo['idalumna'],
-            'Tu reserva del libro "' . ($activo['titulo'] ?? '—') . '" fue rechazada.',
-            'rechazado'
+            'Tu reserva del libro "' . ($activo['titulo'] ?? '—') . '" fue aceptada.',
+            'aceptado'
         );
 
-        return redirect()->back()->with('success', 'Préstamo aprobado correctamente.');
+        return redirect()->to(base_url('prestamos/pendientes'))
+            ->with('success', 'Préstamo aprobado correctamente.');
     }
 
     // ====================== RECHAZAR RESERVA ======================
@@ -310,7 +313,8 @@ class Prestamos extends BaseController
             ->get()->getRowArray();
 
         if (! $prestamo) {
-            return redirect()->back()->with('error', 'Reserva no encontrada o ya fue procesada.');
+            return redirect()->to(base_url('prestamos/pendientes'))
+                ->with('error', 'Reserva no encontrada o ya fue procesada.');
         }
 
         $activo = $db->table('activos')
@@ -321,12 +325,12 @@ class Prestamos extends BaseController
             ->where('id', $prestamo['idalumna'])
             ->get()->getRowArray();
 
-        // Cambiar estado a rechazado (no toca stock)
+        // Cambiar estado a rechazado
         $db->table('prestamos')
             ->where('idprestamo', $id)
             ->update(['estado' => 'rechazado']);
 
-        // Notificación
+        // Notificación sistema
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Reserva rechazada: ' . ($activo['titulo'] ?? '—') . ' → ' . ($alumna['nombre'] ?? '—'),
@@ -342,7 +346,8 @@ class Prestamos extends BaseController
             'rechazado'
         );
 
-        return redirect()->back()->with('success', 'Reserva rechazada.');
+        return redirect()->to(base_url('prestamos/pendientes'))
+            ->with('success', 'Reserva rechazada.');
     }
 
     // ====================== RESERVAS PENDIENTES ======================
@@ -351,7 +356,7 @@ class Prestamos extends BaseController
         $db = \Config\Database::connect();
 
         $data['pendientes'] = $db->table('prestamos p')
-            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega, 
+            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega,
                       a.nombre, a.dni, ac.titulo')
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
             ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')

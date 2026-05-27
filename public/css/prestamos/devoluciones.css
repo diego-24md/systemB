@@ -128,4 +128,5 @@ body {
 .btn-devolver:hover {
     background-color: #15803d;
     color: #fff;
+    text-decoration: none;
 }

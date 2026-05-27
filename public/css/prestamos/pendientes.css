@@ -145,3 +145,13 @@ body {
     border-radius: 8px;
     overflow: hidden;
 }
+
+.btn-aprobar,
+.btn-rechazar {
+    margin: 0 4px;
+}
+
+.btn-aprobar:hover,
+.btn-rechazar:hover {
+    text-decoration: none;
+}
