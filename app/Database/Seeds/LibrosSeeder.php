@@ -10,11 +10,6 @@ class LibrosSeeder extends Seeder
     {
         $db = \Config\Database::connect();
 
-        // ── Asumimos que ya tienes estos IDs en tu BD ──
-        // idtiporecurso: 1 = Libro
-        // idcategoria:   1 = Matemática, 2 = Física, 3 = Comunicación, etc.
-        // Ajusta los IDs según lo que tengas en tu BD
-
         $libros = [
             [
                 'titulo'        => 'Matemática 1',

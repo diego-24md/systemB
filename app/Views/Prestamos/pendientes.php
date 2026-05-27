@@ -74,21 +74,15 @@
 
                                 <td>
                                     <div class="d-flex gap-2 flex-wrap">
-
                                         <a href="<?= base_url('prestamos/rechazar/' . $p['idprestamo']) ?>"
-                                            class="btn-rechazar"
-                                            onclick="return confirm('¿Rechazar esta reserva?')">
-                                            <i class="fas fa-times"></i>
-                                            Rechazar
+                                            class="btn-rechazar">
+                                            <i class="fas fa-times"></i> Rechazar
                                         </a>
 
                                         <a href="<?= base_url('prestamos/aprobar/' . $p['idprestamo']) ?>"
-                                            class="btn-aprobar"
-                                            onclick="return confirm('¿Aprobar este préstamo?')">
-                                            <i class="fas fa-check"></i>
-                                            Aprobar
+                                            class="btn-aprobar">
+                                            <i class="fas fa-check"></i> Aprobar
                                         </a>
-
                                     </div>
                                 </td>
 
@@ -119,5 +113,50 @@
     <?php endif; ?>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll('.btn-aprobar').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+            Swal.fire({
+                title: '¿Aprobar préstamo?',
+                text: 'Se aceptará la reserva y se descontará el stock.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1D9E75',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fas fa-check"></i> Sí, aprobar',
+                cancelButtonText: 'Cancelar',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.btn-rechazar').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+            Swal.fire({
+                title: '¿Rechazar reserva?',
+                text: 'Se notificará a la alumna que su reserva fue rechazada.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#E24B4A',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fas fa-times"></i> Sí, rechazar',
+                cancelButtonText: 'Cancelar',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>
 
 <?= $footer ?>
