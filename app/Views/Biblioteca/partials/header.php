@@ -47,17 +47,6 @@ $alumnaNombre = (string)(session()->get('alumna_nombre') ?? 'Alumna');
         <!-- Solo visible en PC -->
         <div class="topbar-pc-only">
 
-            <!-- Notificaciones -->
-            <a href="<?= base_url('biblioteca/notificaciones') ?>" class="btn-ranking-top" title="Notificaciones" style="position:relative;">
-                <i class="fas fa-bell"></i>
-                <span class="notif-badge" id="notifBadge" style="display:none;position:absolute;top:-3px;right:-4px;background:#c0392b;color:#fff;font-size:9px;border-radius:999px;min-width:15px;height:15px;align-items:center;justify-content:center;padding:0 3px;"></span>
-            </a>
-
-            <!-- Ranking -->
-            <a href="<?= base_url('biblioteca/ranking') ?>" class="btn-ranking-top" title="Ranking">
-                <i class="fas fa-trophy"></i>
-            </a>
-
             <!-- Dropdown usuario -->
             <div class="topbar-user">
                 <button class="btn-user" id="userBtn" aria-expanded="false">
