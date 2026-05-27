@@ -24,6 +24,7 @@ class Biblioteca extends BaseController
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
+            ->where('r.deleted_at IS NULL')
             ->groupBy('r.idrecurso')
             ->get()
             ->getResultArray();
@@ -56,6 +57,7 @@ class Biblioteca extends BaseController
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
+            ->where('r.deleted_at IS NULL')
             ->groupStart()
             ->like('r.titulo', $q)
             ->orLike('r.isbn', $q)
@@ -80,16 +82,17 @@ class Biblioteca extends BaseController
     {
         $libro = $this->db->table('recursos r')
             ->select('
-            r.*,
-            GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
-            c.categoria,
-            tr.tipo
-        ')
+                r.*,
+                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+                c.categoria,
+                tr.tipo
+            ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->join('tiporecurso tr', 'tr.idtiporecurso = r.idtiporecurso', 'left')
             ->where('r.idrecurso', $id)
+            ->where('r.deleted_at IS NULL')
             ->groupBy('r.idrecurso')
             ->get()
             ->getRowArray();
@@ -116,6 +119,7 @@ class Biblioteca extends BaseController
             ->join('activos act', 'act.titulo = r.titulo', 'left')
             ->where('r.idcategoria', $libro['idcategoria'])
             ->where('r.idrecurso !=', $id)
+            ->where('r.deleted_at IS NULL')
             ->where('act.cantidad_disponible >', 0)
             ->groupBy('r.idrecurso')
             ->limit(8)
@@ -127,6 +131,7 @@ class Biblioteca extends BaseController
         return view('Biblioteca/detalles', $data);
     }
 
+    // ====================== RESERVAR ======================
     public function reservar($id)
     {
         if (! session()->get('alumna_id')) {
@@ -153,6 +158,7 @@ class Biblioteca extends BaseController
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
             ->where('r.idrecurso', $id)
+            ->where('r.deleted_at IS NULL')
             ->groupBy('r.idrecurso')
             ->get()
             ->getRowArray();
@@ -227,7 +233,7 @@ class Biblioteca extends BaseController
             return redirect()->to(base_url('login'));
         }
 
-        // Insertar préstamo como PENDIENTE (sin descontar stock todavía)
+        // Insertar préstamo como PENDIENTE
         $this->db->table('prestamos')->insert([
             'idalumna'         => $idalumna,
             'idactivo'         => $idactivo,
@@ -256,7 +262,6 @@ class Biblioteca extends BaseController
             return redirect()->to(base_url('login'));
         }
 
-        // Ranking de alumnas por total de préstamos
         $rankingAlumnas = $this->db->table('prestamos p')
             ->select('
                 a.id AS idalumna,
@@ -265,9 +270,9 @@ class Biblioteca extends BaseController
                 s.nombre AS seccion,
                 COUNT(p.idprestamo) AS total_prestamos
             ')
-            ->join('alumnas a',   'a.id = p.idalumna',       'left')
-            ->join('grados g',    'g.id = a.grado_id',       'left')
-            ->join('secciones s', 's.id = a.seccion_id',     'left')
+            ->join('alumnas a',   'a.id = p.idalumna',   'left')
+            ->join('grados g',    'g.id = a.grado_id',   'left')
+            ->join('secciones s', 's.id = a.seccion_id', 'left')
             ->whereIn('p.estado', ['activo', 'devuelto'])
             ->groupBy('a.id')
             ->orderBy('total_prestamos', 'DESC')
@@ -275,7 +280,6 @@ class Biblioteca extends BaseController
             ->get()
             ->getResultArray();
 
-        // Ranking de aulas por total de préstamos
         $rankingAulas = $this->db->table('prestamos p')
             ->select('
                 g.nombre AS grado,
@@ -299,6 +303,7 @@ class Biblioteca extends BaseController
         ]);
     }
 
+    // ====================== MIS RESERVAS ======================
     public function misReservas()
     {
         if (! session()->get('alumna_id')) {
