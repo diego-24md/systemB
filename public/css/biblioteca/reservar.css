@@ -6,17 +6,9 @@
     --red-dark: #9B0F23;
     --gold: #FFCC00;
     --gold-dark: #D4A017;
-    --teal: #C8102E;
-    /* reemplazado */
-    --teal-mid: #9B0F23;
-    /* reemplazado */
-    --teal-pale: #ffe6e9;
-    /* reemplazado */
-    --amber: #FFCC00;
-    /* reemplazado */
-    --amber-pale: #fff4d1;
-    /* reemplazado */
-    --sand: #f7f4ef;
+    --red-pale: #fef2f2;
+    --amber-pale: #fdf8ec;
+    --sand: #f9f9f9;
     --white: #ffffff;
     --border: rgba(27, 36, 54, .1);
 }
@@ -39,12 +31,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--ink);
+    background: var(--primary-red);
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 0 24px;
     height: 60px;
+    box-shadow: 0 2px 12px rgba(200, 16, 46, .25);
 }
 
 .topbar-logo {
@@ -123,7 +116,7 @@ body {
 .dd-head {
     padding: 14px 18px 12px;
     border-bottom: 1px solid var(--border);
-    background: var(--sand);
+    background: var(--red-pale);
 }
 
 .dd-head small {
@@ -152,7 +145,7 @@ body {
 }
 
 .dd-logout:hover {
-    background: var(--teal-pale);
+    background: var(--red-pale);
 }
 
 /* ── PÁGINA ─────────────────────────────── */
@@ -238,7 +231,7 @@ body {
     font-size: 12px;
     font-weight: 600;
     color: var(--primary-red);
-    background: var(--teal-pale);
+    background: var(--red-pale);
     padding: 3px 10px;
     border-radius: 20px;
 }
@@ -266,9 +259,9 @@ body {
 }
 
 .flash.success {
-    background: var(--teal-pale);
+    background: var(--red-pale);
     color: var(--primary-red);
-    border: 1px solid rgba(200, 16, 46, .3);
+    border: 1px solid rgba(200, 16, 46, .2);
 }
 
 /* ── FORMULARIO ─────────────────────────── */
@@ -317,7 +310,7 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: var(--teal-pale);
+    background: var(--red-pale);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -344,8 +337,8 @@ body {
 /* ── AVISO ──────────────────────────────── */
 .aviso {
     background: var(--amber-pale);
-    border: 1px solid rgba(255, 204, 0, .2);
-    border-left: 4px solid var(--gold);
+    border: 1px solid rgba(212, 160, 23, .2);
+    border-left: 4px solid var(--gold-dark);
     border-radius: 12px;
     padding: 16px 18px;
     margin-bottom: 24px;
@@ -357,7 +350,7 @@ body {
     gap: 8px;
     font-size: 13px;
     font-weight: 600;
-    color: var(--gold);
+    color: var(--gold-dark);
     margin-bottom: 10px;
 }
 
@@ -376,7 +369,7 @@ body {
 }
 
 .aviso-item i {
-    color: var(--gold);
+    color: var(--gold-dark);
     font-size: 11px;
     margin-top: 3px;
     flex-shrink: 0;

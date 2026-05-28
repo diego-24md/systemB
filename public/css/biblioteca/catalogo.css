@@ -6,9 +6,9 @@
     --red-dark: #9B0F23;
     --gold: #FFCC00;
     --gold-dark: #D4A017;
-    --teal-pale: #ffe6e9;
-    --amber-pale: #fff4d1;
-    --sand: #f8f6f0;
+    --red-pale: #fef2f2;
+    --amber-pale: #fdf8ec;
+    --sand: #f9f9f9;
     --white: #ffffff;
     --border: rgba(27, 36, 54, .12);
     --shadow: 0 2px 12px rgba(27, 36, 54, .08);
@@ -164,7 +164,7 @@ body {
 .dd-head {
     padding: 14px 18px 12px;
     border-bottom: 1px solid var(--border);
-    background: linear-gradient(135deg, var(--teal-pale), #fff8f8);
+    background: var(--red-pale);
 }
 
 .dd-head small {
@@ -222,7 +222,7 @@ body {
 }
 
 .dd-logout:hover {
-    background: var(--teal-pale);
+    background: var(--red-pale);
 }
 
 /* ── DRAWER FAVORITOS ───────────────────── */
@@ -261,7 +261,7 @@ body {
 .drawer-header {
     padding: 18px 20px 16px;
     border-bottom: 1px solid var(--border);
-    background: linear-gradient(135deg, var(--teal-pale), #fff8f8);
+    background: var(--red-pale);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -297,7 +297,7 @@ body {
 }
 
 .drawer-close:hover {
-    background: var(--teal-pale);
+    background: var(--red-pale);
     color: var(--primary-red);
     border-color: var(--primary-red);
 }
@@ -417,7 +417,7 @@ body {
 
 .fav-remove:hover {
     color: var(--primary-red);
-    background: var(--teal-pale);
+    background: var(--red-pale);
 }
 
 /* ── MAIN ───────────────────────────────── */
@@ -499,7 +499,7 @@ body {
 .search-wrap input:focus {
     border-color: var(--primary-red);
     background: var(--white);
-    box-shadow: 0 0 0 4px rgba(200, 16, 46, .1);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, .08);
 }
 
 .search-wrap input::placeholder {
@@ -536,7 +536,7 @@ body {
 .filtro-btn:hover {
     border-color: var(--primary-red);
     color: var(--primary-red);
-    background: var(--teal-pale);
+    background: var(--red-pale);
 }
 
 .filtro-btn.activo {
@@ -633,7 +633,7 @@ body {
 
 .book-cover {
     height: 220px;
-    background: linear-gradient(135deg, #fdf0f2, #fff4d1);
+    background: var(--red-pale);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -690,20 +690,20 @@ body {
     font-weight: 600;
     font-family: inherit;
     padding: 9px 16px;
-    background: linear-gradient(135deg, var(--primary-red), var(--red-dark));
+    background: var(--primary-red);
     color: #fff;
     border-radius: 10px;
     text-decoration: none;
     text-align: center;
     letter-spacing: .01em;
     transition: all .2s;
-    box-shadow: 0 2px 8px rgba(200, 16, 46, .25);
+    box-shadow: 0 2px 8px rgba(200, 16, 46, .2);
 }
 
 .book-btn:hover {
-    background: linear-gradient(135deg, var(--red-dark), #7a0c1c);
+    background: var(--red-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(200, 16, 46, .35);
+    box-shadow: 0 4px 12px rgba(200, 16, 46, .3);
 }
 
 .no-resultados {
@@ -773,7 +773,7 @@ body {
 }
 
 .notif-icon.rechazado {
-    background: var(--teal-pale);
+    background: var(--red-pale);
     color: var(--primary-red);
 }
 
@@ -857,7 +857,7 @@ body {
 }
 
 .reserva-estado.rechazado {
-    background: var(--teal-pale);
+    background: var(--red-pale);
     color: var(--primary-red);
 }
 
