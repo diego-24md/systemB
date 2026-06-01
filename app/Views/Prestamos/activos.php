@@ -34,6 +34,7 @@
                             <th style="width: 60px;">#</th>
                             <th>Alumna</th>
                             <th>DNI</th>
+                            <th>Turno</th>
                             <th>Libro</th>
                             <th>Fecha Entrega</th>
                             <th>Condición</th>
@@ -55,6 +56,20 @@
                                 </td>
 
                                 <td>
+                                    <?php if (($p['turno'] ?? '') === 'manana'): ?>
+                                        <span class="badge-turno manana">
+                                            <i class="fas fa-sun"></i> Mañana
+                                        </span>
+                                    <?php elseif (($p['turno'] ?? '') === 'tarde'): ?>
+                                        <span class="badge-turno tarde">
+                                            <i class="fas fa-moon"></i> Tarde
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge-turno sin-turno">—</span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <td>
                                     <?= esc((string) ($p['titulo'] ?? '—')) ?>
                                 </td>
 
@@ -65,7 +80,6 @@
                                 <td>
                                     <?php
                                     $condicion = strtolower(trim($p['condicionentrega'] ?? ''));
-
                                     if ($condicion === 'bueno') {
                                         $clase = 'badge-bueno';
                                     } elseif ($condicion === 'regular') {
@@ -74,7 +88,6 @@
                                         $clase = 'badge-malo';
                                     }
                                     ?>
-
                                     <span class="badge-condicion <?= $clase ?>">
                                         <?= esc((string) ($p['condicionentrega'] ?? '—')) ?>
                                     </span>
@@ -98,12 +111,8 @@
         <div class="panel">
             <div class="empty-state">
                 <i class="fas fa-book-open"></i>
-
                 <h5>No hay préstamos activos</h5>
-
-                <p>
-                    Actualmente no existen libros prestados en el sistema.
-                </p>
+                <p>Actualmente no existen libros prestados en el sistema.</p>
             </div>
         </div>
 

@@ -357,7 +357,7 @@ class Prestamos extends BaseController
 
         $data['pendientes'] = $db->table('prestamos p')
             ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega,
-                      a.nombre, a.dni, ac.titulo')
+                  a.nombre, a.dni, a.turno, ac.titulo') // ← agregar a.turno
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
             ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
             ->where('p.estado', 'pendiente')

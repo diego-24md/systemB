@@ -26,7 +26,6 @@
             <div class="panel-label">
                 <i class="fas fa-clock" style="color:#f59e0b;"></i>
                 Gestión de Reservas Pendientes
-
                 <span class="badge-count">
                     <?= count($pendientes) ?>
                 </span>
@@ -39,6 +38,7 @@
                             <th style="width: 60px;">#</th>
                             <th>Alumna</th>
                             <th>DNI</th>
+                            <th>Turno</th>
                             <th>Libro Solicitado</th>
                             <th>Fecha</th>
                             <th>Hora</th>
@@ -60,6 +60,20 @@
                                     <?= esc((string) $p['dni']) ?>
                                 </td>
 
+                                <td>
+                                    <?php if (($p['turno'] ?? '') === 'manana'): ?>
+                                        <span class="badge-turno manana">
+                                            <i class="fas fa-sun"></i> Mañana
+                                        </span>
+                                    <?php elseif (($p['turno'] ?? '') === 'tarde'): ?>
+                                        <span class="badge-turno tarde">
+                                            <i class="fas fa-moon"></i> Tarde
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge-turno sin-turno">—</span>
+                                    <?php endif; ?>
+                                </td>
+
                                 <td class="book-title">
                                     <?= esc((string) ($p['titulo'] ?? '—')) ?>
                                 </td>
@@ -78,7 +92,6 @@
                                             class="btn-rechazar">
                                             <i class="fas fa-times"></i> Rechazar
                                         </a>
-
                                         <a href="<?= base_url('prestamos/aprobar/' . $p['idprestamo']) ?>"
                                             class="btn-aprobar">
                                             <i class="fas fa-check"></i> Aprobar
@@ -98,15 +111,9 @@
 
         <div class="panel">
             <div class="empty-state">
-
                 <i class="fas fa-inbox"></i>
-
                 <h5>No hay reservas pendientes</h5>
-
-                <p>
-                    Todas las solicitudes ya fueron revisadas correctamente.
-                </p>
-
+                <p>Todas las solicitudes ya fueron revisadas correctamente.</p>
             </div>
         </div>
 
@@ -130,9 +137,7 @@
                 confirmButtonText: '<i class="fas fa-check"></i> Sí, aprobar',
                 cancelButtonText: 'Cancelar',
             }).then(result => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
+                if (result.isConfirmed) window.location.href = url;
             });
         });
     });
@@ -151,9 +156,7 @@
                 confirmButtonText: '<i class="fas fa-times"></i> Sí, rechazar',
                 cancelButtonText: 'Cancelar',
             }).then(result => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
+                if (result.isConfirmed) window.location.href = url;
             });
         });
     });

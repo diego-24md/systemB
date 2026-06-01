@@ -30,6 +30,11 @@ class Home extends BaseController
         // Alumnas
         $usuarios = $db->table('alumnas')->countAllResults();
 
+        // Reservas pendientes ← NUEVO
+        $pendientes = $db->table('prestamos')
+            ->where('estado', 'pendiente')
+            ->countAllResults();
+
         return view('dashboard', [
             'header'      => view('Partials/header'),
             'footer'      => view('Partials/footer'),
@@ -37,6 +42,7 @@ class Home extends BaseController
             'prestados'   => $prestados,
             'disponibles' => $disponibles,
             'usuarios'    => $usuarios,
+            'pendientes'  => $pendientes, // ← NUEVO
         ]);
     }
 

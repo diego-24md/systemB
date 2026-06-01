@@ -25,7 +25,9 @@ class PrestamosModel extends Model
         $db = \Config\Database::connect();
 
         return $db->table('prestamos p')
-            ->select('p.idprestamo, p.idactivo, p.entrega, p.devolucion, p.condicionentrega, p.hora_entrega, p.hora_devolucion, p.minutos, p.estado, a.nombre, a.dni, ac.titulo')
+            ->select('p.idprestamo, p.idactivo, p.entrega, p.devolucion, p.condicionentrega,
+                      p.hora_entrega, p.hora_devolucion, p.minutos, p.estado,
+                      a.nombre, a.dni, a.turno, ac.titulo') // ← turno
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
             ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
             ->orderBy('p.idprestamo', 'DESC')
@@ -38,7 +40,8 @@ class PrestamosModel extends Model
         $db = \Config\Database::connect();
 
         return $db->table('prestamos p')
-            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega, a.nombre, a.dni, ac.titulo, ac.foto')
+            ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega,
+                      a.nombre, a.dni, a.turno, ac.titulo, ac.foto') // ← turno
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
             ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
             ->where('p.estado', 'activo')
@@ -52,7 +55,9 @@ class PrestamosModel extends Model
         $db = \Config\Database::connect();
 
         return $db->table('prestamos p')
-            ->select('p.idprestamo, p.entrega, p.hora_entrega, p.devolucion, p.hora_devolucion, p.minutos, p.condicionentrega, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, ac.titulo')
+            ->select('p.idprestamo, p.entrega, p.hora_entrega, p.devolucion, p.hora_devolucion,
+                      p.minutos, p.condicionentrega, a.nombre, a.dni, a.turno,
+                      g.nombre AS grado, s.nombre AS seccion, ac.titulo') // ← turno
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
             ->join('grados g', 'g.id = a.grado_id', 'left')
             ->join('secciones s', 's.id = a.seccion_id', 'left')

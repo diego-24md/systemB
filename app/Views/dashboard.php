@@ -1,9 +1,10 @@
 <?php
 
-    /** @var int $totalLibros */
+/** @var int $totalLibros */
 /** @var int $prestados */
 /** @var int $disponibles */
 /** @var int $usuarios */
+/** @var int $pendientes */
 /** @var string $header */
 /** @var string $footer */
 ?>
@@ -20,7 +21,7 @@
 
     <!-- Estadísticas -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl col-md-6">
             <div class="stat-card">
                 <div class="stat-icon azul"><i class="fas fa-book"></i></div>
                 <div>
@@ -29,7 +30,24 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+
+        <!-- NUEVO -->
+        <div class="col-xl col-md-6">
+            <a href="<?= base_url('prestamos/pendientes') ?>" style="text-decoration:none;">
+                <div class="stat-card stat-card-pendientes">
+                    <div class="stat-icon naranja"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="stat-label">Reservas Pendientes</div>
+                        <div class="stat-value"><?= $pendientes ?></div>
+                    </div>
+                    <?php if ($pendientes > 0): ?>
+                        <span class="stat-badge-pendiente">Ver</span>
+                    <?php endif; ?>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-xl col-md-6">
             <div class="stat-card">
                 <div class="stat-icon rojo"><i class="fas fa-book-reader"></i></div>
                 <div>
@@ -38,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl col-md-6">
             <div class="stat-card">
                 <div class="stat-icon verde"><i class="fas fa-check-circle"></i></div>
                 <div>
@@ -47,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl col-md-6">
             <div class="stat-card">
                 <div class="stat-icon amarillo"><i class="fas fa-users"></i></div>
                 <div>
@@ -67,21 +85,18 @@
                 <p id="chart-subtitle">Últimos 30 días</p>
             </div>
 
-            <!-- Modo -->
             <div class="modo-tabs">
                 <button class="modo-btn" data-modo="horas" onclick="cambiarModo('horas')">Por horas</button>
                 <button class="modo-btn active" data-modo="dias" onclick="cambiarModo('dias')">Por días</button>
                 <button class="modo-btn" data-modo="meses" onclick="cambiarModo('meses')">Por meses</button>
             </div>
 
-            <!-- Total -->
             <div class="chart-total">
                 <div class="chart-total-value" id="chart-total">—</div>
                 <div class="chart-total-label">Total</div>
             </div>
         </div>
 
-        <!-- Filtros dinámicos -->
         <div class="chart-filters mb-3" id="filtros-horas" style="display:none;">
             <label style="font-size:.8rem;color:#64748b;font-weight:600;">Fecha:</label>
             <input type="date" id="fecha-horas">
@@ -102,7 +117,6 @@
             <button class="btn-aplicar" onclick="cargarGrafico()">Aplicar</button>
         </div>
 
-        <!-- Canvas -->
         <div class="chart-wrap">
             <div class="chart-loading" id="chart-loading">
                 <i class="fas fa-spinner fa-spin"></i> Cargando...
@@ -117,7 +131,6 @@
 <script>
     const URL_CHART = "<?= base_url('home/chartData') ?>";
 
-    // Fechas por defecto
     const hoy = new Date();
     const pad = n => String(n).padStart(2, '0');
     const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
@@ -129,7 +142,6 @@
     document.getElementById('fecha-inicio').value = fmt(hace30);
     document.getElementById('fecha-fin').value = fmt(hoy);
 
-    // Selector de años
     const selectAnio = document.getElementById('select-anio');
     for (let y = hoy.getFullYear(); y >= hoy.getFullYear() - 4; y--) {
         const opt = document.createElement('option');
@@ -138,13 +150,10 @@
         selectAnio.appendChild(opt);
     }
 
-    // Chart.js
     let chart = null;
 
     function initChart(labels, datos) {
         const ctx = document.getElementById('chartPrestamos').getContext('2d');
-        const maxVal = Math.max(...datos, 1);
-
         if (chart) chart.destroy();
 
         chart = new Chart(ctx, {
@@ -169,7 +178,7 @@
                     },
                     tooltip: {
                         callbacks: {
-                            label: ctx => ` ${ctx.parsed.y} préstamo(s)`,
+                            label: ctx => ` ${ctx.parsed.y} préstamo(s)`
                         },
                         backgroundColor: '#1e293b',
                         titleFont: {
@@ -218,14 +227,11 @@
 
     function cambiarModo(modo) {
         modoActual = modo;
-
         document.querySelectorAll('.modo-btn').forEach(b => b.classList.remove('active'));
         document.querySelector(`[data-modo="${modo}"]`).classList.add('active');
-
         document.getElementById('filtros-horas').style.display = modo === 'horas' ? 'flex' : 'none';
         document.getElementById('filtros-dias').style.display = modo === 'dias' ? 'flex' : 'none';
         document.getElementById('filtros-meses').style.display = modo === 'meses' ? 'flex' : 'none';
-
         cargarGrafico();
     }
 
@@ -262,7 +268,6 @@
             .catch(() => loading.classList.remove('show'));
     }
 
-    // Carga inicial
     cargarGrafico();
 </script>
 
