@@ -5,7 +5,9 @@
     --ink-pale: #e8edf5;
     --gold: #FFCC00;
     --gold-dark: #D4A017;
-    --sand: #f1f5f9;
+    --teal-pale: #ffe6e9;
+    --amber-pale: #fff4d1;
+    --sand: #f8f6f0;
     --white: #ffffff;
     --border: rgba(27, 36, 54, .1);
     --shadow: 0 2px 12px rgba(27, 36, 54, .07);
@@ -159,7 +161,7 @@ body {
 .dd-head {
     padding: 14px 18px 12px;
     border-bottom: 1px solid var(--border);
-    background: var(--ink-pale);
+    background: linear-gradient(135deg, var(--teal-pale), #fff8f8);
 }
 
 .dd-head small {
@@ -218,8 +220,7 @@ body {
 }
 
 .dd-logout:hover {
-    background: #fff5f5;
-    text-decoration: none;
+    background: var(--teal-pale);
 }
 
 /* ── DRAWER FAVORITOS ───────────────────── */
@@ -259,7 +260,7 @@ body {
 .drawer-header {
     padding: 18px 20px 16px;
     border-bottom: 1px solid var(--border);
-    background: var(--ink-pale);
+    background: linear-gradient(135deg, var(--teal-pale), #fff8f8);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -295,9 +296,9 @@ body {
 }
 
 .drawer-close:hover {
-    background: var(--ink-pale);
-    color: var(--ink);
-    border-color: var(--ink-mid);
+    background: var(--teal-pale);
+    color: var(--primary-red);
+    border-color: var(--primary-red);
 }
 
 .drawer-body {
@@ -414,8 +415,8 @@ body {
 }
 
 .fav-remove:hover {
-    color: #e53e3e;
-    background: #fff5f5;
+    color: var(--primary-red);
+    background: var(--teal-pale);
 }
 
 /* ── MAIN ───────────────────────────────── */
@@ -484,7 +485,7 @@ body {
 .search-wrap input:focus {
     border-color: var(--ink-mid);
     background: var(--white);
-    box-shadow: 0 0 0 3px rgba(27, 36, 54, .1);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, .1);
 }
 
 .search-wrap input::placeholder {
@@ -518,9 +519,9 @@ body {
 }
 
 .filtro-btn:hover {
-    border-color: var(--ink-mid);
-    color: var(--ink);
-    background: var(--ink-pale);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+    background: var(--teal-pale);
 }
 
 .filtro-btn.activo {
@@ -616,7 +617,7 @@ body {
 
 .book-cover {
     height: 220px;
-    background: var(--ink-pale);
+    background: linear-gradient(135deg, #fdf0f2, #fff4d1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -672,19 +673,20 @@ body {
     font-weight: 600;
     font-family: inherit;
     padding: 9px 16px;
-    background: var(--ink);
+    background: linear-gradient(135deg, var(--primary-red), var(--red-dark));
     color: #fff;
     border-radius: 8px;
     text-decoration: none;
     text-align: center;
     letter-spacing: .01em;
-    transition: background .2s, transform .15s;
+    transition: all .2s;
+    box-shadow: 0 2px 8px rgba(200, 16, 46, .25);
 }
 
 .book-btn:hover {
-    background: var(--ink-mid);
+    background: linear-gradient(135deg, var(--red-dark), #7a0c1c);
     transform: translateY(-1px);
-    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(200, 16, 46, .35);
 }
 
 .no-resultados {
@@ -762,18 +764,8 @@ body {
 }
 
 .notif-icon.rechazado {
-    background: #fff5f5;
-    color: #e53e3e;
-}
-
-.notif-icon.pendiente {
-    background: #fff4d1;
-    color: var(--gold-dark);
-}
-
-.notif-icon.devuelto {
-    background: var(--ink-pale);
-    color: var(--ink-mid);
+    background: var(--teal-pale);
+    color: var(--primary-red);
 }
 
 .notif-body {
@@ -838,8 +830,8 @@ body {
 }
 
 .reserva-estado.rechazado {
-    background: #fff5f5;
-    color: #e53e3e;
+    background: var(--teal-pale);
+    color: var(--primary-red);
 }
 
 /* ── BOTTOM NAV ─────────────────────────── */
