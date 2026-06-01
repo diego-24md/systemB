@@ -14,6 +14,7 @@ class CrearAlumnas extends Migration
             'dni'        => ['type' => 'VARCHAR', 'constraint' => 20, 'unique' => true],
             'grado_id'   => ['type' => 'INT', 'constraint' => 11, 'null' => false],
             'seccion_id' => ['type' => 'INT', 'constraint' => 11, 'null' => false],
+            'turno' => ['type' => 'ENUM', 'constraint' => ['manana', 'tarde'], 'null' => false, 'default' => 'manana'],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
             'updated_at' => ['type' => 'DATETIME', 'null' => true],
         ]);

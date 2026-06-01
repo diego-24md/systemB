@@ -16,7 +16,8 @@ class AlumnasModel extends Model
         'dni',
         'clave',
         'grado_id',
-        'seccion_id'
+        'seccion_id',
+        'turno', // ← NUEVO
     ];
 
     protected $useTimestamps = false;
@@ -26,6 +27,7 @@ class AlumnasModel extends Model
         'dni'        => 'required|max_length[15]|is_unique[alumnas.dni,id,{id}]',
         'grado_id'   => 'required|is_natural_no_zero',
         'seccion_id' => 'required|is_natural_no_zero',
+        'turno'      => 'required|in_list[manana,tarde]', // ← NUEVO
     ];
 
     protected $validationMessages = [
@@ -43,6 +45,10 @@ class AlumnasModel extends Model
         ],
         'seccion_id' => [
             'required' => 'La sección es obligatoria',
+        ],
+        'turno' => [
+            'required' => 'El turno es obligatorio',
+            'in_list'  => 'El turno debe ser mañana o tarde',
         ],
     ];
 

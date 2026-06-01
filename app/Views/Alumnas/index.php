@@ -10,6 +10,7 @@
 /** @var string|null $grado */
 /** @var string|null $seccion */
 /** @var string|null $buscar */
+/** @var string|null $turno */
 ?>
 <?= $header ?>
 
@@ -51,7 +52,7 @@
         <form method="GET" action="<?= base_url('alumnas') ?>">
             <div class="row g-3 align-items-end">
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Grado</label>
                     <select name="grado" class="form-select" id="selectGrado">
                         <option value="">Todos los grados</option>
@@ -63,7 +64,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Sección</label>
                     <select name="seccion" class="form-select" id="selectSeccion" <?= empty($grado) ? 'disabled' : '' ?>>
                         <option value="">Todas las secciones</option>
@@ -77,6 +78,16 @@
                     </select>
                 </div>
 
+                <!-- TURNO -->
+                <div class="col-md-2">
+                    <label class="form-label text-muted" style="font-size:0.82rem;">Turno</label>
+                    <select name="turno" class="form-select">
+                        <option value="">Todos los turnos</option>
+                        <option value="manana" <?= ($turno ?? '') === 'manana' ? 'selected' : '' ?>>Mañana</option>
+                        <option value="tarde" <?= ($turno ?? '') === 'tarde'  ? 'selected' : '' ?>>Tarde</option>
+                    </select>
+                </div>
+
                 <div class="col-md-3">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Buscar por nombre o DNI</label>
                     <input type="text" name="buscar" class="form-control"
@@ -85,7 +96,7 @@
                 </div>
 
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-buscar">
+                    <button type="submit" class="btn btn-buscar w-100">
                         <i class="fas fa-search me-2"></i> Buscar
                     </button>
                 </div>
@@ -105,6 +116,7 @@
     <?php
     $hayFiltro = ($grado !== null && $grado !== '')
         || ($seccion !== null && $seccion !== '')
+        || ($turno !== null && $turno !== '')
         || ($buscar !== null && $buscar !== '');
     ?>
 
@@ -133,13 +145,14 @@
                         <th>Nombre completo</th>
                         <th>Grado</th>
                         <th>Sección</th>
+                        <th>Turno</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($alumnas)): ?>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 <div class="empty-state">
                                     <i class="fas fa-user-friends"></i>
                                     <p>No se encontraron alumnas con los filtros seleccionados</p>
@@ -162,12 +175,24 @@
                                         <?= esc((string)($mapaSecciones[$alumna['seccion_id']] ?? $alumna['seccion_id'])) ?>
                                     </span>
                                 </td>
+                                <td>
+                                    <?php if (($alumna['turno'] ?? '') === 'manana'): ?>
+                                        <span class="badge-turno manana">
+                                            <i class="fas fa-sun"></i> Mañana
+                                        </span>
+                                    <?php elseif (($alumna['turno'] ?? '') === 'tarde'): ?>
+                                        <span class="badge-turno tarde">
+                                            <i class="fas fa-moon"></i> Tarde
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge-turno sin-turno">—</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="text-center">
                                     <a href="<?= base_url('alumnas/editar/' . ($alumna['id'] ?? 0)) ?>"
                                         class="btn-accion editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-
                                     <form method="POST" action="<?= base_url('alumnas/eliminar/' . ($alumna['id'] ?? 0)) ?>"
                                         class="d-inline" onsubmit="return confirmarEliminar()">
                                         <?= csrf_field() ?>
@@ -222,16 +247,12 @@
         });
     });
 
-    // Auto ocultar alerta de éxito después de 5 segundos
     setTimeout(() => {
         const alerta = document.getElementById('success-alert');
         if (alerta) {
             alerta.style.transition = "opacity 0.5s ease";
             alerta.style.opacity = "0";
-
-            setTimeout(() => {
-                alerta.remove();
-            }, 500);
+            setTimeout(() => alerta.remove(), 500);
         }
     }, 5000);
 </script>

@@ -23,7 +23,6 @@
         </a>
     </div>
 
-    <!-- Mensajes de error de validación -->
     <?php if (isset($validation)): ?>
         <div class="alert alert-danger alert-dismissible fade show" style="background:#fef2f2;color:#dc2626;">
             <?= $validation->listErrors() ?>
@@ -59,12 +58,12 @@
                     </div>
                 </div>
 
-                <!-- Grado y Sección -->
+                <!-- Grado, Sección y Turno -->
                 <div class="panel">
-                    <div class="panel-label">Grado y sección</div>
+                    <div class="panel-label">Grado, sección y turno</div>
                     <div class="row g-3">
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label-custom">Grado <span class="text-danger">*</span></label>
                             <select name="grado_id" id="selectGrado" class="form-select" required
                                 onchange="filtrarSecciones(this.value)">
@@ -78,7 +77,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label-custom">Sección <span class="text-danger">*</span></label>
                             <select name="seccion_id" id="selectSeccion" class="form-select" required>
                                 <option value="">Seleccione sección</option>
@@ -90,6 +89,16 @@
                                         </option>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- TURNO -->
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Turno <span class="text-danger">*</span></label>
+                            <select name="turno" class="form-select" required>
+                                <option value="">Seleccione turno</option>
+                                <option value="manana" <?= ($alumna['turno'] ?? '') === 'manana' ? 'selected' : '' ?>>Mañana</option>
+                                <option value="tarde" <?= ($alumna['turno'] ?? '') === 'tarde'  ? 'selected' : '' ?>>Tarde</option>
                             </select>
                         </div>
 
@@ -113,7 +122,6 @@
 
         </div>
 
-        <!-- Botones -->
         <div class="d-flex gap-2 mt-2">
             <button type="submit" class="btn btn-guardar">
                 <i class="fas fa-save me-2"></i> Guardar cambios
@@ -129,9 +137,7 @@
     function filtrarSecciones(gradoId) {
         const select = document.getElementById('selectSeccion');
         select.innerHTML = '<option value="">Seleccione sección</option>';
-
         if (!gradoId) return;
-
         todasSecciones.forEach(function(s) {
             if (String(s.grado_id) === String(gradoId)) {
                 const opt = document.createElement('option');

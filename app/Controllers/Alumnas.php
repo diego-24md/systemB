@@ -22,6 +22,7 @@ class Alumnas extends BaseController
         $grado_id   = $this->request->getGet('grado');
         $seccion_id = $this->request->getGet('seccion');
         $buscar     = $this->request->getGet('buscar');
+        $turno      = $this->request->getGet('turno'); // ← NUEVO
 
         if ($grado_id !== null && $grado_id !== '') {
             $this->alumnasModel->where('grado_id', (int)$grado_id);
@@ -29,6 +30,10 @@ class Alumnas extends BaseController
 
         if ($seccion_id !== null && $seccion_id !== '') {
             $this->alumnasModel->where('seccion_id', (int)$seccion_id);
+        }
+
+        if ($turno !== null && $turno !== '') { // ← NUEVO
+            $this->alumnasModel->where('turno', $turno);
         }
 
         if ($buscar) {
@@ -49,6 +54,9 @@ class Alumnas extends BaseController
         if ($seccion_id !== null && $seccion_id !== '') {
             $countModel->where('seccion_id', (int)$seccion_id);
         }
+        if ($turno !== null && $turno !== '') { // ← NUEVO
+            $countModel->where('turno', $turno);
+        }
         if ($buscar) {
             $countModel->groupStart()
                 ->like('nombre', $buscar)
@@ -57,7 +65,6 @@ class Alumnas extends BaseController
         }
         $data['total'] = $countModel->countAllResults();
 
-        // Cargar grados y secciones desde la BD
         $data['grados'] = $this->db->table('grados')
             ->select('id, nombre')
             ->orderBy('id', 'ASC')
@@ -71,6 +78,7 @@ class Alumnas extends BaseController
 
         $data['grado']   = $grado_id;
         $data['seccion'] = $seccion_id;
+        $data['turno']   = $turno; // ← NUEVO
         $data['buscar']  = $buscar;
         $data['header']  = view('partials/header');
         $data['footer']  = view('partials/footer');
@@ -116,6 +124,7 @@ class Alumnas extends BaseController
         $archivo    = $this->request->getFile('archivo');
         $grado_id   = $this->request->getPost('grado');
         $seccion_id = $this->request->getPost('seccion');
+        $turno      = $this->request->getPost('turno'); // ← NUEVO
 
         if (!$archivo || !$archivo->isValid()) {
             return redirect()->back()->with('error', 'Debe seleccionar un archivo Excel válido.');
@@ -123,6 +132,10 @@ class Alumnas extends BaseController
 
         if (empty($grado_id) || empty($seccion_id)) {
             return redirect()->back()->with('error', 'Grado y Sección son obligatorios.');
+        }
+
+        if (empty($turno) || !in_array($turno, ['manana', 'tarde'])) {
+            return redirect()->back()->with('error', 'Debe seleccionar un turno válido.');
         }
 
         $archivo->move(WRITEPATH . 'uploads');
@@ -170,7 +183,6 @@ class Alumnas extends BaseController
                 foreach ($fila as $colIndex => $celda) {
                     $valor = strtoupper(trim((string)($celda ?? '')));
 
-                    // Buscar columna de nombres
                     if ($colNombre === null && (
                         str_contains($valor, 'APELLIDOS Y NOMBRES') ||
                         str_contains($valor, 'APELLIDOS') ||
@@ -179,7 +191,6 @@ class Alumnas extends BaseController
                         $colNombre = $colIndex;
                     }
 
-                    // Buscar columna de DNI
                     if ($colDni === null && (
                         str_contains($valor, 'N° DOCUMENTO') ||
                         str_contains($valor, 'DOCUMENTO') ||
@@ -189,7 +200,6 @@ class Alumnas extends BaseController
                     }
                 }
 
-                // Si encontró ambas columnas, esta es la fila de encabezado
                 if ($colNombre !== null && $colDni !== null) {
                     $filaEncabezado = $rowIndex;
                     break;
@@ -205,13 +215,13 @@ class Alumnas extends BaseController
 
             $insertados = 0;
 
-            // Eliminar alumnas existentes
+            // Eliminar alumnas existentes del mismo grado, sección y turno
             $this->alumnasModel->where('grado_id', $grado_id)
                 ->where('seccion_id', $seccion_id)
+                ->where('turno', $turno) // ← NUEVO
                 ->delete();
 
             foreach ($filas as $rowIndex => $fila) {
-                // Saltar filas hasta después del encabezado
                 if ($rowIndex <= $filaEncabezado) continue;
 
                 $nombre     = trim((string)($fila[$colNombre] ?? ''));
@@ -226,6 +236,7 @@ class Alumnas extends BaseController
                     'dni'        => $posibleDni,
                     'grado_id'   => $grado_id,
                     'seccion_id' => $seccion_id,
+                    'turno'      => $turno, // ← NUEVO
                 ];
 
                 if ($this->alumnasModel->save($dataInsert)) {
@@ -235,8 +246,10 @@ class Alumnas extends BaseController
 
             if (file_exists($ruta)) unlink($ruta);
 
+            $turnoLabel = $turno === 'manana' ? 'Mañana' : 'Tarde';
+
             return redirect()->to('/alumnas')
-                ->with('success', "Se importaron correctamente {$insertados} alumnas en {$grado['nombre']} {$seccion['nombre']}.");
+                ->with('success', "Se importaron correctamente {$insertados} alumnas del turno {$turnoLabel} en {$grado['nombre']} {$seccion['nombre']}.");
         } catch (\Exception $e) {
             if (file_exists($ruta ?? '')) unlink($ruta);
             return redirect()->back()
@@ -285,14 +298,15 @@ class Alumnas extends BaseController
             'dni'        => 'required|max_length[15]',
             'grado_id'   => 'required|is_natural_no_zero',
             'seccion_id' => 'required|is_natural_no_zero',
+            'turno'      => 'required|in_list[manana,tarde]', // ← NUEVO
         ];
 
         if (!$this->validate($rules)) {
-            $data['alumna']   = $this->alumnasModel->find($id);
-            $data['grados']   = $this->db->table('grados')->select('id, nombre')->orderBy('id', 'ASC')->get()->getResultArray();
+            $data['alumna']    = $this->alumnasModel->find($id);
+            $data['grados']    = $this->db->table('grados')->select('id, nombre')->orderBy('id', 'ASC')->get()->getResultArray();
             $data['secciones'] = $this->db->table('secciones')->select('id, nombre, grado_id')->orderBy('grado_id', 'ASC')->orderBy('nombre', 'ASC')->get()->getResultArray();
-            $data['header']   = view('partials/header');
-            $data['footer']   = view('partials/footer');
+            $data['header']    = view('partials/header');
+            $data['footer']    = view('partials/footer');
             return view('alumnas/editar', $data);
         }
 
@@ -301,6 +315,7 @@ class Alumnas extends BaseController
             'dni'        => $this->request->getPost('dni'),
             'grado_id'   => $this->request->getPost('grado_id'),
             'seccion_id' => $this->request->getPost('seccion_id'),
+            'turno'      => $this->request->getPost('turno'), // ← NUEVO
         ];
 
         if ($this->alumnasModel->update($id, $dataUpdate)) {

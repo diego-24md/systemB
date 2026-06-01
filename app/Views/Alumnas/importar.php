@@ -22,21 +22,15 @@
         </a>
     </div>
 
-    <!-- Mensajes -->
     <?php if (session()->getFlashdata('error')): ?>
-        <div id="alerta-error"
-            class="alert alert-danger rounded-3 border-0"
-            style="background:#fef2f2;color:#dc2626;">
-
+        <div id="alerta-error" class="alert alert-danger rounded-3 border-0" style="background:#fef2f2;color:#dc2626;">
             <i class="fas fa-exclamation-circle mr-2"></i>
             <?= session()->getFlashdata('error') ?>
         </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('success')): ?>
-        <div id="alerta-success"
-            class="alert alert-success rounded-3 border-0">
-
+        <div id="alerta-success" class="alert alert-success rounded-3 border-0">
             <i class="fas fa-check-circle mr-2"></i>
             <?= session()->getFlashdata('success') ?>
         </div>
@@ -50,13 +44,13 @@
             <!-- Columna izquierda -->
             <div class="col-md-8">
 
-                <!-- Grado y Sección -->
+                <!-- Grado, Sección y Turno -->
                 <div class="panel">
-                    <div class="panel-label">Grado y sección</div>
+                    <div class="panel-label">Grado, sección y turno</div>
                     <div class="row g-3">
 
                         <!-- GRADO -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label-custom">Grado <span class="text-danger">*</span></label>
                             <select name="grado" id="grado" class="form-select" required onchange="filtrarSecciones(this.value)">
                                 <option value="">Seleccione grado</option>
@@ -73,10 +67,20 @@
                         </div>
 
                         <!-- SECCIÓN -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label-custom">Sección <span class="text-danger">*</span></label>
                             <select name="seccion" id="seccion" class="form-select" required disabled>
                                 <option value="">Primero seleccione un grado</option>
+                            </select>
+                        </div>
+
+                        <!-- TURNO -->
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Turno <span class="text-danger">*</span></label>
+                            <select name="turno" id="turno" class="form-select" required>
+                                <option value="">Seleccione turno</option>
+                                <option value="manana">Mañana</option>
+                                <option value="tarde">Tarde</option>
                             </select>
                         </div>
 
@@ -104,21 +108,19 @@
             <!-- Columna derecha -->
             <div class="col-md-4">
 
-                <!-- Instrucciones -->
                 <div class="panel">
                     <div class="panel-label">¿Cómo importar?</div>
                     <div class="info-box mb-3">
                         <i class="fas fa-magic me-1"></i>
                         El sistema detecta automáticamente los datos del archivo SIAGIE.
                     </div>
-
                     <div class="step-item">
                         <div class="step-number">1</div>
                         <div class="step-text">Ingresa al <strong>SIAGIE</strong> y exporta la nómina de matrícula del grado y sección que deseas importar.</div>
                     </div>
                     <div class="step-item">
                         <div class="step-number">2</div>
-                        <div class="step-text">Selecciona el <strong>grado y sección</strong> correspondiente en los campos de arriba.</div>
+                        <div class="step-text">Selecciona el <strong>grado, sección y turno</strong> correspondiente en los campos de arriba.</div>
                     </div>
                     <div class="step-item">
                         <div class="step-number">3</div>
@@ -130,12 +132,11 @@
                     </div>
                 </div>
 
-                <!-- Advertencia -->
                 <div class="panel" style="border-color:#fee2e2;background:#fef2f2;">
                     <div class="panel-label" style="color:#dc2626;">Advertencia</div>
                     <p style="font-size:0.83rem;color:#dc2626;margin:0;">
                         <i class="fas fa-exclamation-triangle me-1"></i>
-                        Al importar se <strong>eliminarán</strong> las alumnas existentes del grado y sección seleccionados.
+                        Al importar se <strong>eliminarán</strong> las alumnas existentes del grado, sección y turno seleccionados.
                     </p>
                 </div>
 
@@ -150,17 +151,12 @@
     function filtrarSecciones(gradoId) {
         const select = document.getElementById('seccion');
         select.innerHTML = '<option value="">Seleccione sección</option>';
-
         if (!gradoId) {
             select.disabled = true;
             return;
         }
-
         select.disabled = false;
-
-        const filtradas = todasSecciones.filter(s => String(s.grado_id) === String(gradoId));
-
-        filtradas.forEach(s => {
+        todasSecciones.filter(s => String(s.grado_id) === String(gradoId)).forEach(s => {
             const opt = document.createElement('option');
             opt.value = s.id;
             opt.textContent = s.nombre;
@@ -169,22 +165,12 @@
     }
 
     function mostrarNombre(input) {
-        const nombre = input.files[0]?.name ?? 'Haz clic para seleccionar el archivo';
-        document.getElementById('upload-text').textContent = nombre;
+        document.getElementById('upload-text').textContent = input.files[0]?.name ?? 'Haz clic para seleccionar el archivo';
     }
 
-    // Auto ocultar alertas después de 5 segundos
     setTimeout(() => {
-        const alertaError = document.getElementById('alerta-error');
-        const alertaSuccess = document.getElementById('alerta-success');
-
-        if (alertaError) {
-            alertaError.remove();
-        }
-
-        if (alertaSuccess) {
-            alertaSuccess.remove();
-        }
+        document.getElementById('alerta-error')?.remove();
+        document.getElementById('alerta-success')?.remove();
     }, 5000);
 </script>
 
