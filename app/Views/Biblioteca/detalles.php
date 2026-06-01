@@ -63,14 +63,29 @@
                 </div>
                 <?php if ((int)($libro['total_ejemplares'] ?? 0) === 0): ?>
                     <span class="btn-reservar disabled"><i class="fas fa-ban"></i> Sin ejemplares</span>
+
+                <?php elseif (!empty($tieneReservaActiva)): ?>
+                    <span class="btn-reservar disabled" id="btn-bloqueado">
+                        <i class="fas fa-lock"></i> No disponible
+                    </span>
+
                 <?php elseif ((int)($libro['disponibles'] ?? 0) > 0): ?>
                     <a href="<?= base_url('biblioteca/reservar/' . ($libro['idrecurso'] ?? '')) ?>" class="btn-reservar">
                         <i class="fas fa-bookmark"></i> Reservar
                     </a>
+
                 <?php else: ?>
                     <span class="btn-reservar disabled"><i class="fas fa-clock"></i> No disponible</span>
                 <?php endif; ?>
+
             </div>
+
+            <?php if (!empty($tieneReservaActiva)): ?>
+                <div class="bloqueo-aviso">
+                    <i class="fas fa-circle-exclamation"></i>
+                    Ya tienes una reserva activa o un libro prestado. Devuélvelo antes de pedir otro.
+                </div>
+            <?php endif; ?>
         </div>
 
         <!-- Información -->

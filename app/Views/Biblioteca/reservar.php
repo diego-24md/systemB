@@ -1,4 +1,5 @@
 <?php
+
 /** @var array $libro */
 /** @var array $relacionados */
 ?>
@@ -96,7 +97,7 @@
 
     <!-- Formulario POST -->
     <form action="<?= base_url('biblioteca/procesarReserva') ?>" method="post">
-        <?= csrf_field() ?>
+        <?= csrf_field() ?> <!-- ← debe estar aquí -->
         <input type="hidden" name="idactivo" value="<?= (int)$libro['idactivo'] ?>">
         <input type="hidden" name="idrecurso" value="<?= (int)$libro['idrecurso'] ?>">
         <button type="submit" class="btn-confirmar">

@@ -78,15 +78,16 @@ class Biblioteca extends BaseController
     }
 
     // ====================== DETALLE ======================
+    // ====================== DETALLE ======================
     public function detalle($id)
     {
         $libro = $this->db->table('recursos r')
             ->select('
-                r.*,
-                GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
-                c.categoria,
-                tr.tipo
-            ')
+            r.*,
+            GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ", ") AS autores,
+            c.categoria,
+            tr.tipo
+        ')
             ->join('recurso_autor ra', 'ra.idrecurso = r.idrecurso', 'left')
             ->join('autores a', 'a.idautor = ra.idautor', 'left')
             ->join('categorias c', 'c.idcategoria = r.idcategoria', 'left')
@@ -125,6 +126,19 @@ class Biblioteca extends BaseController
             ->limit(8)
             ->get()
             ->getResultArray();
+
+        // ← NUEVO: verificar si la alumna ya tiene reserva activa
+        $idalumna = (int) session()->get('alumna_id');
+        $data['tieneReservaActiva'] = false;
+
+        if ($idalumna) {
+            $bloqueo = $this->db->table('prestamos')
+                ->whereIn('estado', ['pendiente', 'activo'])
+                ->where('idalumna', $idalumna)
+                ->countAllResults();
+
+            $data['tieneReservaActiva'] = $bloqueo > 0;
+        }
 
         $data['libro'] = $libro;
 

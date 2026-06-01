@@ -191,7 +191,8 @@ body {
     grid-template-columns: 160px 1fr;
     gap: 36px;
     align-items: end;
-    padding: 48px 0 40px; /* ← agrega 40px abajo */
+    padding: 48px 0 40px;
+    /* ← agrega 40px abajo */
     min-height: 280px;
 }
 
@@ -843,4 +844,25 @@ body {
         height: 44px;
         font-size: 15px;
     }
+}
+
+/* Aviso de bloqueo bajo el botón */
+.bloqueo-aviso {
+    margin-top: 0.85rem;
+    background: #fff4e5;
+    border: 1px solid #f5a623;
+    border-radius: 0.6rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.88rem;
+    color: #7a4900;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1.4;
+}
+
+.bloqueo-aviso i {
+    color: #f5a623;
+    font-size: 1rem;
+    flex-shrink: 0;
 }
