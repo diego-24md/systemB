@@ -168,6 +168,6 @@ class LibrosSeeder extends Seeder
             }
         }
 
-        echo "✅ 9 libros insertados correctamente.\n";
+        echo "9 libros insertados correctamente.\n";
     }
 }
