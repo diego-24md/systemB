@@ -258,7 +258,6 @@ body {
 
 /* Tarjeta pendientes */
 .stat-card-pendientes {
-    border: 1px solid #fde68a;
     position: relative;
     transition: background 0.2s;
 }
