@@ -69,7 +69,7 @@
             <div class="stat-card">
                 <div class="stat-icon amarillo"><i class="fas fa-users"></i></div>
                 <div>
-                    <div class="stat-label">Usuarios</div>
+                    <div class="stat-label">Usuarios Registrados</div>
                     <div class="stat-value"><?= $usuarios ?></div>
                 </div>
             </div>
