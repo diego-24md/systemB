@@ -2,11 +2,13 @@
     /* === PALETA INSTITUCIONAL CHINCHAYSUYO === */
     --ink: #1b2436;
     --ink-light: #4a5568;
-    --primary-red: #C8102E;
-    --red-dark: #9B0F23;
+    --ink-mid: #2d3f5e;
+    --ink-pale: #e8edf5;
+    --primary-blue: #1b2436;
+    --blue-dark: #0f1824;
     --gold: #FFCC00;
     --gold-dark: #D4A017;
-    --red-pale: #fef2f2;
+    --blue-pale: #e8edf5;
     --amber-pale: #fdf8ec;
     --sand: #f9f9f9;
     --white: #ffffff;
@@ -31,13 +33,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--primary-red);
+    background: var(--ink);
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 0 24px;
     height: 60px;
-    box-shadow: 0 2px 12px rgba(200, 16, 46, .25);
+    box-shadow: 0 2px 12px rgba(27, 36, 54, .3);
 }
 
 .topbar-logo {
@@ -103,10 +105,11 @@ body {
     right: 0;
     background: var(--white);
     border-radius: 14px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, .16);
+    box-shadow: 0 12px 40px rgba(27, 36, 54, .15);
     min-width: 200px;
     overflow: hidden;
     z-index: 200;
+    border: 1px solid var(--border);
 }
 
 .user-dd.open {
@@ -116,7 +119,7 @@ body {
 .dd-head {
     padding: 14px 18px 12px;
     border-bottom: 1px solid var(--border);
-    background: var(--red-pale);
+    background: linear-gradient(135deg, var(--blue-pale), #fff8f8);
 }
 
 .dd-head small {
@@ -134,7 +137,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 12px 18px;
-    color: var(--primary-red);
+    color: var(--primary-blue);
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
@@ -142,12 +145,12 @@ body {
 }
 
 .dd-logout:hover {
-    background: var(--red-pale);
+    background: var(--blue-pale);
 }
 
 /* ── STAGE (full-width header area) ────── */
 .stage {
-    background: var(--primary-red);
+    background: var(--ink);
     padding: 0 24px 0;
     position: relative;
     overflow: hidden;
@@ -170,7 +173,7 @@ body {
     width: 380px;
     height: 380px;
     border-radius: 50%;
-    background: radial-gradient(circle at center, rgba(200, 16, 46, .22) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(27, 36, 54, .22) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -183,7 +186,7 @@ body {
     grid-template-columns: 160px 1fr;
     gap: 36px;
     align-items: end;
-    padding: 48px 0 40px; /* ← agrega 40px abajo */
+    padding: 48px 0 40px;
     min-height: 280px;
 }
 
@@ -198,7 +201,7 @@ body {
     height: 224px;
     object-fit: cover;
     border-radius: 10px 10px 0 0;
-    box-shadow: 0 -4px 40px rgba(0, 0, 0, .4), 4px 4px 0 var(--primary-red);
+    box-shadow: 0 -4px 40px rgba(0, 0, 0, .4), 4px 4px 0 var(--ink);
 }
 
 .cover-placeholder {
@@ -237,8 +240,8 @@ body {
 
 .cat-pill {
     display: inline-block;
-    background: var(--red-pale);
-    color: var(--primary-red);
+    background: var(--blue-pale);
+    color: var(--ink-mid);
     font-size: 11px;
     font-weight: 600;
     padding: 3px 12px;
@@ -341,8 +344,8 @@ body {
 }
 
 .avail-ring.ok {
-    background: var(--red-pale);
-    color: var(--primary-red);
+    background: var(--blue-pale);
+    color: var(--ink-mid);
 }
 
 .avail-ring.out {
@@ -366,7 +369,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 12px 26px;
-    background: var(--primary-red);
+    background: var(--ink);
     color: #fff;
     border-radius: 10px;
     text-decoration: none;
@@ -374,7 +377,7 @@ body {
     font-weight: 600;
     letter-spacing: .01em;
     transition: background .2s, transform .15s;
-    box-shadow: 0 4px 16px rgba(200, 16, 46, .3);
+    box-shadow: 0 4px 16px rgba(27, 36, 54, .25);
     white-space: nowrap;
     font-family: inherit;
     border: none;
@@ -382,7 +385,7 @@ body {
 }
 
 .btn-reservar:hover {
-    background: var(--red-dark);
+    background: var(--blue-dark);
     transform: translateY(-2px);
 }
 
@@ -409,7 +412,7 @@ body {
 
 .info-item-icon {
     font-size: 13px;
-    color: var(--primary-red);
+    color: var(--ink-mid);
     margin-bottom: 2px;
 }
 
@@ -470,14 +473,14 @@ body {
 }
 
 .btn-fav:hover {
-    border-color: var(--primary-red);
-    color: var(--primary-red);
+    border-color: var(--ink-mid);
+    color: var(--ink-mid);
 }
 
 .btn-fav.activo {
-    background: var(--red-pale);
-    color: var(--primary-red);
-    border-color: var(--primary-red);
+    background: var(--blue-pale);
+    color: var(--ink-mid);
+    border-color: var(--ink-mid);
 }
 
 /* ── NOTICE CARD ────────────────────────── */
@@ -559,7 +562,7 @@ body {
 }
 
 .rel-item:hover {
-    border-color: var(--primary-red);
+    border-color: var(--ink-mid);
     transform: translateX(4px);
 }
 
@@ -609,8 +612,8 @@ body {
 .rel-avail {
     font-size: 10.5px;
     font-weight: 600;
-    color: var(--primary-red);
-    background: var(--red-pale);
+    color: var(--ink-mid);
+    background: var(--blue-pale);
     display: inline-block;
     padding: 2px 8px;
     border-radius: 20px;
@@ -731,7 +734,7 @@ body {
         width: 120px;
         height: 168px;
         border-radius: 8px 8px 0 0;
-        box-shadow: 0 -4px 30px rgba(0, 0, 0, .35), 3px 3px 0 var(--primary-red);
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, .35), 3px 3px 0 var(--ink);
     }
 
     .cover-placeholder {
