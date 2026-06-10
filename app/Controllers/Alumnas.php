@@ -22,7 +22,7 @@ class Alumnas extends BaseController
         $grado_id   = $this->request->getGet('grado');
         $seccion_id = $this->request->getGet('seccion');
         $buscar     = $this->request->getGet('buscar');
-        $turno      = $this->request->getGet('turno'); // ← NUEVO
+        $turno      = $this->request->getGet('turno');
 
         if ($grado_id !== null && $grado_id !== '') {
             $this->alumnasModel->where('grado_id', (int)$grado_id);
@@ -32,7 +32,7 @@ class Alumnas extends BaseController
             $this->alumnasModel->where('seccion_id', (int)$seccion_id);
         }
 
-        if ($turno !== null && $turno !== '') { // ← NUEVO
+        if ($turno !== null && $turno !== '') {
             $this->alumnasModel->where('turno', $turno);
         }
 
@@ -54,7 +54,7 @@ class Alumnas extends BaseController
         if ($seccion_id !== null && $seccion_id !== '') {
             $countModel->where('seccion_id', (int)$seccion_id);
         }
-        if ($turno !== null && $turno !== '') { // ← NUEVO
+        if ($turno !== null && $turno !== '') {
             $countModel->where('turno', $turno);
         }
         if ($buscar) {
@@ -78,7 +78,7 @@ class Alumnas extends BaseController
 
         $data['grado']   = $grado_id;
         $data['seccion'] = $seccion_id;
-        $data['turno']   = $turno; // ← NUEVO
+        $data['turno']   = $turno;
         $data['buscar']  = $buscar;
         $data['header']  = view('partials/header');
         $data['footer']  = view('partials/footer');
@@ -124,7 +124,7 @@ class Alumnas extends BaseController
         $archivo    = $this->request->getFile('archivo');
         $grado_id   = $this->request->getPost('grado');
         $seccion_id = $this->request->getPost('seccion');
-        $turno      = $this->request->getPost('turno'); // ← NUEVO
+        $turno      = $this->request->getPost('turno');
 
         if (!$archivo || !$archivo->isValid()) {
             return redirect()->back()->with('error', 'Debe seleccionar un archivo Excel válido.');
@@ -218,7 +218,7 @@ class Alumnas extends BaseController
             // Eliminar alumnas existentes del mismo grado, sección y turno
             $this->alumnasModel->where('grado_id', $grado_id)
                 ->where('seccion_id', $seccion_id)
-                ->where('turno', $turno) // ← NUEVO
+                ->where('turno', $turno)
                 ->delete();
 
             foreach ($filas as $rowIndex => $fila) {
@@ -236,7 +236,7 @@ class Alumnas extends BaseController
                     'dni'        => $posibleDni,
                     'grado_id'   => $grado_id,
                     'seccion_id' => $seccion_id,
-                    'turno'      => $turno, // ← NUEVO
+                    'turno'      => $turno,
                 ];
 
                 if ($this->alumnasModel->save($dataInsert)) {
@@ -295,18 +295,19 @@ class Alumnas extends BaseController
     {
         $rules = [
             'nombre'     => 'required|min_length[2]|max_length[150]',
-            'dni'        => 'required|max_length[15]',
+            'dni'        => "required|max_length[15]|is_unique[alumnas.dni,id,{$id}]",
             'grado_id'   => 'required|is_natural_no_zero',
             'seccion_id' => 'required|is_natural_no_zero',
-            'turno'      => 'required|in_list[manana,tarde]', // ← NUEVO
+            'turno'      => 'required|in_list[manana,tarde]',
         ];
 
         if (!$this->validate($rules)) {
-            $data['alumna']    = $this->alumnasModel->find($id);
-            $data['grados']    = $this->db->table('grados')->select('id, nombre')->orderBy('id', 'ASC')->get()->getResultArray();
-            $data['secciones'] = $this->db->table('secciones')->select('id, nombre, grado_id')->orderBy('grado_id', 'ASC')->orderBy('nombre', 'ASC')->get()->getResultArray();
-            $data['header']    = view('partials/header');
-            $data['footer']    = view('partials/footer');
+            $data['alumna']     = $this->alumnasModel->find($id);
+            $data['grados']     = $this->db->table('grados')->select('id, nombre')->orderBy('id', 'ASC')->get()->getResultArray();
+            $data['secciones']  = $this->db->table('secciones')->select('id, nombre, grado_id')->orderBy('grado_id', 'ASC')->orderBy('nombre', 'ASC')->get()->getResultArray();
+            $data['validation'] = $this->validator;
+            $data['header']     = view('partials/header');
+            $data['footer']     = view('partials/footer');
             return view('alumnas/editar', $data);
         }
 
@@ -315,13 +316,21 @@ class Alumnas extends BaseController
             'dni'        => $this->request->getPost('dni'),
             'grado_id'   => $this->request->getPost('grado_id'),
             'seccion_id' => $this->request->getPost('seccion_id'),
-            'turno'      => $this->request->getPost('turno'), // ← NUEVO
+            'turno'      => $this->request->getPost('turno'),
         ];
 
-        if ($this->alumnasModel->update($id, $dataUpdate)) {
-            return redirect()->to('/alumnas')->with('success', 'Alumna actualizada correctamente.');
-        }
+        $this->alumnasModel->skipValidation(true)->update($id, $dataUpdate);
 
-        return redirect()->to('/alumnas')->with('error', 'Error al actualizar la alumna.');
+        // Notificación
+        $db = \Config\Database::connect();
+        $alumna = $this->alumnasModel->find($id);
+        $db->table('notificaciones')->insert([
+            'mensaje'    => 'Alumna actualizada: ' . $alumna['nombre'],
+            'tipo'       => 'alumna',
+            'leida'      => 0,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        return redirect()->to('/alumnas');
     }
 }

@@ -17,7 +17,7 @@ class AlumnasModel extends Model
         'clave',
         'grado_id',
         'seccion_id',
-        'turno', // ← NUEVO
+        'turno',
     ];
 
     protected $useTimestamps = false;
@@ -27,7 +27,7 @@ class AlumnasModel extends Model
         'dni'        => 'required|max_length[15]|is_unique[alumnas.dni,id,{id}]',
         'grado_id'   => 'required|is_natural_no_zero',
         'seccion_id' => 'required|is_natural_no_zero',
-        'turno'      => 'required|in_list[manana,tarde]', // ← NUEVO
+        'turno'      => 'required|in_list[manana,tarde]',
     ];
 
     protected $validationMessages = [

@@ -262,10 +262,6 @@ body {
     transition: background 0.2s;
 }
 
-.stat-card-pendientes:hover {
-    background: #fffbeb;
-}
-
 .stat-icon.naranja {
     background: #fef3c7;
     color: #d97706;
