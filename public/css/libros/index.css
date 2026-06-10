@@ -239,3 +239,7 @@ body {
 .btn-agregar:active {
     text-decoration: none !important;
 }
+
+#grid-libros {
+    row-gap: 24px;
+}
