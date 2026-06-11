@@ -78,17 +78,7 @@
                     </select>
                 </div>
 
-                <!-- TURNO -->
-                <div class="col-md-2">
-                    <label class="form-label text-muted" style="font-size:0.82rem;">Turno</label>
-                    <select name="turno" class="form-select">
-                        <option value="">Todos los turnos</option>
-                        <option value="manana" <?= ($turno ?? '') === 'manana' ? 'selected' : '' ?>>Mañana</option>
-                        <option value="tarde" <?= ($turno ?? '') === 'tarde'  ? 'selected' : '' ?>>Tarde</option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label text-muted" style="font-size:0.82rem;">Buscar por nombre o DNI</label>
                     <input type="text" name="buscar" class="form-control"
                         placeholder="Ej: María o 72894561"
@@ -101,7 +91,7 @@
                     </button>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <a href="<?= base_url('alumnas') ?>" class="btn w-100"
                         style="border:1px solid #e2e8f0;color:#64748b;border-radius:8px;padding:10px;height:42px;">
                         <i class="fas fa-eraser"></i>

@@ -2,11 +2,13 @@
     /* === PALETA INSTITUCIONAL CHINCHAYSUYO === */
     --ink: #1b2436;
     --ink-light: #4a5568;
-    --primary-red: #C8102E;
-    --red-dark: #9B0F23;
+    --ink-mid: #2d3f5e;
+    --ink-pale: #e8edf5;
+    --primary-blue: #1b2436;
+    --blue-dark: #0f1824;
     --gold: #FFCC00;
     --gold-dark: #D4A017;
-    --red-pale: #fef2f2;
+    --blue-pale: #e8edf5;
     --amber-pale: #fdf8ec;
     --sand: #f9f9f9;
     --white: #ffffff;
@@ -31,13 +33,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--primary-red);
+    background: var(--ink);
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 0 24px;
     height: 60px;
-    box-shadow: 0 2px 12px rgba(200, 16, 46, .25);
+    box-shadow: 0 2px 12px rgba(27, 36, 54, .3);
 }
 
 .topbar-logo {
@@ -102,7 +104,7 @@ body {
     right: 0;
     background: var(--white);
     border-radius: 14px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, .16);
+    box-shadow: 0 12px 40px rgba(27, 36, 54, .15);
     min-width: 200px;
     overflow: hidden;
     z-index: 200;
@@ -116,7 +118,7 @@ body {
 .dd-head {
     padding: 14px 18px 12px;
     border-bottom: 1px solid var(--border);
-    background: var(--red-pale);
+    background: var(--blue-pale);
 }
 
 .dd-head small {
@@ -137,7 +139,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 12px 18px;
-    color: var(--primary-red);
+    color: var(--ink-mid);
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
@@ -145,7 +147,7 @@ body {
 }
 
 .dd-logout:hover {
-    background: var(--red-pale);
+    background: var(--blue-pale);
 }
 
 /* ── PÁGINA ─────────────────────────────── */
@@ -230,8 +232,8 @@ body {
     gap: 6px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--primary-red);
-    background: var(--red-pale);
+    color: var(--ink-mid);
+    background: var(--blue-pale);
     padding: 3px 10px;
     border-radius: 20px;
 }
@@ -259,9 +261,9 @@ body {
 }
 
 .flash.success {
-    background: var(--red-pale);
-    color: var(--primary-red);
-    border: 1px solid rgba(200, 16, 46, .2);
+    background: var(--blue-pale);
+    color: var(--ink-mid);
+    border: 1px solid rgba(27, 36, 54, .2);
 }
 
 /* ── FORMULARIO ─────────────────────────── */
@@ -310,11 +312,11 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: var(--red-pale);
+    background: var(--blue-pale);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-red);
+    color: var(--ink-mid);
     font-size: 14px;
     flex-shrink: 0;
     margin-top: 1px;
@@ -383,7 +385,7 @@ body {
     gap: 9px;
     width: 100%;
     padding: 14px 24px;
-    background: var(--primary-red);
+    background: var(--ink);
     color: #fff;
     border: none;
     border-radius: 12px;
@@ -393,12 +395,12 @@ body {
     cursor: pointer;
     letter-spacing: .01em;
     transition: background .2s, transform .15s;
-    box-shadow: 0 4px 16px rgba(200, 16, 46, .3);
+    box-shadow: 0 4px 16px rgba(27, 36, 54, .3);
     margin-bottom: 12px;
 }
 
 .btn-confirmar:hover {
-    background: var(--red-dark);
+    background: var(--blue-dark);
     transform: translateY(-1px);
 }
 

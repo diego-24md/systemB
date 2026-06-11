@@ -31,20 +31,14 @@
             </div>
         </div>
 
-        <!-- NUEVO -->
         <div class="col-xl col-md-6">
-            <a href="<?= base_url('prestamos/pendientes') ?>" style="text-decoration:none;">
-                <div class="stat-card stat-card-pendientes">
-                    <div class="stat-icon naranja"><i class="fas fa-clock"></i></div>
-                    <div>
-                        <div class="stat-label">Reservas Pendientes</div>
-                        <div class="stat-value"><?= $pendientes ?></div>
-                    </div>
-                    <?php if ($pendientes > 0): ?>
-                        <span class="stat-badge-pendiente">Ver</span>
-                    <?php endif; ?>
+            <div class="stat-card stat-card-pendientes">
+                <div class="stat-icon naranja"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="stat-label">Reservas Pendientes</div>
+                    <div class="stat-value"><?= $pendientes ?></div>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-xl col-md-6">
