@@ -25,7 +25,13 @@ composer install
 
 ### 3. Copiar el template SB Admin 2
 
-El proyecto usa la plantilla **SB Admin 2**. Su carpeta `vendor` debe copiarse dentro de la carpeta `public`:
+El proyecto usa la plantilla **SB Admin 2**. Su carpeta `vendor` debe copiarse dentro de la carpeta `public`.
+
+Descargar desde:
+
+https://startbootstrap.com/theme/sb-admin-2
+
+Una vez descargado, copiar la carpeta `vendor` del template dentro de la carpeta `public` del proyecto:
 
 ```
 public/
