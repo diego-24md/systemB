@@ -70,7 +70,7 @@
                         <div class="col-md-4">
                             <label class="form-label-custom">Sección <span class="text-danger">*</span></label>
                             <select name="seccion" id="seccion" class="form-select" required disabled>
-                                <option value="">Primero seleccione un grado</option>
+                                <option value="">Seleccione sección</option>
                             </select>
                         </div>
 

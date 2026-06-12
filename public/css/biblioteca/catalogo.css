@@ -5,7 +5,7 @@
     --ink-pale: #e8edf5;
     --gold: #FFCC00;
     --gold-dark: #D4A017;
-    --teal-pale: #ffe6e9;
+    --hover-pale: #eef1f7;
     --amber-pale: #fff4d1;
     --sand: #f8f6f0;
     --white: #ffffff;
@@ -161,7 +161,7 @@ body {
 .dd-head {
     padding: 14px 18px 12px;
     border-bottom: 1px solid var(--border);
-    background: linear-gradient(135deg, var(--teal-pale), #fff8f8);
+    background: linear-gradient(135deg, var(--ink-pale), #fff);
 }
 
 .dd-head small {
@@ -220,7 +220,7 @@ body {
 }
 
 .dd-logout:hover {
-    background: var(--teal-pale);
+    background: var(--hover-pale);
 }
 
 /* ── DRAWER FAVORITOS ───────────────────── */
@@ -260,7 +260,7 @@ body {
 .drawer-header {
     padding: 18px 20px 16px;
     border-bottom: 1px solid var(--border);
-    background: linear-gradient(135deg, var(--teal-pale), #fff8f8);
+    background: linear-gradient(135deg, var(--ink-pale), #fff);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -277,7 +277,7 @@ body {
 }
 
 .drawer-header h2 i {
-    color: var(--ink-mid);
+    color: var(--gold-dark);
 }
 
 .drawer-close {
@@ -296,9 +296,9 @@ body {
 }
 
 .drawer-close:hover {
-    background: var(--teal-pale);
-    color: var(--primary-red);
-    border-color: var(--primary-red);
+    background: var(--hover-pale);
+    color: var(--ink);
+    border-color: var(--ink-mid);
 }
 
 .drawer-body {
@@ -415,8 +415,8 @@ body {
 }
 
 .fav-remove:hover {
-    color: var(--primary-red);
-    background: var(--teal-pale);
+    color: var(--ink);
+    background: var(--hover-pale);
 }
 
 /* ── MAIN ───────────────────────────────── */
@@ -424,15 +424,12 @@ body {
     max-width: 1100px;
     margin: 0 auto;
     padding: 40px 32px 60px;
-    /* ← antes era 32px 24px */
 }
 
 /* ── BUSCADOR HERO ──────────────────────── */
 .search-hero {
     padding: 28px 30px 26px;
-    /* ← antes era 24px 26px 22px */
     margin-bottom: 36px;
-    /* ← antes era 28px */
 }
 
 .search-hero::before {
@@ -487,7 +484,7 @@ body {
 .search-wrap input:focus {
     border-color: var(--ink-mid);
     background: var(--white);
-    box-shadow: 0 0 0 4px rgba(200, 16, 46, .1);
+    box-shadow: 0 0 0 4px rgba(27, 36, 54, .08);
 }
 
 .search-wrap input::placeholder {
@@ -521,9 +518,9 @@ body {
 }
 
 .filtro-btn:hover {
-    border-color: var(--primary-red);
-    color: var(--primary-red);
-    background: var(--teal-pale);
+    border-color: var(--ink-mid);
+    color: var(--ink);
+    background: var(--ink-pale);
 }
 
 .filtro-btn.activo {
@@ -619,7 +616,7 @@ body {
 
 .book-cover {
     height: 220px;
-    background: linear-gradient(135deg, #fdf0f2, #fff4d1);
+    background: linear-gradient(135deg, var(--ink-pale), var(--amber-pale));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -675,20 +672,20 @@ body {
     font-weight: 600;
     font-family: inherit;
     padding: 9px 16px;
-    background: linear-gradient(135deg, var(--primary-red), var(--red-dark));
+    background: var(--ink);
     color: #fff;
     border-radius: 8px;
     text-decoration: none;
     text-align: center;
     letter-spacing: .01em;
     transition: all .2s;
-    box-shadow: 0 2px 8px rgba(200, 16, 46, .25);
+    box-shadow: 0 2px 8px rgba(27, 36, 54, .2);
 }
 
 .book-btn:hover {
-    background: linear-gradient(135deg, var(--red-dark), #7a0c1c);
+    background: var(--ink-mid);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(200, 16, 46, .35);
+    box-shadow: 0 4px 12px rgba(27, 36, 54, .3);
 }
 
 .no-resultados {
@@ -766,8 +763,8 @@ body {
 }
 
 .notif-icon.rechazado {
-    background: var(--teal-pale);
-    color: var(--primary-red);
+    background: #fef2f2;
+    color: #e53e3e;
 }
 
 .notif-body {
@@ -832,8 +829,8 @@ body {
 }
 
 .reserva-estado.rechazado {
-    background: var(--teal-pale);
-    color: var(--primary-red);
+    background: #fef2f2;
+    color: #e53e3e;
 }
 
 /* ── BOTTOM NAV ─────────────────────────── */
@@ -999,28 +996,4 @@ body {
     .book-title {
         font-size: 12.5px;
     }
-}
-
-/* Boton Ver detalle */
-
-.book-btn {
-    display: block;
-    font-size: 12.5px;
-    font-weight: 600;
-    font-family: inherit;
-    padding: 9px 16px;
-    background: var(--ink);
-    color: #fff;
-    border-radius: 8px;
-    text-decoration: none;
-    text-align: center;
-    letter-spacing: .01em;
-    transition: all .2s;
-    box-shadow: 0 2px 8px rgba(27, 36, 54, .2);
-}
-
-.book-btn:hover {
-    background: var(--ink-mid);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(27, 36, 54, .3);
 }
