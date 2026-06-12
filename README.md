@@ -95,6 +95,13 @@ El proyecto quedará disponible en:
 http://localhost:8080
 ```
 
+Para acceder al catálogo de biblioteca, ingresar a:
+
+```
+http://localhost:8080/catalogo
+```
+
+
 ## Acceso al sistema
 
 - Administrador (completar con las siguientes credenciales)
