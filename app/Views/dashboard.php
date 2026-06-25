@@ -45,7 +45,7 @@
             <div class="stat-card">
                 <div class="stat-icon rojo"><i class="fas fa-book-reader"></i></div>
                 <div>
-                    <div class="stat-label">Libros Prestados</div>
+                    <div class="stat-label">Ejemplares Prestados</div>
                     <div class="stat-value"><?= $prestados ?></div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
             <div class="stat-card">
                 <div class="stat-icon verde"><i class="fas fa-check-circle"></i></div>
                 <div>
-                    <div class="stat-label">Libros Disponibles</div>
+                    <div class="stat-label">Ejemplares Disponibles</div>
                     <div class="stat-value"><?= $disponibles ?></div>
                 </div>
             </div>

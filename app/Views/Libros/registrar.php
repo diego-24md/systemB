@@ -122,6 +122,28 @@
                     </div>
                 </div>
 
+                <!-- Panel de ayuda para categorías -->
+                <div class="panel" style="border-color:#d1d5db; background:#f9fafb;">
+                    <div class="panel-label" style="color:#FFCE1B;">
+                        <i class="fas fa-lightbulb me-1"></i> ¿No encuentras la categoría?
+                    </div>
+                    <p style="font-size:0.83rem; color:#374151; margin-bottom:0.75rem;">
+                        Si el tipo de recurso o categoría que necesitas no aparece en los desplegables,
+                        puedes crearlos desde los siguientes enlaces:
+                    </p>
+                    <a href="<?= base_url('recursos/tipos') ?>"
+                        style="display:block; font-size:0.83rem; color:#111827; font-weight:600; margin-bottom:0.4rem;">
+                        <i class="fas fa-tags me-1"></i> Gestionar Tipos de Recurso
+                    </a>
+                    <a href="<?= base_url('recursos/categorias') ?>"
+                        style="display:block; font-size:0.83rem; color:#111827; font-weight:600;">
+                        <i class="fas fa-folder-open me-1"></i> Gestionar Categorías
+                    </a>
+                    <small style="display:block; margin-top:0.6rem; color:#6b7280;">
+                        Al hacer clic se cargará en esta misma página.
+                    </small>
+                </div>
+
                 <button type="submit" class="btn-guardar w-100">
                     <i class="fas fa-save me-2"></i> Guardar
                 </button>

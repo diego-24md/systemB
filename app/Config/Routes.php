@@ -33,6 +33,18 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('libros/papelera',           'Libros::papelera');
     $routes->get('libros/restaurar/(:num)',    'Libros::restaurar/$1');
     $routes->post('libros/eliminar-definitivo/(:num)', 'Libros::eliminarDefinitivo/$1');
+    // RECURSOS Y CATEGORIAS
+    // ====================== TIPOS DE RECURSO ======================
+    $routes->get('recursos/tipos',                      'Recursos::tipos');
+    $routes->post('recursos/tipos/guardar',             'Recursos::tipoGuardar');
+    $routes->post('recursos/tipos/actualizar/(:num)',   'Recursos::tipoActualizar/$1');
+    $routes->get('recursos/tipos/eliminar/(:num)',      'Recursos::tipoEliminar/$1');
+
+    // ====================== CATEGORÍAS ======================
+    $routes->get('recursos/categorias',                     'Recursos::categorias');
+    $routes->post('recursos/categorias/guardar',            'Recursos::categoriaGuardar');
+    $routes->post('recursos/categorias/actualizar/(:num)',  'Recursos::categoriaActualizar/$1');
+    $routes->get('recursos/categorias/eliminar/(:num)',     'Recursos::categoriaEliminar/$1');
 
     // ====================== ALUMNAS ======================
     $routes->get('alumnas', 'Alumnas::index');

@@ -31,7 +31,7 @@
                 <i class="fas fa-trash-alt me-2"></i> Papelera
             </a>
             <a href="<?= base_url('libros/registrar') ?>" class="btn-agregar">
-                <i class="fas fa-plus me-2"></i> Agregar Recurso
+                <i class="fas fa-plus me-2"></i> Agregar Nuevo
             </a>
         </div>
     </div>
