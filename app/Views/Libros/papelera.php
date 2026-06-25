@@ -16,8 +16,8 @@
 
     <div class="d-flex justify-content-between align-items-start mb-3">
         <div>
-            <div class="page-title">Papelera de Libros</div>
-            <div class="page-subtitle">Libros eliminados — puedes restaurarlos o eliminarlos definitivamente</div>
+            <div class="page-title">Papelera de Recursos</div>
+            <div class="page-subtitle">Recursos eliminados — puedes restaurarlos o eliminarlos definitivamente</div>
         </div>
         <a href="<?= base_url('libros') ?>" class="btn-agregar">
             <i class="fas fa-arrow-left me-2"></i> Volver al catálogo
@@ -47,7 +47,7 @@
     </div>
 
     <div class="panel">
-        <div class="panel-label">Libros eliminados</div>
+        <div class="panel-label">Recursos eliminados</div>
 
         <?php if (!empty($libros)): ?>
             <div class="row g-3" id="grid-papelera">
@@ -123,7 +123,7 @@
 
             <div class="no-resultados" id="no-resultados">
                 <i class="fas fa-search"></i>
-                No se encontraron libros con ese criterio
+                No se encontraron recursos con ese criterio
             </div>
 
         <?php else: ?>

@@ -23,7 +23,7 @@
 
     <div class="d-flex justify-content-between align-items-start mb-3">
         <div>
-            <div class="page-title">Gestión de Libros</div>
+            <div class="page-title">Gestión de Catálogo</div>
             <div class="page-subtitle">Catálogo de recursos bibliográficos</div>
         </div>
         <div class="d-flex">
@@ -31,7 +31,7 @@
                 <i class="fas fa-trash-alt me-2"></i> Papelera
             </a>
             <a href="<?= base_url('libros/registrar') ?>" class="btn-agregar">
-                <i class="fas fa-plus me-2"></i> Agregar Libro
+                <i class="fas fa-plus me-2"></i> Agregar Recurso
             </a>
         </div>
     </div>

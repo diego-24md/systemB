@@ -12,7 +12,7 @@
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="page-title">Gestión de Préstamos</div>
-            <div class="page-subtitle">Registro y seguimiento de préstamos de libros</div>
+            <div class="page-subtitle">Registro y seguimiento de préstamos de recursos</div>
         </div>
     </div>
 
@@ -45,12 +45,12 @@
                 </div>
 
                 <div class="col-md-4 form-group">
-                    <label>Libro / Activo</label>
-                    <select id="libro-select" name="idactivo" placeholder="Buscar libro..." required></select>
+                    <label>Recurso / Activo</label>
+                    <select id="libro-select" name="idactivo" placeholder="Buscar recurso..." required></select>
                     <div id="libro-preview" style="margin-top:10px; padding:12px; border:1px solid #e2e8f0; border-radius:8px; display:flex; gap:10px; align-items:center;">
                         <img id="libro-img" src="<?= base_url('img/default-book.jpg') ?>" style="width:70px; height:90px; object-fit:cover; border-radius:6px;">
                         <div>
-                            <div id="libro-title" style="font-weight:600; color:#475569;">Selecciona un libro</div>
+                            <div id="libro-title" style="font-weight:600; color:#475569;">Selecciona un recurso</div>
                             <div id="libro-author" style="font-size:12px; color:#64748b;">Autor: —</div>
                             <div id="libro-category" style="font-size:12px; color:#64748b;">Categoría: —</div>
                             <div id="libro-stock" style="font-size:12px; color:#64748b;">— disponibles</div>
@@ -128,7 +128,7 @@
         valueField: "idactivo",
         labelField: "titulo",
         searchField: "titulo",
-        placeholder: "Buscar libro...",
+        placeholder: "Buscar recurso...",
         load: function(query, callback) {
             if (!query.length) return callback();
             fetch(`<?= base_url('prestamos/buscar-libros?q=') ?>${encodeURIComponent(query)}`)

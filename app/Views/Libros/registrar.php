@@ -13,7 +13,7 @@
 
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <div class="page-title">Registrar Libro</div>
+            <div class="page-title">Registrar Recurso</div>
             <div class="page-subtitle">Completa los datos del nuevo recurso bibliográfico</div>
         </div>
         <a href="<?= base_url('libros') ?>" class="btn-cancelar">
