@@ -79,6 +79,22 @@ class Libros extends BaseController
         return view('libros/registrar', $data);
     }
 
+    public function buscarAutores()
+    {
+        $q = trim($this->request->getGet('q'));
+
+        if ($q === '') {
+            return $this->response->setJSON([]);
+        }
+
+        $resultados = $this->autorModel
+            ->like('nombre', $q)
+            ->orderBy('nombre', 'ASC')
+            ->findAll(10);
+
+        return $this->response->setJSON($resultados);
+    }
+
     // ====================== GUARDAR ======================
     public function guardar()
     {

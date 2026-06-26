@@ -26,21 +26,66 @@ class Prestamos extends BaseController
 
     public function buscarAlumna()
     {
-        $dni = $this->request->getGet('dni');
+        $q   = trim($this->request->getGet('q') ?? $this->request->getGet('dni') ?? '');
         $db  = \Config\Database::connect();
 
-        $alumna = $db->table('alumnas')
-            ->where('dni', $dni)
-            ->get()->getRowArray();
-
-        if (!$alumna) {
-            return $this->response->setJSON(['success' => false]);
+        if ($q === '') {
+            return $this->response->setJSON(['success' => false, 'resultados' => []]);
         }
 
+        // Si es solo números de 8 dígitos → buscar por DNI exacto
+        if (preg_match('/^\d+$/', $q)) {
+            // DNI exacto de 8 dígitos → selección automática
+            if (strlen($q) === 8) {
+                $alumna = $db->table('alumnas a')
+                    ->select('a.id, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, a.turno')
+                    ->join('grados g', 'g.id = a.grado_id', 'left')
+                    ->join('secciones s', 's.id = a.seccion_id', 'left')
+                    ->where('a.dni', $q)
+                    ->get()->getRowArray();
+
+                if (!$alumna) {
+                    return $this->response->setJSON(['success' => false, 'resultados' => [], 'unico' => false]);
+                }
+
+                return $this->response->setJSON([
+                    'success'    => true,
+                    'resultados' => [$alumna],
+                    'unico'      => true,
+                ]);
+            }
+
+            // DNI parcial → solo sugerencias, nunca automático
+            $resultados = $db->table('alumnas a')
+                ->select('a.id, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, a.turno')
+                ->join('grados g', 'g.id = a.grado_id', 'left')
+                ->join('secciones s', 's.id = a.seccion_id', 'left')
+                ->like('a.dni', $q, 'after')
+                ->orderBy('a.dni', 'ASC')
+                ->limit(8)
+                ->get()->getResultArray();
+
+            return $this->response->setJSON([
+                'success'    => count($resultados) > 0,
+                'resultados' => $resultados,
+                'unico'      => false,
+            ]);
+        }
+
+        // Si escribe letras → buscar por nombre (sugerencias)
+        $resultados = $db->table('alumnas a')
+            ->select('a.id, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, a.turno')
+            ->join('grados g', 'g.id = a.grado_id', 'left')
+            ->join('secciones s', 's.id = a.seccion_id', 'left')
+            ->like('a.nombre', $q)
+            ->orderBy('a.nombre', 'ASC')
+            ->limit(8)
+            ->get()->getResultArray();
+
         return $this->response->setJSON([
-            'success' => true,
-            'id'      => $alumna['id'],
-            'nombre'  => $alumna['nombre'],
+            'success'    => count($resultados) > 0,
+            'resultados' => $resultados,
+            'unico'      => false,
         ]);
     }
 

@@ -13,12 +13,10 @@
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="page-title">Tipos de Recurso</div>
-            <div class="page-subtitle">
-                Gestiona los tipos disponibles (Libros, Revistas, Folletos, Biblias, etc.)
-            </div>
+            <div class="page-subtitle">Gestiona los tipos disponibles (Libros, Revistas, Folletos, Biblias, etc.)</div>
         </div>
-        <div class="d-flex" style="gap: 15px;">
-            <a href="<?= base_url('libros/registrar') ?>" class="btn-volver">
+        <div class="d-flex" style="gap: 12px;">
+            <a href="<?= base_url('libros') ?>" class="btn-volver">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
             <button class="btn-nuevo" onclick="abrirModalCrear()">
@@ -34,55 +32,86 @@
         <div class="alert-error-bar"><i class="fas fa-exclamation-circle"></i> <?= session()->getFlashdata('error') ?></div>
     <?php endif; ?>
 
-    <div class="panel">
-        <div class="panel-label">
-            <i class="fas fa-tags" style="color:#2563eb;"></i>
-            Tipos registrados
+    <div class="row g-4">
+
+        <!-- Tabla -->
+        <div class="col-lg-8">
+            <div class="panel">
+                <div class="panel-label">
+                    <i class="fas fa-book" style="color:#2563eb;"></i>
+                    Tipos registrados
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width:60px;">#</th>
+                                <th>Tipo de Recurso</th>
+                                <th style="width:140px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($tipos)): ?>
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="empty-state">
+                                            <i class="fas fa-book"></i>
+                                            <h5>Sin tipos registrados</h5>
+                                            <p>Crea el primero usando el botón "Nuevo Tipo".</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($tipos as $i => $t): ?>
+                                    <tr>
+                                        <td><?= $i + 1 ?></td>
+                                        <td><span class="badge-tipo"><i class="fas fa-book"></i> <?= esc($t['tipo']) ?></span></td>
+                                        <td>
+                                            <div class="actions-cell">
+                                                <button class="btn-edit" title="Editar"
+                                                    onclick="abrirModalEditar(<?= $t['idtiporecurso'] ?>, '<?= esc($t['tipo']) ?>')">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                                <button class="btn-delete" title="Eliminar"
+                                                    onclick="confirmarEliminar('<?= base_url('recursos/tipos/eliminar/' . $t['idtiporecurso']) ?>', '<?= esc($t['tipo']) ?>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                    <tr>
-                        <th style="width:60px;">#</th>
-                        <th>Tipo de Recurso</th>
-                        <th style="width:140px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($tipos)): ?>
-                        <tr>
-                            <td colspan="3">
-                                <div class="empty-state">
-                                    <i class="fas fa-tags"></i>
-                                    <h5>Sin tipos registrados</h5>
-                                    <p>Crea el primero usando el botón "Nuevo Tipo".</p>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($tipos as $i => $t): ?>
-                            <tr>
-                                <td><?= $i + 1 ?></td>
-                                <td><span class="badge-tipo"><i class="fas fa-tag"></i> <?= esc($t['tipo']) ?></span></td>
-                                <td>
-                                    <div class="actions-cell">
-                                        <button class="btn-edit" title="Editar"
-                                            onclick="abrirModalEditar(<?= $t['idtiporecurso'] ?>, '<?= esc($t['tipo']) ?>')">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </button>
-                                        <button class="btn-delete" title="Eliminar"
-                                            onclick="confirmarEliminar('<?= base_url('recursos/tipos/eliminar/' . $t['idtiporecurso']) ?>', '<?= esc($t['tipo']) ?>')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+        <!-- Panel informativo -->
+        <div class="col-lg-4">
+            <div class="panel panel-info">
+                <div class="panel-label" style="color:#1b2436;">
+                    <i class="fas fa-info-circle" style="color:#2563eb;"></i>
+                    ¿Para qué sirven los tipos?
+                </div>
+                <p class="info-text">
+                    Los <strong>tipos de recurso</strong> permiten clasificar de forma general todo el material bibliográfico del colegio.
+                </p>
+                <div class="step-item">
+                    <div class="step-icon"><i class="fas fa-book"></i></div>
+                    <div class="step-text">Cada recurso registrado debe pertenecer a un tipo (Ej: Libro, Revista, Biblia).</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon"><i class="fas fa-list"></i></div>
+                    <div class="step-text">Cada tipo puede tener varias <strong>categorías</strong> que lo organizan mejor.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon warn"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="step-text">No puedes eliminar un tipo si tiene categorías o recursos asignados.</div>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -168,7 +197,6 @@
         document.getElementById(id).style.display = 'none';
     }
 
-    // Cerrar al hacer clic fuera del modal
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
             if (e.target === this) cerrarModal(this.id);

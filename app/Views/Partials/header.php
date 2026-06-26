@@ -107,6 +107,8 @@
                     <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Libros</h6>
                         <a class="collapse-item" href="<?= base_url('libros') ?>">Libros</a>
+                        <a class="collapse-item" href="<?= base_url('recursos/tipos') ?>">Tipos de Recursos</a>
+                        <a class="collapse-item" href="<?= base_url('recursos/categorias') ?>">Categorías</a>
                     </div>
                 </div>
             </li>

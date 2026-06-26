@@ -14,18 +14,14 @@
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="page-title">Categorías</div>
-            <div class="page-subtitle">
-                Gestiona las categorías agrupadas por tipo de recurso
-            </div>
+            <div class="page-subtitle">Gestiona las categorías agrupadas por tipo de recurso</div>
         </div>
-        <div class="d-flex" style="gap: 15px;">
-            <a href="<?= base_url('libros/registrar') ?>" class="btn-volver">
-                <i class="fas fa-arrow-left"></i>
-                Volver
+        <div class="d-flex" style="gap: 12px;">
+            <a href="<?= base_url('libros') ?>" class="btn-volver">
+                <i class="fas fa-arrow-left"></i> Volver
             </a>
             <button class="btn-nuevo" onclick="abrirModalCrear()">
-                <i class="fas fa-plus"></i>
-                Nueva Categoría
+                <i class="fas fa-plus"></i> Nueva Categoría
             </button>
         </div>
     </div>
@@ -37,65 +33,96 @@
         <div class="alert-error-bar"><i class="fas fa-exclamation-circle"></i> <?= session()->getFlashdata('error') ?></div>
     <?php endif; ?>
 
-    <div class="panel">
-        <div class="panel-label">
-            <i class="fas fa-folder-open" style="color:#2563eb;"></i>
-            Categorías registradas
+    <div class="row g-4">
+
+        <!-- Tabla -->
+        <div class="col-lg-8">
+            <div class="panel">
+                <div class="panel-label">
+                    <i class="fas fa-list" style="color:#2563eb;"></i>
+                    Categorías registradas
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width:60px;">#</th>
+                                <th>Categoría</th>
+                                <th>Tipo de Recurso</th>
+                                <th style="width:140px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($categorias)): ?>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <i class="fas fa-folder-open"></i>
+                                            <h5>Sin categorías registradas</h5>
+                                            <p>Crea la primera usando el botón "Nueva Categoría".</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($categorias as $i => $cat): ?>
+                                    <tr>
+                                        <td><?= $i + 1 ?></td>
+                                        <td><strong><?= esc($cat['categoria']) ?></strong></td>
+                                        <td>
+                                            <span class="badge-tipo">
+                                                <i class="fas fa-book"></i> <?= esc($cat['tipo'] ?? '—') ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="actions-cell">
+                                                <button class="btn-edit" title="Editar"
+                                                    onclick="abrirModalEditar(
+                                                        <?= $cat['idcategoria'] ?>,
+                                                        '<?= esc($cat['categoria']) ?>',
+                                                        <?= (int)($cat['idtiporecurso'] ?? 0) ?>
+                                                    )">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                                <button class="btn-delete" title="Eliminar"
+                                                    onclick="confirmarEliminar('<?= base_url('recursos/categorias/eliminar/' . $cat['idcategoria']) ?>', '<?= esc($cat['categoria']) ?>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                    <tr>
-                        <th style="width:60px;">#</th>
-                        <th>Categoría</th>
-                        <th>Tipo de Recurso</th>
-                        <th style="width:140px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($categorias)): ?>
-                        <tr>
-                            <td colspan="4">
-                                <div class="empty-state">
-                                    <i class="fas fa-folder-open"></i>
-                                    <h5>Sin categorías registradas</h5>
-                                    <p>Crea la primera usando el botón "Nueva Categoría".</p>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($categorias as $i => $cat): ?>
-                            <tr>
-                                <td><?= $i + 1 ?></td>
-                                <td><strong><?= esc($cat['categoria']) ?></strong></td>
-                                <td>
-                                    <span class="badge-tipo">
-                                        <i class="fas fa-tag"></i> <?= esc($cat['tipo'] ?? '—') ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="actions-cell">
-                                        <button class="btn-edit" title="Editar"
-                                            onclick="abrirModalEditar(
-                                                <?= $cat['idcategoria'] ?>,
-                                                '<?= esc($cat['categoria']) ?>',
-                                                <?= (int)($cat['idtiporecurso'] ?? 0) ?>
-                                            )">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </button>
-                                        <button class="btn-delete" title="Eliminar"
-                                            onclick="confirmarEliminar('<?= base_url('recursos/categorias/eliminar/' . $cat['idcategoria']) ?>', '<?= esc($cat['categoria']) ?>')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+        <!-- Panel informativo -->
+        <div class="col-lg-4">
+            <div class="panel panel-info">
+                <div class="panel-label" style="color:#1b2436;">
+                    <i class="fas fa-info-circle" style="color:#2563eb;"></i>
+                    ¿Para qué sirven las categorías?
+                </div>
+                <p class="info-text">
+                    Las <strong>categorías</strong> permiten organizar los recursos dentro de cada tipo, facilitando la búsqueda y el orden del catálogo.
+                </p>
+                <div class="step-item">
+                    <div class="step-icon"><i class="fas fa-list"></i></div>
+                    <div class="step-text">Cada categoría pertenece a un <strong>tipo de recurso</strong> (Ej: "Matemática" pertenece a "Libro").</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon"><i class="fas fa-search"></i></div>
+                    <div class="step-text">Al registrar un recurso, primero se elige el tipo y luego la categoría correspondiente.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon warn"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="step-text">No puedes eliminar una categoría si tiene recursos asignados.</div>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -188,13 +215,10 @@
     function abrirModalEditar(id, nombre, idTipo) {
         document.getElementById('categoria-editar').value = nombre;
         document.getElementById('form-editar').action = '<?= base_url('recursos/categorias/actualizar/') ?>' + id;
-
-        // Seleccionar el tipo correcto
         const select = document.getElementById('tipo-editar');
         for (let opt of select.options) {
             opt.selected = (parseInt(opt.value) === idTipo);
         }
-
         document.getElementById('modal-editar').style.display = 'flex';
     }
 

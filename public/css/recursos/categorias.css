@@ -1,7 +1,3 @@
-/* =============================================
-   categorias.css — Categorías
-   ============================================= */
-
 .page-title {
     font-size: 1.4rem;
     font-weight: 700;
@@ -14,6 +10,7 @@
     margin-top: 2px;
 }
 
+/* Botones header */
 .btn-nuevo {
     background: #1b2436;
     color: #fff;
@@ -33,6 +30,28 @@
     background: #2d3a52;
 }
 
+.btn-volver {
+    background-color: #eef2f6;
+    color: #5f7ea3;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-volver:hover {
+    background-color: #e2e8f0;
+    color: #4a6a8f;
+    text-decoration: none;
+}
+
+/* Alertas */
 .alert-success-bar,
 .alert-error-bar {
     padding: 0.8rem 1rem;
@@ -56,6 +75,7 @@
     border: 1px solid #fecaca;
 }
 
+/* Panel base */
 .panel {
     background: #fff;
     border-radius: 12px;
@@ -75,6 +95,71 @@
     gap: 0.4rem;
 }
 
+/* Panel informativo */
+.panel-info {
+    border: 1px solid #e2e8f0;
+}
+
+.info-text {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.step-icon.warn {
+    background: #fffbeb;
+    color: #f59e0b;
+}
+
+.step-icon.blue {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.step-text {
+    font-size: 0.83rem;
+    color: #475569;
+    line-height: 1.5;
+    padding-top: 0.4rem;
+}
+
+.info-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.4rem;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #1b2436;
+    text-decoration: none;
+}
+
+.info-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Tabla */
 .table thead th {
     font-size: 0.75rem;
     font-weight: 700;
@@ -102,6 +187,7 @@
     background: #f8fafc;
 }
 
+/* Badge */
 .badge-tipo {
     background: #eff6ff;
     color: #1d4ed8;
@@ -114,6 +200,7 @@
     gap: 0.35rem;
 }
 
+/* Acciones */
 .actions-cell {
     display: flex;
     gap: 0.4rem;
@@ -153,6 +240,7 @@
     color: #fff;
 }
 
+/* Empty state */
 .empty-state {
     text-align: center;
     padding: 2.5rem 1rem;
@@ -367,24 +455,4 @@
 .btn-confirm-delete:hover {
     background: #b91c1c;
     color: #fff;
-}
-
-.btn-volver {
-    background-color: #eef2f6;
-    color: #5f7ea3;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-}
-
-.btn-volver:hover {
-    background-color: #e2e8f0;
-    color: #4a6a8f;
-    text-decoration: none;
 }

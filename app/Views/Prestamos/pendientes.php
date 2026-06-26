@@ -39,7 +39,7 @@
                             <th>Alumna</th>
                             <th>DNI</th>
                             <th>Turno</th>
-                            <th>Libro Solicitado</th>
+                            <th>Ejemplar Solicitado</th>
                             <th>Fecha</th>
                             <th>Hora</th>
                             <th style="width: 260px;">Acciones</th>

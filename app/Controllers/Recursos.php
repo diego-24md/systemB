@@ -19,6 +19,61 @@ class Recursos extends BaseController
     }
 
     // ================================================================
+    //  AUTORES
+    // ================================================================
+    public function tipoGuardarAjax()
+    {
+        $nombre = trim($this->request->getPost('tipo'));
+
+        if (!$nombre) {
+            return $this->response->setJSON(['success' => false, 'message' => 'El nombre es obligatorio.']);
+        }
+
+        $existe = $this->tipoRecursoModel->where('tipo', $nombre)->first();
+        if ($existe) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Ya existe ese tipo de recurso.']);
+        }
+
+        $id = $this->tipoRecursoModel->insert(['tipo' => $nombre]);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'id'      => $id,
+            'tipo'    => $nombre,
+        ]);
+    }
+
+    public function categoriaGuardarAjax()
+    {
+        $nombre  = trim($this->request->getPost('categoria'));
+        $idTipo  = (int) $this->request->getPost('idtiporecurso');
+
+        if (!$nombre || !$idTipo) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Completa todos los campos.']);
+        }
+
+        $existe = $this->categoriasModel
+            ->where('categoria', $nombre)
+            ->where('idtiporecurso', $idTipo)
+            ->first();
+
+        if ($existe) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Ya existe esa categoria para el tipo seleccionado.']);
+        }
+
+        $id = $this->categoriasModel->insert([
+            'categoria'     => $nombre,
+            'idtiporecurso' => $idTipo,
+        ]);
+
+        return $this->response->setJSON([
+            'success'   => true,
+            'id'        => $id,
+            'categoria' => $nombre,
+        ]);
+    }
+
+    // ================================================================
     //  TIPOS DE RECURSO
     // ================================================================
 

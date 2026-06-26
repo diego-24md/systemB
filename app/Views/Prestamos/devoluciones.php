@@ -16,7 +16,7 @@
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="page-title">Devoluciones</div>
-            <div class="page-subtitle">Gestión de devoluciones de libros prestados</div>
+            <div class="page-subtitle">Gestión de devoluciones de ejemplares prestados</div>
         </div>
     </div>
 
@@ -40,7 +40,7 @@
                     <th style="width:40px;">#</th>
                     <th>Alumna</th>
                     <th>DNI</th>
-                    <th>Libro</th>
+                    <th>Ejemplar</th>
                     <th>Fecha</th>
                     <th>Hora Entrega</th>
                     <th>Condición</th>

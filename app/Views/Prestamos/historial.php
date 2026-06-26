@@ -51,7 +51,7 @@
                     <th>DNI</th>
                     <th>Grado</th>
                     <th>Sección</th>
-                    <th>Libro</th>
+                    <th>Ejemplar</th>
                     <th>Hora Entrega</th>
                     <th>Hora Devolución</th>
                     <th>Duración</th>

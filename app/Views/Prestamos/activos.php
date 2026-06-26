@@ -14,7 +14,7 @@
         <div>
             <div class="page-title">Préstamos Activos</div>
             <div class="page-subtitle">
-                Libros actualmente prestados
+                Ejemplares actualmente prestados
             </div>
         </div>
     </div>
@@ -112,7 +112,7 @@
             <div class="empty-state">
                 <i class="fas fa-book-open"></i>
                 <h5>No hay préstamos activos</h5>
-                <p>Actualmente no existen libros prestados en el sistema.</p>
+                <p>Actualmente no existen ejemplares prestados en el sistema.</p>
             </div>
         </div>
 

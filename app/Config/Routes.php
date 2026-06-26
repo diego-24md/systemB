@@ -46,6 +46,14 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->post('recursos/categorias/actualizar/(:num)',  'Recursos::categoriaActualizar/$1');
     $routes->get('recursos/categorias/eliminar/(:num)',     'Recursos::categoriaEliminar/$1');
 
+    // ====================== AUTORES ======================
+    // Autocompletar autores
+    $routes->get('libros/buscarAutores', 'Libros::buscarAutores');
+
+    // AJAX tipos y categorías
+    $routes->post('recursos/tipos/guardar-ajax',       'Recursos::tipoGuardarAjax');
+    $routes->post('recursos/categorias/guardar-ajax',  'Recursos::categoriaGuardarAjax');
+
     // ====================== ALUMNAS ======================
     $routes->get('alumnas', 'Alumnas::index');
     $routes->get('alumnas/importar', 'Alumnas::importar');
