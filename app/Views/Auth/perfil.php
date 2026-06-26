@@ -48,12 +48,14 @@
                     $foto = $usuario['foto'] ?? '1778168204_5dcdf5ba90d9177c6739.png';
                     ?>
 
-                    <label for="foto" class="d-inline-block">
-                        <img
-                            src="<?= base_url('uploads/perfiles/' . $foto) ?>"
-                            class="avatar mb-3"
-                            id="preview-avatar">
-                    </label>
+                    <!-- Foto: clic para ver en grande -->
+                    <img
+                        src="<?= base_url('uploads/perfiles/' . $foto) ?>"
+                        class="avatar mb-3"
+                        id="preview-avatar"
+                        onclick="abrirFoto(this.src)"
+                        style="cursor:zoom-in;"
+                        title="Clic para ver en grande">
 
                     <input
                         type="file"
@@ -203,20 +205,30 @@
     </div>
 </div>
 
+<!-- ===== MODAL VER FOTO ===== -->
+<div id="modal-foto"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:9999; align-items:center; justify-content:center; cursor:zoom-out;"
+    onclick="this.style.display='none'">
+    <img id="modal-foto-img" src=""
+        style="max-width:90vw; max-height:90vh; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.5); object-fit:contain;">
+</div>
+
 <?= $footer ?>
 
 <script>
+    // Ver foto en grande
+    function abrirFoto(src) {
+        document.getElementById('modal-foto-img').src = src;
+        document.getElementById('modal-foto').style.display = 'flex';
+    }
+
     // Preview de imagen antes de subir
     function previewImage(event) {
         const reader = new FileReader();
-
         reader.onload = function() {
             document.getElementById('preview-avatar').src = reader.result;
         }
-
         reader.readAsDataURL(event.target.files[0]);
-
-        // Enviar automáticamente el formulario
         setTimeout(() => {
             document.getElementById('form-foto').submit();
         }, 800);
@@ -227,7 +239,6 @@
         icon.addEventListener('click', function() {
             const targetId = this.getAttribute('data-target');
             const input = document.getElementById(targetId);
-
             if (input.type === "password") {
                 input.type = "text";
                 this.classList.remove('fa-eye');
