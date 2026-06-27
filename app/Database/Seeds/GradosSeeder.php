@@ -30,7 +30,5 @@ class GradosSeeder extends Seeder
                 ]);
             }
         }
-
-        echo "Seeder de Grados y Secciones ejecutado correctamente.\n";
     }
 }

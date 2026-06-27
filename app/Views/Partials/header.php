@@ -321,6 +321,9 @@
                             const item = e.target.closest('.notif-item');
                             if (!item) return;
 
+                            // Solo actuar si el item está dentro del dropdown de notificaciones
+                            if (!item.closest('#lista-notificaciones')?.closest('.dropdown-menu')) return;
+
                             e.preventDefault();
                             e.stopPropagation();
                             const id = item.dataset.id;

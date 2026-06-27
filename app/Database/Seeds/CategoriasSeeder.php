@@ -39,7 +39,5 @@ class CategoriasSeeder extends Seeder
         $this->db->query('SET FOREIGN_KEY_CHECKS = 1');
 
         $this->db->table('categorias')->insertBatch($data);
-
-        echo "Seeder de Categorías ejecutado correctamente.\n";
     }
 }

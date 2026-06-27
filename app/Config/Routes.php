@@ -104,6 +104,10 @@ $routes->group('', ['filter' => 'auth.bibliotecario'], function ($routes) {
     $routes->get('notificaciones/cargar-mas', 'Notificaciones::cargarMas');
     $routes->get('notificaciones/marcarTodas', 'Notificaciones::marcarTodas');
 
+    // ====================== ELIMINAR NOTIFICACIONES ======================
+    $routes->get('notificaciones/eliminar/(:num)',   'Notificaciones::eliminar/$1');
+    $routes->get('notificaciones/limpiar-historial', 'Notificaciones::limpiarHistorial');
+
     // ====================== EXPORTAR ======================
     $routes->get('exportar/historial', 'Exportar::historial');
     $routes->get('exportar/catalogo',  'Exportar::catalogo');

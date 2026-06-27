@@ -42,7 +42,7 @@ class Home extends BaseController
             'prestados'   => $prestados,
             'disponibles' => $disponibles,
             'usuarios'    => $usuarios,
-            'pendientes'  => $pendientes, // ← NUEVO
+            'pendientes'  => $pendientes,
         ]);
     }
 

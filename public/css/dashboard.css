@@ -278,3 +278,14 @@ body {
     padding: 2px 8px;
     border-radius: 999px;
 }
+
+/* Boton de limpiar fechas */
+.btn-limpiar {
+    background: #fff;
+    color: #1e3a5f;
+    border: 1.5px solid #1e3a5f;
+}
+
+.btn-limpiar:hover {
+    background: #f1f5f9;
+}

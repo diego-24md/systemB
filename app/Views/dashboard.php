@@ -95,6 +95,7 @@
             <label style="font-size:.8rem;color:#64748b;font-weight:600;">Fecha:</label>
             <input type="date" id="fecha-horas">
             <button class="btn-aplicar" onclick="cargarGrafico()">Aplicar</button>
+            <button type="button" class="btn-aplicar btn-limpiar" onclick="limpiarHoras()">Limpiar</button>
         </div>
 
         <div class="chart-filters mb-3" id="filtros-dias" style="display:flex;">
@@ -103,12 +104,14 @@
             <label style="font-size:.8rem;color:#64748b;font-weight:600;">Hasta:</label>
             <input type="date" id="fecha-fin">
             <button class="btn-aplicar" onclick="cargarGrafico()">Aplicar</button>
+            <button type="button" class="btn-aplicar btn-limpiar" onclick="limpiarDias()">Limpiar</button>
         </div>
 
         <div class="chart-filters mb-3" id="filtros-meses" style="display:none;">
             <label style="font-size:.8rem;color:#64748b;font-weight:600;">Año:</label>
             <select id="select-anio"></select>
             <button class="btn-aplicar" onclick="cargarGrafico()">Aplicar</button>
+            <button type="button" class="btn-aplicar btn-limpiar" onclick="limpiarMeses()">Limpiar</button>
         </div>
 
         <div class="chart-wrap">
@@ -125,19 +128,47 @@
 <script>
     const URL_CHART = "<?= base_url('home/chartData') ?>";
 
-    const hoy = new Date();
     const pad = n => String(n).padStart(2, '0');
     const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 
-    const hace30 = new Date(hoy);
-    hace30.setDate(hoy.getDate() - 29);
+    function getFechaHoy() {
+        return new Date();
+    }
 
-    document.getElementById('fecha-horas').value = fmt(hoy);
-    document.getElementById('fecha-inicio').value = fmt(hace30);
-    document.getElementById('fecha-fin').value = fmt(hoy);
+    function initFiltros() {
+        const hoy = getFechaHoy();
+        const hace30 = new Date(hoy);
+        hace30.setDate(hoy.getDate() - 29);
+
+        document.getElementById('fecha-horas').value = fmt(hoy);
+        document.getElementById('fecha-inicio').value = fmt(hace30);
+        document.getElementById('fecha-fin').value = fmt(hoy);
+    }
+
+    function limpiarHoras() {
+        document.getElementById('fecha-horas').value = fmt(getFechaHoy());
+        cargarGrafico();
+    }
+
+    function limpiarDias() {
+        const hoy = getFechaHoy();
+        const inicio = new Date(hoy);
+        inicio.setDate(hoy.getDate() - 29);
+        document.getElementById('fecha-inicio').value = fmt(inicio);
+        document.getElementById('fecha-fin').value = fmt(hoy);
+        cargarGrafico();
+    }
+
+    function limpiarMeses() {
+        document.getElementById('select-anio').value = getFechaHoy().getFullYear();
+        cargarGrafico();
+    }
+
+    initFiltros();
 
     const selectAnio = document.getElementById('select-anio');
-    for (let y = hoy.getFullYear(); y >= hoy.getFullYear() - 4; y--) {
+    const anioActual = getFechaHoy().getFullYear();
+    for (let y = anioActual; y >= anioActual - 4; y--) {
         const opt = document.createElement('option');
         opt.value = y;
         opt.textContent = y;
