@@ -38,7 +38,7 @@ public/
  └── vendor/   <-- carpeta de SB Admin 2 (CSS/JS del template)
 ```
 
-> ⚠️ Esta carpeta no se sube al repositorio (está en `.gitignore`), por lo que debe copiarse manualmente desde el proyecto original o solicitarla al desarrollador.
+> ⚠️ Esta carpeta no se sube al repositorio (está en `.gitignore`), por lo que debe copiarse manualmente desde el proyecto original.
 
 ### 4. Configurar variables de entorno
 
@@ -83,8 +83,29 @@ php spark migrate
 php spark db:seed DatabaseSeeder
 ```
 
-### 8. Levantar el servidor
+### 8. **NO SALTARSE ESTE PASO** - Importar alumnas
 
+```
+⚠️ Importante: Antes de ejecutar PrestamosSeeder, iniciar sesión en el sistema e importar el archivo de alumnas. Este paso es necesario para que el seeder pueda generar correctamente los préstamos de prueba utilizados en los gráficos del dashboard.
+```
+
+## Acceso al sistema
+
+- Administrador (completar con las siguientes credenciales)
+
+| Campo       | Claves            |
+|-------------|-------------------|
+| Usuario     | `bibliotecario`   |
+| Contraseña  | `bibliotecario123`|
+
+### 9. Seeder con datos de prueba - Dashboard - Gráficos de Barras de Prestamos
+
+```bash
+php spark db:seed PrestamosSeeder
+```
+
+
+### 10. Levantar el servidor
 ```bash
 php spark serve
 ```
@@ -100,16 +121,6 @@ Para acceder al catálogo de biblioteca, ingresar a:
 ```
 http://localhost:8080/catalogo
 ```
-
-
-## Acceso al sistema
-
-- Administrador (completar con las siguientes credenciales)
-
-| Campo       | Claves            |
-|-------------|-------------------|
-| Usuario     | `bibliotecario`   |
-| Contraseña  | `bibliotecario123`|
 
 - **Alumna:** `DNI / Apellido Paterno` (completar con credenciales de prueba)
 
@@ -129,15 +140,14 @@ app/
  ├── Views/
  └── Database/
      ├── Migrations/  # Definición de tablas
-     └── Seeds/        # DatabaseSeeder
+     └── Seeds/        # DatabaseSeeder - #PrestamosSeeder
 public/
  └── vendor/        # Plantilla SB Admin 2 (copiar manualmente)
 ```
 
 ## Notas de diseño
 
-- Tema oscuro (azul marino `#1b2436`) con acentos dorados (`#FFCC00`)
-- Confirmaciones mediante `confirm()` nativo de JavaScript
+- Tema oscuro (azul marino `#1b2436`)
 
 ## Problemas comunes
 
