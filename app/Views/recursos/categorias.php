@@ -17,9 +17,6 @@
             <div class="page-subtitle">Gestiona las categorías agrupadas por tipo de recurso</div>
         </div>
         <div class="d-flex" style="gap: 12px;">
-            <a href="<?= base_url('libros') ?>" class="btn-volver">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
             <button class="btn-nuevo" onclick="abrirModalCrear()">
                 <i class="fas fa-plus"></i> Nueva Categoría
             </button>

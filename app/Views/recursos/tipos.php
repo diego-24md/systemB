@@ -16,9 +16,6 @@
             <div class="page-subtitle">Gestiona los tipos disponibles (Libros, Revistas, Folletos, Biblias, etc.)</div>
         </div>
         <div class="d-flex" style="gap: 12px;">
-            <a href="<?= base_url('libros') ?>" class="btn-volver">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
             <button class="btn-nuevo" onclick="abrirModalCrear()">
                 <i class="fas fa-plus"></i> Nuevo Tipo
             </button>

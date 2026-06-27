@@ -30,27 +30,6 @@
     background: #2d3a52;
 }
 
-.btn-volver {
-    background-color: #eef2f6;
-    color: #5f7ea3;
-    border: none;
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-}
-
-.btn-volver:hover {
-    background-color: #e2e8f0;
-    color: #4a6a8f;
-    text-decoration: none;
-}
-
 /* Alertas */
 .alert-success-bar,
 .alert-error-bar {
