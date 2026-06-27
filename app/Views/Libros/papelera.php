@@ -43,7 +43,7 @@
     <!-- Buscador -->
     <div class="buscador-wrapper mb-4" style="max-width: 600px;">
         <i class="fas fa-search"></i>
-        <input type="text" id="buscador-papelera" placeholder="Buscar por título, autor o ISBN...">
+        <input type="text" id="buscador-papelera" placeholder="Buscar por título o autor">
     </div>
 
     <div class="panel">

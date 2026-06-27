@@ -33,9 +33,7 @@ class Prestamos extends BaseController
             return $this->response->setJSON(['success' => false, 'resultados' => []]);
         }
 
-        // Si es solo números de 8 dígitos → buscar por DNI exacto
         if (preg_match('/^\d+$/', $q)) {
-            // DNI exacto de 8 dígitos → selección automática
             if (strlen($q) === 8) {
                 $alumna = $db->table('alumnas a')
                     ->select('a.id, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, a.turno')
@@ -55,7 +53,6 @@ class Prestamos extends BaseController
                 ]);
             }
 
-            // DNI parcial → solo sugerencias, nunca automático
             $resultados = $db->table('alumnas a')
                 ->select('a.id, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, a.turno')
                 ->join('grados g', 'g.id = a.grado_id', 'left')
@@ -72,7 +69,6 @@ class Prestamos extends BaseController
             ]);
         }
 
-        // Si escribe letras → buscar por nombre (sugerencias)
         $resultados = $db->table('alumnas a')
             ->select('a.id, a.nombre, a.dni, g.nombre AS grado, s.nombre AS seccion, a.turno')
             ->join('grados g', 'g.id = a.grado_id', 'left')
@@ -98,7 +94,6 @@ class Prestamos extends BaseController
         $lima = new \DateTimeZone('America/Lima');
         $now  = new \DateTime('now', $lima);
 
-        // Validar stock
         $activo = $db->table('activos')
             ->where('idactivo', $idactivo)
             ->where('cantidad_disponible >', 0)
@@ -109,7 +104,6 @@ class Prestamos extends BaseController
             return redirect()->back()->with('error', 'No hay disponibilidad.');
         }
 
-        // Validar alumna
         $alumna = $db->table('alumnas')
             ->where('id', $idalumna)
             ->get()->getRowArray();
@@ -118,7 +112,6 @@ class Prestamos extends BaseController
             return redirect()->back()->with('error', 'La alumna no existe.');
         }
 
-        // Validar duplicado
         $existe = $db->table('prestamos')
             ->where('idalumna', $idalumna)
             ->where('idactivo', $idactivo)
@@ -129,7 +122,6 @@ class Prestamos extends BaseController
             return redirect()->back()->with('error', 'Este libro ya está prestado a esta alumna.');
         }
 
-        // Validar que la alumna no tenga ningún préstamo activo
         $tieneActivo = $db->table('prestamos')
             ->where('idalumna', $idalumna)
             ->where('estado', 'activo')
@@ -139,7 +131,6 @@ class Prestamos extends BaseController
             return redirect()->back()->with('error', 'La alumna ya tiene un libro prestado. Debe devolverlo antes de pedir otro.');
         }
 
-        // Insertar préstamo directo como activo (desde el sistema del bibliotecario)
         $this->prestamosModel->insert([
             'idalumna'         => $idalumna,
             'idactivo'         => $idactivo,
@@ -149,7 +140,6 @@ class Prestamos extends BaseController
             'estado'           => 'activo',
         ]);
 
-        // Notificación
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Préstamo registrado: ' . $activo['titulo'] . ' → ' . $alumna['nombre'],
@@ -157,7 +147,6 @@ class Prestamos extends BaseController
             'primary'
         );
 
-        // Descontar stock
         $db->table('activos')
             ->set('cantidad_disponible', 'cantidad_disponible - 1', false)
             ->set('estado', "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
@@ -192,12 +181,10 @@ class Prestamos extends BaseController
             return redirect()->back()->with('error', 'Préstamo no encontrado.');
         }
 
-        // Calcular minutos
         $horaEntrega = new \DateTime($prestamo['entrega'] . ' ' . $prestamo['hora_entrega'], $lima);
         $diff        = $horaEntrega->diff($now);
         $minutos     = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
 
-        // Obtener datos para la notificación
         $detalle = $db->table('prestamos p')
             ->select('ac.titulo, a.nombre')
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
@@ -205,7 +192,6 @@ class Prestamos extends BaseController
             ->where('p.idprestamo', $id)
             ->get()->getRowArray();
 
-        // Notificación
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Devolución: ' . ($detalle['titulo'] ?? '—') . ' → ' . ($detalle['nombre'] ?? '—'),
@@ -213,7 +199,6 @@ class Prestamos extends BaseController
             'success'
         );
 
-        // Actualizar préstamo
         $db->table('prestamos')
             ->where('idprestamo', $id)
             ->update([
@@ -223,7 +208,6 @@ class Prestamos extends BaseController
                 'estado'          => 'devuelto',
             ]);
 
-        // Devolver stock
         $db->table('activos')
             ->set('cantidad_disponible', 'cantidad_disponible + 1', false)
             ->set('estado', 'disponible')
@@ -286,24 +270,40 @@ class Prestamos extends BaseController
         $db   = \Config\Database::connect();
         $lima = new \DateTimeZone('America/Lima');
         $now  = new \DateTime('now', $lima);
+        $hora = (int) $now->format('H');
 
         $prestamo = $db->table('prestamos')
             ->where('idprestamo', $id)
             ->where('estado', 'pendiente')
             ->get()->getRowArray();
 
-        if (! $prestamo) {
+        if (!$prestamo) {
             return redirect()->to(base_url('prestamos/pendientes'))
                 ->with('error', 'Reserva no encontrada o ya fue procesada.');
         }
 
-        // Verificar stock al momento de aprobar
+        // ── Validación de turno ──────────────────────────────────────
+        $turno = $prestamo['turno'] ?? '';
+
+        $turnoValido = match ($turno) {
+            'manana' => $hora >= 8  && $hora < 13,
+            'tarde'  => $hora >= 13 && $hora < 19,
+            default  => true, // sin turno definido: no se bloquea
+        };
+
+        if (!$turnoValido) {
+            $horario = $turno === 'manana' ? '8:00 am – 1:00 pm' : '1:00 pm – 7:00 pm';
+            return redirect()->to(base_url('prestamos/pendientes'))
+                ->with('error', "No se puede aprobar esta reserva fuera del horario del turno ($horario).");
+        }
+        // ─────────────────────────────────────────────────────────────
+
         $activo = $db->table('activos')
             ->where('idactivo', $prestamo['idactivo'])
             ->where('cantidad_disponible >', 0)
             ->get()->getRowArray();
 
-        if (! $activo) {
+        if (!$activo) {
             return redirect()->to(base_url('prestamos/pendientes'))
                 ->with('error', 'No hay stock disponible para aprobar este préstamo.');
         }
@@ -312,7 +312,6 @@ class Prestamos extends BaseController
             ->where('id', $prestamo['idalumna'])
             ->get()->getRowArray();
 
-        // Cambiar estado a activo
         $db->table('prestamos')
             ->where('idprestamo', $id)
             ->update([
@@ -320,14 +319,12 @@ class Prestamos extends BaseController
                 'hora_entrega' => $now->format('H:i:s'),
             ]);
 
-        // Descontar stock
         $db->table('activos')
             ->set('cantidad_disponible', 'cantidad_disponible - 1', false)
             ->set('estado', "IF(cantidad_disponible - 1 <= 0, 'agotado', 'disponible')", false)
             ->where('idactivo', $prestamo['idactivo'])
             ->update();
 
-        // Notificación sistema
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Préstamo aprobado: ' . $activo['titulo'] . ' → ' . ($alumna['nombre'] ?? '—'),
@@ -335,7 +332,6 @@ class Prestamos extends BaseController
             'success'
         );
 
-        // Notificación para la alumna
         $notifAlumna = new \App\Models\AlumnaNotificacionModel();
         $notifAlumna->notificar(
             (int) $prestamo['idalumna'],
@@ -357,7 +353,7 @@ class Prestamos extends BaseController
             ->where('estado', 'pendiente')
             ->get()->getRowArray();
 
-        if (! $prestamo) {
+        if (!$prestamo) {
             return redirect()->to(base_url('prestamos/pendientes'))
                 ->with('error', 'Reserva no encontrada o ya fue procesada.');
         }
@@ -370,12 +366,10 @@ class Prestamos extends BaseController
             ->where('id', $prestamo['idalumna'])
             ->get()->getRowArray();
 
-        // Cambiar estado a rechazado
         $db->table('prestamos')
             ->where('idprestamo', $id)
             ->update(['estado' => 'rechazado']);
 
-        // Notificación sistema
         \App\Models\NotificacionesModel::registrar(
             'prestamo',
             'Reserva rechazada: ' . ($activo['titulo'] ?? '—') . ' → ' . ($alumna['nombre'] ?? '—'),
@@ -383,7 +377,6 @@ class Prestamos extends BaseController
             'danger'
         );
 
-        // Notificación para la alumna
         $notifAlumna = new \App\Models\AlumnaNotificacionModel();
         $notifAlumna->notificar(
             (int) $prestamo['idalumna'],
@@ -398,17 +391,22 @@ class Prestamos extends BaseController
     // ====================== RESERVAS PENDIENTES ======================
     public function pendientes()
     {
-        $db = \Config\Database::connect();
+        $db   = \Config\Database::connect();
+        $lima = new \DateTimeZone('America/Lima');
+        $now  = new \DateTime('now', $lima);
+        $hora = (int) $now->format('H'); // ← ahora sí toma hora de Lima
 
         $data['pendientes'] = $db->table('prestamos p')
             ->select('p.idprestamo, p.idactivo, p.entrega, p.hora_entrega, p.condicionentrega,
-                  a.nombre, a.dni, a.turno, ac.titulo') // ← agregar a.turno
+                  a.nombre, a.dni, a.turno, ac.titulo')
             ->join('alumnas a', 'a.id = p.idalumna', 'left')
             ->join('activos ac', 'ac.idactivo = p.idactivo', 'left')
             ->where('p.estado', 'pendiente')
             ->orderBy('p.idprestamo', 'ASC')
             ->get()
             ->getResultArray();
+
+        $data['hora_actual'] = $hora;
 
         $data['header'] = view('Partials/header');
         $data['footer'] = view('Partials/footer');
@@ -420,9 +418,8 @@ class Prestamos extends BaseController
     public function activos()
     {
         $data['prestamos'] = $this->prestamosModel->getPrestamosActivos();
-
-        $data['header'] = view('Partials/header');
-        $data['footer'] = view('Partials/footer');
+        $data['header']    = view('Partials/header');
+        $data['footer']    = view('Partials/footer');
 
         return view('prestamos/activos', $data);
     }

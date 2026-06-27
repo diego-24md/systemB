@@ -179,3 +179,14 @@ body {
 .badge-turno.sin-turno {
     color: #94a3b8;
 }
+
+/* Botones de turno */
+td .d-flex {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+}
+
+.panel {
+    margin-bottom: 24px;
+}
