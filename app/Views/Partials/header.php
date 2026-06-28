@@ -11,44 +11,31 @@
 
     <title>Proyecto de Innovación</title>
 
-    <!-- Custom fonts for this template-->
     <link href="<?= base_url('vendor/fontawesome-free/css/all.min.css') ?>" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-    <!-- Custom styles for this template-->
     <link href="<?= base_url('css/sb-admin-2.min.css') ?>" rel="stylesheet">
-
-    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Tom Select -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
 </head>
 
 <style>
-    /* SIDEBAR FIJO */
     .sidebar {
         position: fixed !important;
         top: 0;
         left: 0;
         width: 14rem;
-        /* ancho del menú */
         height: 100vh;
-        /* alto completo de pantalla */
         overflow-y: auto;
-        /* scroll interno si hay mucho contenido */
         z-index: 1000;
     }
 
-    /* EVITA QUE EL CONTENIDO SE META DEBAJO DEL SIDEBAR */
     #content-wrapper {
         margin-left: 14rem;
         width: calc(100% - 14rem);
     }
 
-    /* PARA QUE NO SE DESORDENE EN MÓVIL */
     @media (max-width: 768px) {
         .sidebar {
             position: relative !important;
@@ -61,17 +48,118 @@
             width: 100%;
         }
     }
+
+    /* ── Reloj + turno ── */
+    .topbar-turno {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 16px;
+    }
+
+    .topbar-reloj {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.05em;
+        min-width: 58px;
+    }
+
+    .topbar-reloj .colon {
+        animation: parpadeo 1s step-start infinite;
+    }
+
+    @keyframes parpadeo {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0;
+        }
+    }
+
+    .turno-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+    }
+
+    .turno-badge.manana {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .turno-badge.tarde {
+        background: #ede9fe;
+        color: #5b21b6;
+        border: 1px solid #ddd6fe;
+    }
+
+    .turno-badge.fuera {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 1px solid #e2e8f0;
+    }
+
+    .turno-badge i {
+        font-size: 0.72rem;
+    }
+
+    .turno-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulso 1.5s ease-in-out infinite;
+    }
+
+    .turno-badge.manana .turno-dot {
+        background: #f59e0b;
+    }
+
+    .turno-badge.tarde .turno-dot {
+        background: #7c3aed;
+    }
+
+    .turno-badge.fuera .turno-dot {
+        background: #cbd5e1;
+        animation: none;
+    }
+
+    @keyframes pulso {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.4);
+            opacity: 0.6;
+        }
+    }
 </style>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
     <div id="wrapper">
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="http://localhost:8080/">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-book-open"></i>
@@ -79,10 +167,8 @@
                 <div class="sidebar-brand-text mx-4">Sistema de Biblioteca <sup></sup></div>
             </a>
 
-            <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="http://localhost:8080/">
                     <i class="fas fa-fw fa-laptop"></i>
@@ -93,10 +179,8 @@
             <hr class="sidebar-divider my-0">
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
             <div class="sidebar-heading">Menú Principal</div>
 
-            <!-- LIBROS -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCatalogo"
                     aria-expanded="false" aria-controls="collapseCatalogo">
@@ -113,7 +197,6 @@
                 </div>
             </li>
 
-            <!-- USUARIOS -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsuarios"
                     aria-expanded="false" aria-controls="collapseUsuarios">
@@ -128,7 +211,6 @@
                 </div>
             </li>
 
-            <!-- PRÉSTAMOS -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrestamos"
                     aria-expanded="false" aria-controls="collapsePrestamos">
@@ -147,7 +229,6 @@
                 </div>
             </li>
 
-            <!-- EXPORTAR -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="false" aria-controls="collapseUtilities">
@@ -165,7 +246,6 @@
 
             <hr class="sidebar-divider">
 
-            <!-- Sidebar Toggler -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
@@ -173,24 +253,29 @@
         </ul>
         <!-- End of Sidebar -->
 
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Navbar -->
+                    <!-- ── RELOJ + TURNO ── -->
+                    <div class="topbar-turno mr-auto">
+                        <span class="topbar-reloj">
+                            <span id="reloj-horas">00</span><span class="colon">:</span><span id="reloj-minutos">00</span><span class="colon">:</span><span id="reloj-segundos">00</span>
+                        </span>
+                        <span class="turno-badge fuera" id="turno-badge">
+                            <span class="turno-dot"></span>
+                            <span id="turno-texto">Cargando...</span>
+                        </span>
+                    </div>
+
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Search XS -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -214,12 +299,11 @@
                         </li>
 
                         <?php
-                        $notifModel = new \App\Models\NotificacionesModel();
+                        $notifModel     = new \App\Models\NotificacionesModel();
                         $notificaciones = $notifModel->getNoLeidas();
                         $totalNoLeidas  = $notifModel->contarNoLeidas();
                         ?>
 
-                        <!-- NOTIFICACIONES -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -285,7 +369,6 @@
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
-                        <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -312,16 +395,47 @@
                 </nav>
                 <!-- End of Topbar -->
 
-                <!-- Begin Page Content -->
                 <div class="container-fluid">
+
+                    <script>
+                        // ── Reloj + turno en tiempo real ──
+                        function actualizarReloj() {
+                            const ahora = new Date();
+                            const h = ahora.getHours();
+                            const m = String(ahora.getMinutes()).padStart(2, '0');
+                            const s = String(ahora.getSeconds()).padStart(2, '0');
+                            const hStr = String(h).padStart(2, '0');
+
+                            document.getElementById('reloj-horas').textContent = hStr;
+                            document.getElementById('reloj-minutos').textContent = m;
+                            document.getElementById('reloj-segundos').textContent = s;
+
+                            const badge = document.getElementById('turno-badge');
+                            const texto = document.getElementById('turno-texto');
+
+                            badge.classList.remove('manana', 'tarde', 'fuera');
+
+                            if (h >= 8 && h < 13) {
+                                badge.classList.add('manana');
+                                texto.textContent = '☀ Turno Mañana';
+                            } else if (h >= 13 && h < 19) {
+                                badge.classList.add('tarde');
+                                texto.textContent = '🌙 Turno Tarde';
+                            } else {
+                                badge.classList.add('fuera');
+                                texto.textContent = 'Fuera de horario';
+                            }
+                        }
+
+                        actualizarReloj();
+                        setInterval(actualizarReloj, 1000);
+                    </script>
 
                     <!-- JavaScript Notificaciones -->
                     <script>
                         document.addEventListener('click', function(e) {
                             const item = e.target.closest('.notif-item');
                             if (!item) return;
-
-                            // Solo actuar si el item está dentro del dropdown de notificaciones
                             if (!item.closest('#lista-notificaciones')?.closest('.dropdown-menu')) return;
 
                             e.preventDefault();
