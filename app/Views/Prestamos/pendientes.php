@@ -26,8 +26,7 @@ $turno_activo_tarde  = $hora_actual >= 13 && $hora_actual < 19;
                 Solicitudes de préstamo esperando aprobación
             </div>
         </div>
-        <div class="text-muted small mt-1">
-            <i class="fas fa-clock me-1"></i>
+        <div class="hora-actual mt-1">
             Hora actual: <strong><?= (new \DateTime('now', new \DateTimeZone('America/Lima')))->format('H:i') ?></strong>
         </div>
     </div>
@@ -58,7 +57,7 @@ $turno_activo_tarde  = $hora_actual >= 13 && $hora_actual < 19;
                 'label'   => 'Turno Tarde',
                 'horario' => '1:00 pm – 7:00 pm',
                 'icon'    => 'fa-moon',
-                'color'   => '#3b82f6',
+                'color'   => '#6366f1',
                 'activo'  => $turno_activo_tarde,
                 'data'    => $tarde,
             ],
@@ -68,7 +67,7 @@ $turno_activo_tarde  = $hora_actual >= 13 && $hora_actual < 19;
                 'label'   => 'Sin turno',
                 'horario' => '',
                 'icon'    => 'fa-question-circle',
-                'color'   => '#6b7280',
+                'color'   => '#cbd5e1',
                 'activo'  => false,
                 'data'    => $sin_turno,
             ];
@@ -78,93 +77,87 @@ $turno_activo_tarde  = $hora_actual >= 13 && $hora_actual < 19;
         <div>
 
             <?php foreach ($secciones as $key => $sec): ?>
-                <div class="col-12">
-                    <div class="panel h-100">
+                <div class="panel">
 
-                        <div class="panel-label panel-label--<?= $key ?>">
-                            <i class="fas <?= $sec['icon'] ?>" style="color:<?= $sec['color'] ?>;"></i>
-                            <?= $sec['label'] ?>
-                            <?php if ($sec['horario']): ?>
-                                <small class="text-muted fw-normal ms-1">(<?= $sec['horario'] ?>)</small>
-                            <?php endif; ?>
-                            <span class="badge-count"><?= count($sec['data']) ?></span>
-
-                            <?php if (!$sec['activo'] && !empty($sec['data'])): ?>
-                                <span class="badge bg-danger ms-2" style="font-size:11px;">
-                                    <i class="fas fa-lock me-1"></i>Fuera de horario
-                                </span>
-                            <?php elseif ($sec['activo']): ?>
-                                <span class="badge bg-success ms-2" style="font-size:11px;">
-                                    <i class="fas fa-unlock me-1"></i>Turno activo
-                                </span>
-                            <?php endif; ?>
-                        </div>
+                    <div class="panel-label panel-label--<?= $key ?>">
+                        <i class="fas <?= $sec['icon'] ?>" style="color:<?= $sec['color'] ?>;"></i>
+                        <?= $sec['label'] ?>
+                        <?php if ($sec['horario']): ?>
+                            <small class="text-muted fw-normal ms-1">(<?= $sec['horario'] ?>)</small>
+                        <?php endif; ?>
+                        <span class="badge-count"><?= count($sec['data']) ?></span>
 
                         <?php if (!$sec['activo'] && !empty($sec['data'])): ?>
-                            <div class="alert alert-warning mx-3 mt-3 mb-3 py-2 px-3" style="font-size:13px;">
-                                <i class="fas fa-exclamation-triangle me-1"></i>
-                                Las reservas de este turno <strong>no pueden aprobarse</strong> fuera de su horario.
-                            </div>
+                            <span class="badge-estado fuera">Fuera de horario</span>
+                        <?php elseif ($sec['activo']): ?>
+                            <span class="badge-estado activo">Turno activo</span>
                         <?php endif; ?>
-
-                        <?php if (!empty($sec['data'])): ?>
-
-                            <div class="table-responsive">
-                                <table class="table align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:50px;">#</th>
-                                            <th>Alumna</th>
-                                            <th>DNI</th>
-                                            <th>Ejemplar Solicitado</th>
-                                            <th>Fecha</th>
-                                            <th>Hora</th>
-                                            <th style="width:200px;">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach (array_values($sec['data']) as $i => $p): ?>
-                                            <tr class="<?= !$sec['activo'] ? 'table-secondary' : '' ?>">
-                                                <td><?= $i + 1 ?></td>
-                                                <td class="student-name"><?= esc((string) $p['nombre']) ?></td>
-                                                <td><?= esc((string) $p['dni']) ?></td>
-                                                <td class="book-title"><?= esc((string) ($p['titulo'] ?? '—')) ?></td>
-                                                <td><?= esc((string) $p['entrega']) ?></td>
-                                                <td><?= esc((string) $p['hora_entrega']) ?></td>
-                                                <td>
-                                                    <?php if ($sec['activo']): ?>
-                                                        <div class="d-flex gap-2 flex-wrap">
-                                                            <a href="<?= base_url('prestamos/rechazar/' . $p['idprestamo']) ?>"
-                                                                class="btn-rechazar">
-                                                                <i class="fas fa-times"></i> Rechazar
-                                                            </a>
-                                                            <a href="<?= base_url('prestamos/aprobar/' . $p['idprestamo']) ?>"
-                                                                class="btn-aprobar">
-                                                                <i class="fas fa-check"></i> Aprobar
-                                                            </a>
-                                                        </div>
-                                                    <?php else: ?>
-                                                        <span class="text-muted small">
-                                                            <i class="fas fa-lock me-1"></i>Bloqueado
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        <?php else: ?>
-
-                            <div class="empty-state" style="padding:24px;">
-                                <i class="fas fa-inbox"></i>
-                                <p>No hay reservas para este turno.</p>
-                            </div>
-
-                        <?php endif; ?>
-
                     </div>
+
+                    <?php if (!$sec['activo'] && !empty($sec['data'])): ?>
+                        <div class="alerta-horario">
+                            <i class="fas fa-clock"></i>
+                            Las reservas de este turno no pueden aprobarse fuera de su horario.
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($sec['data'])): ?>
+
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px;">#</th>
+                                        <th>Alumna</th>
+                                        <th>DNI</th>
+                                        <th>Ejemplar Solicitado</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th style="width:200px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach (array_values($sec['data']) as $i => $p): ?>
+                                        <tr class="<?= !$sec['activo'] ? 'bloqueada' : '' ?>">
+                                            <td><?= $i + 1 ?></td>
+                                            <td class="student-name"><?= esc((string) $p['nombre']) ?></td>
+                                            <td><?= esc((string) $p['dni']) ?></td>
+                                            <td class="book-title"><?= esc((string) ($p['titulo'] ?? '—')) ?></td>
+                                            <td><?= esc((string) $p['entrega']) ?></td>
+                                            <td><?= esc((string) $p['hora_entrega']) ?></td>
+                                            <td>
+                                                <?php if ($sec['activo']): ?>
+                                                    <div class="d-flex gap-2 flex-wrap">
+                                                        <a href="<?= base_url('prestamos/rechazar/' . $p['idprestamo']) ?>"
+                                                            class="btn-rechazar">
+                                                            <i class="fas fa-times"></i> Rechazar
+                                                        </a>
+                                                        <a href="<?= base_url('prestamos/aprobar/' . $p['idprestamo']) ?>"
+                                                            class="btn-aprobar">
+                                                            <i class="fas fa-check"></i> Aprobar
+                                                        </a>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <span class="bloqueado-label">
+                                                        <i class="fas fa-lock"></i> Bloqueado
+                                                    </span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    <?php else: ?>
+
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No hay reservas para este turno.</p>
+                        </div>
+
+                    <?php endif; ?>
+
                 </div>
             <?php endforeach; ?>
 
