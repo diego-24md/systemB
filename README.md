@@ -104,8 +104,14 @@ php spark db:seed DatabaseSeeder
 php spark db:seed PrestamosSeeder
 ```
 
+### 10. Seeder con datos de prueba - Préstamos/Reservas Pendientes - Reservas Pendientes aún por aprobar (2 de cada turno)
 
-### 10. Levantar el servidor
+```bash
+php spark db:seed PendientesSeeder
+```
+
+
+### 11. Levantar el servidor
 ```bash
 php spark serve
 ```
