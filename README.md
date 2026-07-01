@@ -83,10 +83,15 @@ php spark migrate
 php spark db:seed DatabaseSeeder
 ```
 
-### 8. **NO SALTARSE ESTE PASO** - Importar alumnas
+### 8. Levantar el servidor
+```bash
+php spark serve
+```
+
+El proyecto quedará disponible en:
 
 ```
-⚠️ Importante: Antes de ejecutar PrestamosSeeder, iniciar sesión en el sistema e importar el archivo de alumnas. Este paso es necesario para que el seeder pueda generar correctamente los préstamos de prueba utilizados en los gráficos del dashboard.
+http://localhost:8080
 ```
 
 ## Acceso al sistema
@@ -98,30 +103,6 @@ php spark db:seed DatabaseSeeder
 | Usuario     | `bibliotecario`   |
 | Contraseña  | `bibliotecario123`|
 
-### 9. Seeder con datos de prueba - Dashboard - Gráficos de Barras de Prestamos
-
-```bash
-php spark db:seed PrestamosSeeder
-```
-
-### 10. Seeder con datos de prueba - Préstamos/Reservas Pendientes - Reservas Pendientes aún por aprobar (2 de cada turno)
-
-```bash
-php spark db:seed PendientesSeeder
-```
-
-
-### 11. Levantar el servidor
-```bash
-php spark serve
-```
-
-El proyecto quedará disponible en:
-
-```
-http://localhost:8080
-```
-
 Para acceder al catálogo de biblioteca, ingresar a:
 
 ```
@@ -132,10 +113,8 @@ http://localhost:8080/catalogo
 
 | Campo       | Claves            |
 |-------------|-------------------|
-| DNI         |     `68929686`    |
-| Apellido    |       `APAZA`     |
-
-** Para que las credenciales de ALUMNA DE PRUEBA funcione se tiene que importar un archivo de EXCEL 'nomina_1A_prueba'. Una vez subido el archivo se puede ingresar con cualquier dni y apellido. **
+| DNI         |     `62566127`    |
+| Apellido    |     `CENTENO`     |
 
 ## Estructura principal
 
@@ -146,7 +125,7 @@ app/
  ├── Views/
  └── Database/
      ├── Migrations/  # Definición de tablas
-     └── Seeds/        # DatabaseSeeder - #PrestamosSeeder
+     └── Seeds/        # DatabaseSeeder
 public/
  └── vendor/        # Plantilla SB Admin 2 (copiar manualmente)
 ```

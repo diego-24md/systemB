@@ -13,5 +13,8 @@ class DatabaseSeeder extends Seeder
         $this->call('GradosSeeder');
         $this->call('UsuarioSeeder');
         $this->call('LibrosSeeder');
+        $this->call('AlumnasSeeder');
+        $this->call('PrestamosSeeder');
+        $this->call('PendientesSeeder');
     }
 }
